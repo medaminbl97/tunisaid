@@ -1,5 +1,46 @@
 {
   "home": {
+    "projects": {
+      "eyebrow": "Our projects",
+      "title": "Projects built with the people they serve",
+      "allProjects": "All projects",
+      "readMore": "Read more",
+      "readMoreLabel": "Read more about {{title}}",
+      "items": {
+        "education": {
+          "tag": "Education",
+          "title": "Educational Project",
+          "description": "Our partner associations APH EL AJA (Djerba) accommodate and support children with severe and multiple disabilities. They coach and teach…"
+        },
+        "fundraiser": {
+          "tag": "Fundraiser",
+          "title": "Coronavirus Fundraiser – Third Wave",
+          "description": "Ramadan Mubarak dear friends. Every single one of us is aware of the major impact that the coronavirus has had…"
+        }
+      }
+    },
+    "values": {
+      "eyebrow": "Our values",
+      "title": "What guides every decision",
+      "items": {
+        "trusted": {
+          "title": "Most trusted",
+          "description": "We value your trust and demonstrate accountability in every task we do."
+        },
+        "charitable": {
+          "title": "Charitable",
+          "description": "We are all driven by a sense of charity and willingness to help those in need."
+        },
+        "committed": {
+          "title": "Committed",
+          "description": "We are fully dedicated to successfully run and accomplish our missions."
+        },
+        "diverse": {
+          "title": "Diverse",
+          "description": "Young, old, students, alumni and professionals contribute to our organisation."
+        }
+      }
+    },
     "hero": {
       "eyebrow": "United in purpose, blessed in stride",
       "title": "True nobility lies in the <emphasis>hands that give.</emphasis>",

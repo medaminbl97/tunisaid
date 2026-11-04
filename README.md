@@ -84,11 +84,13 @@ Keep route files thin: they configure the route and render a page imported from 
 
 Page-only components live in `src/pages/<page-name>/components/`. Group complex components in a named folder with an `index.tsx` entry point and an adjacent `components/` folder for their subcomponents. Add page-local `hooks/`, `utils/`, or `context/` folders only when needed. Shared components remain in `src/components/`, with UI primitives in `src/components/ui/`.
 
-The Home page renders the hero followed by the impact section from `src/pages/home/components/`. The hero retains the Figma illustration placeholder (a photo has not been supplied), local decorative SVGs, and a floating support note. Its actions link to `/contact` and `/what-we-do`; the impact action also links to `/what-we-do`. These destination routes are still placeholders.
+The Home page renders the hero, impact, projects, and values sections from `src/pages/home/components/`. The hero retains the Figma illustration placeholder (a photo has not been supplied), local decorative SVGs, and a floating support note. Its actions link to `/contact` and `/what-we-do`; the impact and project actions also link to `/what-we-do`. These destination routes are still placeholders; individual project detail routes are not implemented yet.
 
 Both sections compose `src/components/section-heading.tsx`, a shared animated heading with optional eyebrow and description, left/center alignment, inverse styling, and semantic heading levels. The impact section displays the four design-provided statistics as a responsive definition list. Entrance, hover, and floating motion respect reduced-motion preferences. Brand colors, glass surfaces, and gradients live in `src/styles.css`. Stories cover the hero, impact section, and shared heading variants.
 
 Reusable cards live in `src/components/`: `GlassCard` provides light/inverse glass surfaces and reduced-motion-aware reveal/float animations; `StatCard` composes it for label/value pairs and must be placed inside a `<dl>`; `InfoCard` composes it for an icon, title, and description. The impact statistics and hero support note use these shared components. Keep section-specific content, decoration, and layout in the page components rather than duplicating shared card styling.
+
+`ProjectCard` provides gradient covers, category tags, titles, excerpts, and a caller-supplied action. `ValueCard` provides an icon, heading, and description on the soft `GlassCard` variant; project cards use the solid variant. `IconChip` is shared by value cards and info cards. These reusable components and their stories live outside page folders. Projects and Values use typed English/German content under `home.projects` and `home.values`; the supplied SVG icons and glass decorations are stored locally.
 
 ### Adding A Route
 
