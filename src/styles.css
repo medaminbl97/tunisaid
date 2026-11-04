@@ -22,18 +22,18 @@
   --brand-terracotta: #d9774c;
   --brand-sun-soft: #fdf0c4;
   --brand-lagoon-deep: #247487;
-  --brand-hero-card: rgba(255, 255, 255, 0.65);
-  --brand-hero-card-border: rgba(255, 255, 255, 0.88);
-  --brand-hero-card-shadow: 0 12px 32px rgba(23, 59, 64, 0.1);
+  --brand-glass: rgba(255, 255, 255, 0.65);
+  --brand-glass-border: rgba(255, 255, 255, 0.88);
+  --brand-glass-shadow: 0 12px 32px rgba(23, 59, 64, 0.1);
   --brand-impact-background: linear-gradient(
     150.717deg,
     #3aa8b9 0%,
     #1f6676 71.429%
   );
-  --brand-impact-glass: rgba(255, 255, 255, 0.18);
-  --brand-impact-border: rgba(255, 255, 255, 0.35);
+  --brand-glass-inverse: rgba(255, 255, 255, 0.18);
+  --brand-glass-inverse-border: rgba(255, 255, 255, 0.35);
   --brand-impact-copy: rgba(255, 255, 255, 0.9);
-  --brand-impact-label: rgba(255, 255, 255, 0.85);
+  --brand-glass-inverse-label: rgba(255, 255, 255, 0.85);
   --brand-hero-background-start: #89a9a0;
   --brand-hero-background-end: #c2a789;
   --brand-hero-glass: rgba(26, 33, 32, 0.66);
@@ -183,7 +183,7 @@
   --font-display: 'Fraunces', Georgia, serif;
   --container-site: var(--brand-container-width);
   --shadow-header: var(--brand-header-shadow);
-  --shadow-hero-card: var(--brand-hero-card-shadow);
+  --shadow-glass-card: var(--brand-glass-shadow);
   --background-image-brand-impact: var(--brand-impact-background);
   --color-brand-ink: var(--brand-ink);
   --color-brand-ink-soft: var(--brand-ink-soft);
@@ -192,12 +192,12 @@
   --color-brand-terracotta: var(--brand-terracotta);
   --color-brand-sun-soft: var(--brand-sun-soft);
   --color-brand-lagoon-deep: var(--brand-lagoon-deep);
-  --color-brand-hero-card: var(--brand-hero-card);
-  --color-brand-hero-card-border: var(--brand-hero-card-border);
-  --color-brand-impact-glass: var(--brand-impact-glass);
-  --color-brand-impact-border: var(--brand-impact-border);
+  --color-brand-glass: var(--brand-glass);
+  --color-brand-glass-border: var(--brand-glass-border);
+  --color-brand-glass-inverse: var(--brand-glass-inverse);
+  --color-brand-glass-inverse-border: var(--brand-glass-inverse-border);
   --color-brand-impact-copy: var(--brand-impact-copy);
-  --color-brand-impact-label: var(--brand-impact-label);
+  --color-brand-glass-inverse-label: var(--brand-glass-inverse-label);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

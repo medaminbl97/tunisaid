@@ -46,7 +46,7 @@ export function SectionHeading({
             eyebrowVariant === 'pill' && 'rounded-full px-4 py-2 text-xs',
             eyebrowVariant === 'pill' &&
               (tone === 'inverse'
-                ? 'bg-brand-impact-glass'
+                ? 'bg-brand-glass-inverse'
                 : 'bg-brand-sun-soft text-brand-ink'),
           )}
         >
