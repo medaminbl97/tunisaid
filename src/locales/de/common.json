@@ -1,0 +1,14 @@
+{
+  "siteHeader": {
+    "homeLabel": "Tunisaid Startseite",
+    "logoAlt": "Tunisaid - Hilfe für Menschen mit Behinderungen in Tunesien",
+    "navigationLabel": "Hauptnavigation",
+    "navigation": {
+      "home": "Startseite",
+      "about": "Über uns",
+      "whatWeDo": "Was wir tun",
+      "contact": "Kontakt",
+      "donate": "Spenden"
+    }
+  }
+}

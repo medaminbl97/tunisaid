@@ -1,0 +1,14 @@
+{
+  "siteHeader": {
+    "homeLabel": "Tunisaid home",
+    "logoAlt": "Tunisaid - Aid for Tunisians with Disabilities",
+    "navigationLabel": "Main navigation",
+    "navigation": {
+      "home": "Home",
+      "about": "About",
+      "whatWeDo": "What we do",
+      "contact": "Contact",
+      "donate": "Donate"
+    }
+  }
+}
