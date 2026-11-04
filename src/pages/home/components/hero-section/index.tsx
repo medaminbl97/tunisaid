@@ -22,7 +22,7 @@ export function HeroSection() {
   return (
     <section
       aria-labelledby="home-hero-heading"
-      className="relative isolate overflow-clip bg-brand-cream px-6 pt-[calc(var(--brand-header-height)+var(--brand-header-offset)+3.375rem)] pb-16 sm:px-10 lg:pb-24"
+      className="relative isolate overflow-clip bg-brand-flow-cool px-6 pt-[calc(var(--brand-header-height)+var(--brand-header-offset)+3.375rem)] pb-16 sm:px-10 lg:pb-24"
     >
       <div
         aria-hidden="true"

@@ -17,7 +17,7 @@ export function PartnersSection() {
   return (
     <section
       aria-labelledby="home-partners-heading"
-      className="relative isolate overflow-clip bg-brand-lagoon-tint px-6 py-16 sm:px-10 lg:py-[104px]"
+      className="relative isolate overflow-clip bg-brand-flow-lagoon px-6 py-16 sm:px-10 lg:py-[104px]"
     >
       <div
         aria-hidden="true"

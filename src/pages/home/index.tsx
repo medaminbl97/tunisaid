@@ -4,6 +4,8 @@ import { ProjectsSection } from './components/projects-section'
 import { ValuesSection } from './components/values-section'
 import { GetInvolvedSection } from './components/get-involved-section'
 import { PartnersSection } from './components/partners-section'
+import { DonationSection } from './components/donation-section'
+import { ContactStrip } from '#/components/contact-strip'
 
 export function HomePage() {
   return (
@@ -14,6 +16,8 @@ export function HomePage() {
       <ValuesSection />
       <GetInvolvedSection />
       <PartnersSection />
+      <DonationSection />
+      <ContactStrip />
     </main>
   )
 }
