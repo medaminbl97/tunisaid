@@ -24,6 +24,20 @@
   --brand-lagoon-deep: #247487;
   --brand-glass: rgba(255, 255, 255, 0.65);
   --brand-glass-border: rgba(255, 255, 255, 0.88);
+  --brand-glass-soft: rgba(255, 255, 255, 0.5);
+  --brand-glass-soft-border: rgba(255, 255, 255, 0.78);
+  --brand-glass-chip: rgba(255, 255, 255, 0.7);
+  --brand-line: #e9e0cb;
+  --brand-project-lagoon: linear-gradient(
+    157.728deg,
+    #3aa8b9 0%,
+    #f5c93a 71.429%
+  );
+  --brand-project-terracotta: linear-gradient(
+    157.728deg,
+    #d9774c 0%,
+    #f5c93a 71.429%
+  );
   --brand-glass-shadow: 0 12px 32px rgba(23, 59, 64, 0.1);
   --brand-impact-background: linear-gradient(
     150.717deg,
@@ -194,6 +208,12 @@
   --color-brand-lagoon-deep: var(--brand-lagoon-deep);
   --color-brand-glass: var(--brand-glass);
   --color-brand-glass-border: var(--brand-glass-border);
+  --color-brand-glass-soft: var(--brand-glass-soft);
+  --color-brand-glass-soft-border: var(--brand-glass-soft-border);
+  --color-brand-glass-chip: var(--brand-glass-chip);
+  --color-brand-line: var(--brand-line);
+  --background-image-brand-project-lagoon: var(--brand-project-lagoon);
+  --background-image-brand-project-terracotta: var(--brand-project-terracotta);
   --color-brand-glass-inverse: var(--brand-glass-inverse);
   --color-brand-glass-inverse-border: var(--brand-glass-inverse-border);
   --color-brand-impact-copy: var(--brand-impact-copy);

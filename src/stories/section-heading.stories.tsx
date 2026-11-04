@@ -22,6 +22,7 @@ export const Default: Story = {}
 export const LeftAligned: Story = {
   args: {
     align: 'left',
+    size: 'compact',
     eyebrow: 'Our projects',
     title: 'Projects built with the people they serve',
   },

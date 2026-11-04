@@ -28,6 +28,14 @@ export const Inverse: Story = {
   args: { variant: 'inverse' },
 }
 
+export const Soft: Story = {
+  args: { variant: 'soft' },
+}
+
+export const Solid: Story = {
+  args: { variant: 'solid' },
+}
+
 export const Floating: Story = {
   args: { animation: 'float' },
 }

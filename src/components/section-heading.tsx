@@ -12,6 +12,7 @@ type SectionHeadingProps = {
   tone?: 'default' | 'inverse'
   eyebrowVariant?: 'plain' | 'pill'
   className?: string
+  size?: 'default' | 'compact'
 }
 
 export function SectionHeading({
@@ -19,6 +20,7 @@ export function SectionHeading({
   align = 'center',
   tone = 'default',
   eyebrowVariant = 'plain',
+  size = 'default',
   ...props
 }: SectionHeadingProps) {
   const reduceMotion = useReducedMotion()
@@ -59,7 +61,9 @@ export function SectionHeading({
           'font-display font-bold text-balance',
           Heading === 'h1'
             ? 'text-[clamp(2.5rem,4.73vw,4.25rem)] leading-[1.08]'
-            : 'text-[clamp(2rem,3.62vw,3.25rem)] leading-[1.12]',
+            : size === 'compact'
+              ? 'text-[clamp(2rem,3.34vw,3rem)] leading-[1.14]'
+              : 'text-[clamp(2rem,3.62vw,3.25rem)] leading-[1.12]',
         )}
       >
         {props.title}
