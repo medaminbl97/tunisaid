@@ -25,6 +25,8 @@ const buttonVariants = cva(
         white:
           'bg-brand-white text-brand-lagoon-deep hover:bg-brand-sun-soft hover:text-brand-lagoon-deep',
         sun: 'bg-brand-sun text-brand-ink hover:bg-brand-sun-soft hover:text-brand-ink',
+        footerOutline:
+          'border border-brand-footer-border bg-transparent text-brand-white hover:bg-brand-glass-inverse hover:text-brand-white focus-visible:ring-brand-sun',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',

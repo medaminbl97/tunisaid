@@ -33,7 +33,58 @@
   --brand-glass-bright: rgba(255, 255, 255, 0.9);
   --brand-glass-featured: rgba(36, 116, 135, 0.8);
   --brand-glass-featured-shadow: 0 18px 40px rgba(36, 115, 135, 0.35);
+  --brand-footer-muted: rgba(255, 255, 255, 0.7);
+  --brand-footer-link: rgba(255, 255, 255, 0.8);
+  --brand-footer-border: rgba(255, 255, 255, 0.25);
+  --brand-footer-divider: rgba(255, 255, 255, 0.15);
+  --brand-footer-copyright: rgba(255, 255, 255, 0.6);
   --brand-line: #e9e0cb;
+  --brand-contact-divider: rgba(36, 116, 135, 0.15);
+  --brand-contact-radius: 40px;
+  --brand-flow-mist: #f2f7ef;
+  --brand-flow-sage: #eef5ed;
+  --brand-flow-cool: linear-gradient(
+    to bottom,
+    var(--brand-cream),
+    var(--brand-flow-mist),
+    var(--brand-lagoon-tint)
+  );
+  --brand-flow-warm: linear-gradient(
+    to bottom,
+    var(--brand-lagoon-tint),
+    var(--brand-flow-sage),
+    var(--brand-cream)
+  );
+  --brand-flow-sunrise: linear-gradient(
+    to bottom,
+    var(--brand-cream),
+    var(--brand-cream),
+    var(--brand-sun-soft)
+  );
+  --brand-flow-sunset: linear-gradient(
+    to bottom,
+    var(--brand-sun-soft),
+    var(--brand-sun-soft),
+    var(--brand-cream)
+  );
+  --brand-flow-lagoon: linear-gradient(
+    to bottom,
+    var(--brand-lagoon-tint),
+    var(--brand-lagoon-tint),
+    var(--brand-cream)
+  );
+  --brand-flow-glow: linear-gradient(
+    to bottom,
+    var(--brand-cream),
+    var(--brand-sun-soft),
+    var(--brand-cream)
+  );
+  --brand-footer-end: #1f5963;
+  --brand-footer-background: linear-gradient(
+    to bottom,
+    var(--brand-ink),
+    var(--brand-footer-end)
+  );
   --brand-project-lagoon: linear-gradient(
     157.728deg,
     #3aa8b9 0%,
@@ -206,6 +257,13 @@
   --shadow-glass-card: var(--brand-glass-shadow);
   --shadow-glass-featured: var(--brand-glass-featured-shadow);
   --background-image-brand-impact: var(--brand-impact-background);
+  --background-image-brand-flow-cool: var(--brand-flow-cool);
+  --background-image-brand-flow-warm: var(--brand-flow-warm);
+  --background-image-brand-flow-sunrise: var(--brand-flow-sunrise);
+  --background-image-brand-flow-sunset: var(--brand-flow-sunset);
+  --background-image-brand-flow-lagoon: var(--brand-flow-lagoon);
+  --background-image-brand-flow-glow: var(--brand-flow-glow);
+  --background-image-brand-footer: var(--brand-footer-background);
   --color-brand-ink: var(--brand-ink);
   --color-brand-ink-soft: var(--brand-ink-soft);
   --color-brand-white: var(--brand-white);
@@ -223,7 +281,13 @@
   --color-brand-glass-chip: var(--brand-glass-chip);
   --color-brand-glass-bright: var(--brand-glass-bright);
   --color-brand-glass-featured: var(--brand-glass-featured);
+  --color-brand-footer-muted: var(--brand-footer-muted);
+  --color-brand-footer-link: var(--brand-footer-link);
+  --color-brand-footer-border: var(--brand-footer-border);
+  --color-brand-footer-divider: var(--brand-footer-divider);
+  --color-brand-footer-copyright: var(--brand-footer-copyright);
   --color-brand-line: var(--brand-line);
+  --color-brand-contact-divider: var(--brand-contact-divider);
   --background-image-brand-project-lagoon: var(--brand-project-lagoon);
   --background-image-brand-project-terracotta: var(--brand-project-terracotta);
   --color-brand-glass-inverse: var(--brand-glass-inverse);
