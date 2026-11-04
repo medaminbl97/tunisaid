@@ -21,6 +21,13 @@ Shortcuts correspond to the skill directories in `.agents/skills/`. Only directo
 - Prefix new brand-specific tokens with `brand-` (for example, `--brand-lagoon-blue`) and expose them through the theme utilities when needed.
 - Use the tokens or their semantic theme utilities in components. Map shadcn semantic variables such as `--primary`, `--primary-foreground`, and `--ring` to brand tokens where appropriate.
 
+## Component motion
+
+- When creating or improving components, always add polished, purposeful motion so the website feels lively rather than static or stiff.
+- Use the existing Motion for React (Framer Motion) library via `motion/react`; follow the animation patterns in `src/components/ui/button.tsx` and `src/components/site-header.tsx`.
+- Favor subtle hover/tap feedback, smooth state transitions, and entrance animations where appropriate. Keep motion consistent and avoid distracting effects or layout shifts.
+- Respect reduced-motion preferences with `useReducedMotion`, disabling or simplifying animations as needed.
+
 ## Component validation
 
 - For component implementation tasks, focus on implementing the requested components. Do not run ESLint, browser or manual visual tests, or launch/open Storybook unless explicitly requested.
