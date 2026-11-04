@@ -1,4 +1,43 @@
 {
+  "about": {
+    "hero": {
+      "eyebrow": "Über TunisAid",
+      "title": "Mit Wissen gestaltet. Von Mitgefühl getragen.",
+      "description": "Wir sind ein engagiertes Team aus Ingenieurinnen, Ingenieuren und Studierenden. Wir glauben, dass technisches Wissen, angetrieben von Mitgefühl, Barrieren für Menschen mit Behinderungen abbauen kann.",
+      "snapshot": {
+        "eyebrow": "Ein gemeinsames Ziel",
+        "title": "Deutschland und Tunesien. Menschlich verbunden.",
+        "description": "Technisches Wissen. Lokale Partnerschaften. Nachhaltige Veränderung für Menschen mit Behinderungen."
+      }
+    },
+    "story": {
+      "eyebrow": "Unsere Geschichte",
+      "title": "Eine Brücke mit einem gemeinsamen Ziel.",
+      "origin": "TunisAid entstand im November 2018 in München aus einer gemeinsamen Vision innerhalb der tunesischen Diaspora. Wir sahen die strukturellen Herausforderungen für Menschen mit Behinderungen in Tunesien: fehlende Mobilitätshilfen und mangelnde barrierefreie Infrastruktur. Uns war klar, dass unser Ingenieurwissen und unser Engagement als Studierende echte Veränderungen anstoßen können.",
+      "bridge": "Indem wir Deutschland und Tunesien verbinden, leisten wir nicht nur Hilfe, sondern schaffen nachhaltige Lösungen. Wir arbeiten direkt mit etablierten lokalen Organisationen und Vereinen zusammen. So stellen wir sicher, dass jedes von uns finanzierte Projekt erfolgreich umgesetzt wird und den dringendsten Bedürfnissen der Gemeinschaft entspricht."
+    },
+    "team": {
+      "eyebrow": "Die Menschen hinter unserem Anliegen",
+      "title": "Vielfältige Fähigkeiten. Gemeinsames Engagement.",
+      "description": "Ingenieurinnen, Ingenieure und Studierende, vereint durch Mitgefühl und den Einsatz für nachhaltige Veränderung.",
+      "photoTitle": "Unser Teamfoto",
+      "photoPlaceholder": "PLATZHALTER — durch das originale Teamfoto ersetzen"
+    },
+    "approach": {
+      "eyebrow": "Unser Ansatz",
+      "title": "Praktische Hilfe. Eine Zukunft ohne Barrieren.",
+      "mission": {
+        "eyebrow": "Unsere Mission",
+        "title": "Eine Zukunft gestalten, in der Behinderung kein Hindernis für Chancen, Würde oder Bildung ist.",
+        "description": "Wir möchten, dass jeder Mensch mit Behinderung in Tunesien die Hilfsmittel erhält, die ein selbstbestimmtes Leben ermöglichen. Ob Mobilitätshilfen, barrierefreier Transport oder inklusive Bildungsräume: Wir setzen dort an, wo Menschen Unterstützung brauchen. Wir leisten nicht nur Hilfe, sondern stärken ihre Selbstständigkeit."
+      },
+      "vision": {
+        "eyebrow": "Unsere Vision",
+        "title": "Wir wünschen uns ein Tunesien, in dem alle öffentlichen Räume zugänglich sind und jedes Kind mit Behinderung seine Träume ohne Grenzen verfolgen kann.",
+        "description": "Ein Rollstuhl darf kein Hindernis für Bildung sein und eine fehlende Rampe niemanden vom Lernen ausschließen. Wir wollen unser Netzwerk auf alle Regionen Tunesiens ausweiten, damit spezialisierte Bildung und berufliche Qualifizierung allen offenstehen und niemand mit seinen Herausforderungen allein bleibt."
+      }
+    }
+  },
   "siteContact": {
     "label": "Kontakt zu TunisAid",
     "eyebrow": "Lass uns sprechen",

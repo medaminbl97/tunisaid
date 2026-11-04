@@ -100,6 +100,12 @@ Contact items expand into soft glass cards on hover or keyboard focus, revealing
 
 Homepage section backgrounds follow the approved Figma flow: cream to lagoon at the hero, lagoon to cream behind impact, cream to sun through projects, sun to cream through values, and a second lagoon flow through involvement and partners. The donation banner sits on a soft sun glow. Shared `brand-flow-*` gradient tokens keep adjacent section endpoints consistent; the footer uses its own subtle ink-to-teal gradient. Keep light-to-dark fades out of text areas; dark feature content belongs inside a readable rounded panel.
 
+### About
+
+The `/about` route composes its hero, story, team, and approach sections from `src/pages/about/components/`, followed by the shared contact panel. `StatementCard` provides the reusable labeled-statement layout for the hero snapshot and mission/vision cards, with white and lagoon treatments and reduced-motion-aware entrance and hover feedback. The team photograph remains an explicitly labeled placeholder until the original image is supplied. All About copy is translated into English and German; stories cover each section and the shared card.
+
+The approved About copy gives November 2018 as the founding date, while existing Home copy says 2016. Both are preserved pending factual confirmation.
+
 ### Adding A Route
 
 To add a new route to your application just add a new file in the `./src/routes` directory.
