@@ -42,7 +42,7 @@ If you prefer not to use Tailwind CSS:
 
 ## Translations
 
-English is the default and fallback locale. Header labels and accessible names use the typed `siteHeader` keys, while the hero and impact content use `home.hero` and `home.impact` in `src/locales/en/common.json`, with matching German translations in `src/locales/de/common.json`. Translation key types are derived from the English resources. The app and Storybook both initialize the shared i18next setup.
+English is the default and fallback locale. Header labels and accessible names use the typed `siteHeader` keys, while homepage content uses the `home` keys in `src/locales/en/common.json`, with matching German translations in `src/locales/de/common.json`. Translation key types are derived from the English resources. The app and Storybook both initialize the shared i18next setup.
 
 ## Linting & Formatting
 
@@ -84,13 +84,15 @@ Keep route files thin: they configure the route and render a page imported from 
 
 Page-only components live in `src/pages/<page-name>/components/`. Group complex components in a named folder with an `index.tsx` entry point and an adjacent `components/` folder for their subcomponents. Add page-local `hooks/`, `utils/`, or `context/` folders only when needed. Shared components remain in `src/components/`, with UI primitives in `src/components/ui/`.
 
-The Home page renders the hero, impact, projects, and values sections from `src/pages/home/components/`. The hero retains the Figma illustration placeholder (a photo has not been supplied), local decorative SVGs, and a floating support note. Its actions link to `/contact` and `/what-we-do`; the impact and project actions also link to `/what-we-do`. These destination routes are still placeholders; individual project detail routes are not implemented yet.
+The Home page renders the hero, impact, projects, values, get-involved, and partners sections from `src/pages/home/components/`. The hero retains the Figma illustration placeholder (a photo has not been supplied), local decorative SVGs, and a floating support note. Its actions link to `/contact` and `/what-we-do`; the impact and project actions also link to `/what-we-do`. These destination routes are still placeholders; individual project detail routes are not implemented yet.
 
 Both sections compose `src/components/section-heading.tsx`, a shared animated heading with optional eyebrow and description, left/center alignment, inverse styling, and semantic heading levels. The impact section displays the four design-provided statistics as a responsive definition list. Entrance, hover, and floating motion respect reduced-motion preferences. Brand colors, glass surfaces, and gradients live in `src/styles.css`. Stories cover the hero, impact section, and shared heading variants.
 
 Reusable cards live in `src/components/`: `GlassCard` provides light/inverse glass surfaces and reduced-motion-aware reveal/float animations; `StatCard` composes it for label/value pairs and must be placed inside a `<dl>`; `InfoCard` composes it for an icon, title, and description. The impact statistics and hero support note use these shared components. Keep section-specific content, decoration, and layout in the page components rather than duplicating shared card styling.
 
 `ProjectCard` provides gradient covers, category tags, titles, excerpts, and a caller-supplied action. `ValueCard` provides an icon, heading, and description on the soft `GlassCard` variant; project cards use the solid variant. `IconChip` is shared by value cards and info cards. These reusable components and their stories live outside page folders. Projects and Values use typed English/German content under `home.projects` and `home.values`; the supplied SVG icons and glass decorations are stored locally.
+
+`ActionCard` composes `GlassCard` and `IconChip` with a title, description, and caller-supplied action. Its featured variant uses a lagoon glass surface; the shared Button's `sun` variant supplies the highlighted donation CTA. `PartnerCard` provides a reusable initials badge, name, and description with lagoon, sun, or terracotta tones. Both cards inherit reduced-motion-aware entrance and hover animations. Get involved uses `home.getInvolved` translations, with contact, material donations, and volunteering linking to `/contact`, and financial donations linking to `/donate`. Partners uses `home.partners` translations and retains the design's initials placeholders for APH EL AJA, AAHPDC, and ARASO; actual partner logos have not been supplied. All new icons and decorative SVGs are local assets, and stories cover both sections and shared card variants.
 
 ### Adding A Route
 
