@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { GlassCard } from '#/components/glass-card'
+import { IconChip } from '#/components/icon-chip'
 import { cn } from '#/lib/utils'
 
 type InfoCardProps = {
@@ -19,9 +20,9 @@ export function InfoCard(props: InfoCardProps) {
         props.className,
       )}
     >
-      <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-brand-sun-soft sm:size-14">
+      <IconChip tone="sun" className="size-12 sm:size-14">
         {props.icon}
-      </span>
+      </IconChip>
       <div className="min-w-0">
         <p className="font-display text-[17px] leading-[1.2] font-bold">
           {props.title}
