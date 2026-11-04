@@ -1,5 +1,46 @@
 {
   "home": {
+    "projects": {
+      "eyebrow": "Unsere Projekte",
+      "title": "Projekte gemeinsam mit den Menschen, denen sie helfen",
+      "allProjects": "Alle Projekte",
+      "readMore": "Mehr erfahren",
+      "readMoreLabel": "Mehr über {{title}} erfahren",
+      "items": {
+        "education": {
+          "tag": "Bildung",
+          "title": "Bildungsprojekt",
+          "description": "Unsere Partnervereine APH EL AJA (Djerba) betreuen und unterstützen Kinder mit schweren und mehrfachen Behinderungen. Sie begleiten und unterrichten…"
+        },
+        "fundraiser": {
+          "tag": "Spendenaktion",
+          "title": "Corona-Spendenaktion – Dritte Welle",
+          "description": "Ramadan Mubarak, liebe Freunde. Uns allen ist bewusst, welche großen Auswirkungen das Coronavirus hatte…"
+        }
+      }
+    },
+    "values": {
+      "eyebrow": "Unsere Werte",
+      "title": "Was jede Entscheidung leitet",
+      "items": {
+        "trusted": {
+          "title": "Vertrauenswürdig",
+          "description": "Wir schätzen euer Vertrauen und übernehmen bei jeder Aufgabe Verantwortung."
+        },
+        "charitable": {
+          "title": "Hilfsbereit",
+          "description": "Uns alle verbindet der Wunsch, Menschen in Not mit Nächstenliebe und Hilfsbereitschaft zu unterstützen."
+        },
+        "committed": {
+          "title": "Engagiert",
+          "description": "Wir setzen uns mit voller Hingabe dafür ein, unsere Projekte erfolgreich umzusetzen."
+        },
+        "diverse": {
+          "title": "Vielfältig",
+          "description": "Junge und ältere Menschen, Studierende, Alumni und Berufstätige bringen sich in unseren Verein ein."
+        }
+      }
+    },
     "hero": {
       "eyebrow": "Gemeinsam handeln, gemeinsam helfen",
       "title": "Wahre Größe liegt in den <emphasis>Händen, die geben.</emphasis>",
