@@ -1,4 +1,27 @@
 {
+  "home": {
+    "hero": {
+      "eyebrow": "United in purpose, blessed in stride",
+      "title": "True nobility lies in the <emphasis>hands that give.</emphasis>",
+      "description": "Since 2016, TunisAid has funded and delivered projects across Tunisia — from emergency COVID-19 relief for hospitals to long-term educational support for children with multiple disabilities.",
+      "primaryAction": "Reach out your hand",
+      "secondaryAction": "Our projects",
+      "noteTitle": "Every little bit counts",
+      "noteDescription": "Children & families, Tunisia"
+    },
+    "impact": {
+      "eyebrow": "Our impact",
+      "title": "We turn commitment into action.",
+      "description": "From hospital relief during the pandemic to wheelchairs and classrooms for children with disabilities — we don't just advocate for a better future, we build the infrastructure for it, one wheelchair and one food box at a time.",
+      "action": "See what we do",
+      "statistics": {
+        "founded": "Founded in Munich",
+        "partners": "Partner associations",
+        "countries": "Countries, one mission",
+        "values": "Core values we live by"
+      }
+    }
+  },
   "siteHeader": {
     "tagline": "Aid for Tunisians with Disabilities e.V.",
     "languageLabel": "Website language",
