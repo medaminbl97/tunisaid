@@ -24,6 +24,7 @@ const buttonVariants = cva(
           'border-[1.5px] border-brand-ink bg-transparent text-brand-ink hover:bg-brand-sun-soft hover:text-brand-ink',
         white:
           'bg-brand-white text-brand-lagoon-deep hover:bg-brand-sun-soft hover:text-brand-lagoon-deep',
+        sun: 'bg-brand-sun text-brand-ink hover:bg-brand-sun-soft hover:text-brand-ink',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',

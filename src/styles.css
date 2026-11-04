@@ -21,12 +21,18 @@
   --brand-cream: #fff9ec;
   --brand-terracotta: #d9774c;
   --brand-sun-soft: #fdf0c4;
+  --brand-sun: #f5c93a;
+  --brand-lagoon-tint: #ddf1f4;
+  --brand-terracotta-soft: #f9e1d3;
   --brand-lagoon-deep: #247487;
   --brand-glass: rgba(255, 255, 255, 0.65);
   --brand-glass-border: rgba(255, 255, 255, 0.88);
   --brand-glass-soft: rgba(255, 255, 255, 0.5);
   --brand-glass-soft-border: rgba(255, 255, 255, 0.78);
   --brand-glass-chip: rgba(255, 255, 255, 0.7);
+  --brand-glass-bright: rgba(255, 255, 255, 0.9);
+  --brand-glass-featured: rgba(36, 116, 135, 0.8);
+  --brand-glass-featured-shadow: 0 18px 40px rgba(36, 115, 135, 0.35);
   --brand-line: #e9e0cb;
   --brand-project-lagoon: linear-gradient(
     157.728deg,
@@ -198,6 +204,7 @@
   --container-site: var(--brand-container-width);
   --shadow-header: var(--brand-header-shadow);
   --shadow-glass-card: var(--brand-glass-shadow);
+  --shadow-glass-featured: var(--brand-glass-featured-shadow);
   --background-image-brand-impact: var(--brand-impact-background);
   --color-brand-ink: var(--brand-ink);
   --color-brand-ink-soft: var(--brand-ink-soft);
@@ -205,12 +212,17 @@
   --color-brand-cream: var(--brand-cream);
   --color-brand-terracotta: var(--brand-terracotta);
   --color-brand-sun-soft: var(--brand-sun-soft);
+  --color-brand-sun: var(--brand-sun);
+  --color-brand-lagoon-tint: var(--brand-lagoon-tint);
+  --color-brand-terracotta-soft: var(--brand-terracotta-soft);
   --color-brand-lagoon-deep: var(--brand-lagoon-deep);
   --color-brand-glass: var(--brand-glass);
   --color-brand-glass-border: var(--brand-glass-border);
   --color-brand-glass-soft: var(--brand-glass-soft);
   --color-brand-glass-soft-border: var(--brand-glass-soft-border);
   --color-brand-glass-chip: var(--brand-glass-chip);
+  --color-brand-glass-bright: var(--brand-glass-bright);
+  --color-brand-glass-featured: var(--brand-glass-featured);
   --color-brand-line: var(--brand-line);
   --background-image-brand-project-lagoon: var(--brand-project-lagoon);
   --background-image-brand-project-terracotta: var(--brand-project-terracotta);
