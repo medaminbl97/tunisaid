@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: eslint-prettier
+        name: npm eslint/prettier
+        entry: npm run format
+        language: system
+        pass_filenames: false
+        files: \.(?:[cm]?js|jsx|ts|tsx?)$
