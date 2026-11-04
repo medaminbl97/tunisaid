@@ -1,5 +1,38 @@
 {
   "home": {
+    "getInvolved": {
+      "eyebrow": "Get involved",
+      "title": "Ways to get involved with TunisAid",
+      "description": "Whether you help, volunteer or give — your generosity means the world in the life of a disabled child.",
+      "items": {
+        "contact": {
+          "title": "Get in touch",
+          "description": "Let us know if you have any comments or suggestions you want to share.",
+          "action": "Contact us"
+        },
+        "materials": {
+          "title": "Donate materials",
+          "description": "Because every little bit counts. Items, supplies and devices for disabled are cherished donations to us.",
+          "action": "Give now"
+        },
+        "financial": {
+          "title": "Donate financially",
+          "description": "Your generosity will make a real difference. Put your treasure where your heart is.",
+          "action": "Donate now"
+        },
+        "volunteer": {
+          "title": "Become a volunteer",
+          "description": "You can contribute your time, skills and knowledge through volunteering with us.",
+          "action": "Join us"
+        }
+      }
+    },
+    "partners": {
+      "eyebrow": "Our partners",
+      "title": "Together with partners on the ground",
+      "description": "Local associations in Tunisia carry our projects every day.",
+      "association": "Partner association"
+    },
     "projects": {
       "eyebrow": "Our projects",
       "title": "Projects built with the people they serve",

@@ -1,5 +1,38 @@
 {
   "home": {
+    "getInvolved": {
+      "eyebrow": "Mitmachen",
+      "title": "So kannst du TunisAid unterstützen",
+      "description": "Ob du hilfst, dich ehrenamtlich engagierst oder spendest — deine Großzügigkeit macht im Leben eines Kindes mit Behinderung einen großen Unterschied.",
+      "items": {
+        "contact": {
+          "title": "Kontakt aufnehmen",
+          "description": "Teile uns deine Anmerkungen oder Vorschläge mit. Wir freuen uns auf deine Nachricht.",
+          "action": "Kontaktiere uns"
+        },
+        "materials": {
+          "title": "Sachspenden",
+          "description": "Jeder Beitrag zählt. Materialien, Hilfsmittel und Geräte für Menschen mit Behinderungen sind wertvolle Spenden für uns.",
+          "action": "Jetzt helfen"
+        },
+        "financial": {
+          "title": "Geld spenden",
+          "description": "Deine Großzügigkeit bewirkt viel. Setze deine Mittel dort ein, wo dein Herz ist.",
+          "action": "Jetzt spenden"
+        },
+        "volunteer": {
+          "title": "Ehrenamtlich helfen",
+          "description": "Bringe deine Zeit, deine Fähigkeiten und dein Wissen in unsere ehrenamtliche Arbeit ein.",
+          "action": "Mach mit"
+        }
+      }
+    },
+    "partners": {
+      "eyebrow": "Unsere Partner",
+      "title": "Gemeinsam mit Partnern vor Ort",
+      "description": "Lokale Vereine in Tunesien tragen unsere Projekte jeden Tag.",
+      "association": "Partnerverein"
+    },
     "projects": {
       "eyebrow": "Unsere Projekte",
       "title": "Projekte gemeinsam mit den Menschen, denen sie helfen",
