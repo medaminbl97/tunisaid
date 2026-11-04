@@ -16,3 +16,4 @@ export default meta
 type Story = StoryObj<typeof meta>
 export const Default: Story = {}
 export const Lagoon: Story = { args: { tone: 'lagoon', as: 'h2' } }
+export const Compact: Story = { args: { size: 'compact' } }

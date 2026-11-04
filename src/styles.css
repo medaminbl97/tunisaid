@@ -85,6 +85,21 @@
     var(--brand-terracotta-soft),
     var(--brand-sun-soft)
   );
+  --brand-flow-to-sun: linear-gradient(
+    to bottom,
+    var(--brand-cream),
+    var(--brand-sun-soft)
+  );
+  --brand-flow-from-sun: linear-gradient(
+    to bottom,
+    var(--brand-sun-soft),
+    var(--brand-cream)
+  );
+  --brand-feature-background: linear-gradient(
+    to right,
+    var(--brand-lagoon-deep),
+    var(--brand-ink)
+  );
   --brand-footer-end: #1f5963;
   --brand-footer-background: linear-gradient(
     to bottom,
@@ -270,6 +285,9 @@
   --background-image-brand-flow-lagoon: var(--brand-flow-lagoon);
   --background-image-brand-flow-glow: var(--brand-flow-glow);
   --background-image-brand-flow-peach: var(--brand-flow-peach);
+  --background-image-brand-flow-to-sun: var(--brand-flow-to-sun);
+  --background-image-brand-flow-from-sun: var(--brand-flow-from-sun);
+  --background-image-brand-feature: var(--brand-feature-background);
   --background-image-brand-footer: var(--brand-footer-background);
   --color-brand-ink: var(--brand-ink);
   --color-brand-ink-soft: var(--brand-ink-soft);
