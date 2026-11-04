@@ -1,4 +1,96 @@
 {
+  "work": {
+    "hero": {
+      "eyebrow": "What we do",
+      "title": "Fewer barriers. More possibilities.",
+      "description": "A wheelchair can open a door. A ride can make school possible. A local partnership can turn a good idea into lasting change. We connect practical support with the people who need it in Tunisia.",
+      "action": "Explore our work",
+      "illustration": {
+        "eyebrow": "Support that moves life forward",
+        "ramp": "A ramp.",
+        "ride": "A ride.",
+        "classroom": "A classroom.",
+        "forward": "A way forward.",
+        "description": "Small changes to the world around us. More room for the person within it."
+      }
+    },
+    "support": {
+      "eyebrow": "Practical support. Human possibility.",
+      "title": "There is no single route to independence.",
+      "description": "That is why our work connects mobility, learning, access, and community—around the person, not just the problem.",
+      "items": {
+        "mobility": {
+          "eyebrow": "01 / Mobility",
+          "title": "Freedom to move.",
+          "description": "Wheelchairs, walking aids, prosthetic devices, and essential equipment that help people navigate daily life with greater independence."
+        },
+        "education": {
+          "eyebrow": "02 / Education",
+          "title": "A place to learn.",
+          "description": "Support for specialised schooling, tuition, and inclusive learning spaces, so a disability does not have to end a child’s education."
+        },
+        "access": {
+          "eyebrow": "03 / Access",
+          "title": "Spaces that welcome.",
+          "description": "Practical accessibility improvements—from ramps to public spaces—designed to make participation possible, not exceptional."
+        },
+        "partnerships": {
+          "eyebrow": "04 / Partnerships",
+          "title": "Local knowledge. Shared effort.",
+          "description": "We work with established Tunisian associations to understand real needs and shape support around the communities it serves."
+        },
+        "transport": {
+          "eyebrow": "05 / Transport",
+          "title": "The journey matters, too.",
+          "description": "Support for transport that helps wheelchair users reach school, work, and the opportunities waiting beyond their front door."
+        },
+        "community": {
+          "eyebrow": "06 / Community",
+          "title": "Skills for what comes next.",
+          "description": "Workshops and training that help young people with disabilities build confidence, develop skills, and take their next step."
+        }
+      }
+    },
+    "possibilities": {
+      "eyebrow": "What we really care about",
+      "title": "Not just a wheelchair. A world within reach.",
+      "description": "The equipment matters. So does everything it makes possible: getting to class, meeting a friend, learning a skill, or choosing what comes next.",
+      "items": {
+        "school": "A school day, not a closed door.",
+        "journey": "A journey made independently.",
+        "future": "A future shaped by possibility."
+      },
+      "note": "These are the possibilities our work is designed to support—not promises of a one-size-fits-all outcome."
+    },
+    "process": {
+      "eyebrow": "How we work",
+      "title": "Listen first. Build together. Think ahead.",
+      "items": {
+        "listen": {
+          "eyebrow": "01 / Listen",
+          "title": "Start with the person.",
+          "description": "We work with local associations to understand the barriers people face and identify the support that fits."
+        },
+        "build": {
+          "eyebrow": "02 / Build together",
+          "title": "Make the practical possible.",
+          "description": "Technical skills and local knowledge help turn needs into equipment, access, learning, or transport support."
+        },
+        "sustain": {
+          "eyebrow": "03 / Think long term",
+          "title": "Design beyond the quick fix.",
+          "description": "We focus on solutions that belong in everyday life, with local partners helping connect projects to their communities."
+        }
+      }
+    },
+    "invitation": {
+      "eyebrow": "Your part in the possibility",
+      "title": "Bring what you can. Help change what is possible.",
+      "description": "Time, skills, equipment, or a donation—there is more than one way to help remove a barrier.",
+      "support": "Support the work",
+      "contact": "Let’s talk"
+    }
+  },
   "about": {
     "hero": {
       "eyebrow": "About TunisAid",

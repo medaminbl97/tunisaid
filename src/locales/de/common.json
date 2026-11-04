@@ -1,4 +1,96 @@
 {
+  "work": {
+    "hero": {
+      "eyebrow": "Was wir tun",
+      "title": "Weniger Barrieren. Mehr Möglichkeiten.",
+      "description": "Ein Rollstuhl kann Türen öffnen. Eine Fahrt kann den Schulbesuch ermöglichen. Eine lokale Partnerschaft kann aus einer guten Idee nachhaltige Veränderung machen. Wir verbinden praktische Unterstützung mit den Menschen in Tunesien, die sie brauchen.",
+      "action": "Unsere Arbeit entdecken",
+      "illustration": {
+        "eyebrow": "Unterstützung, die weiterbringt",
+        "ramp": "Eine Rampe.",
+        "ride": "Eine Fahrt.",
+        "classroom": "Ein Klassenraum.",
+        "forward": "Ein Weg nach vorn.",
+        "description": "Kleine Veränderungen in unserer Umgebung. Mehr Raum für den Menschen darin."
+      }
+    },
+    "support": {
+      "eyebrow": "Praktische Hilfe. Menschliche Möglichkeiten.",
+      "title": "Selbstständigkeit hat viele Wege.",
+      "description": "Deshalb verbindet unsere Arbeit Mobilität, Lernen, Zugang und Gemeinschaft — mit dem Menschen im Mittelpunkt, nicht nur dem Problem.",
+      "items": {
+        "mobility": {
+          "eyebrow": "01 / Mobilität",
+          "title": "Freiheit, sich zu bewegen.",
+          "description": "Rollstühle, Gehhilfen, Prothesen und wichtige Hilfsmittel unterstützen Menschen dabei, ihren Alltag selbstständiger zu gestalten."
+        },
+        "education": {
+          "eyebrow": "02 / Bildung",
+          "title": "Ein Ort zum Lernen.",
+          "description": "Unterstützung für spezialisierte Schulen, Unterricht und inklusive Lernräume, damit eine Behinderung nicht das Ende der Bildung eines Kindes bedeutet."
+        },
+        "access": {
+          "eyebrow": "03 / Zugang",
+          "title": "Räume, die willkommen heißen.",
+          "description": "Praktische Verbesserungen der Barrierefreiheit — von Rampen bis zu öffentlichen Räumen — machen Teilhabe möglich, statt zur Ausnahme."
+        },
+        "partnerships": {
+          "eyebrow": "04 / Partnerschaften",
+          "title": "Lokales Wissen. Gemeinsamer Einsatz.",
+          "description": "Mit etablierten tunesischen Vereinen verstehen wir den tatsächlichen Bedarf und gestalten Hilfe gemeinsam mit den Menschen vor Ort."
+        },
+        "transport": {
+          "eyebrow": "05 / Transport",
+          "title": "Auch der Weg zählt.",
+          "description": "Transporthilfe ermöglicht Menschen im Rollstuhl den Weg zur Schule, zur Arbeit und zu den Möglichkeiten jenseits der eigenen Haustür."
+        },
+        "community": {
+          "eyebrow": "06 / Gemeinschaft",
+          "title": "Fähigkeiten für den nächsten Schritt.",
+          "description": "Workshops und Schulungen helfen jungen Menschen mit Behinderungen, Selbstvertrauen aufzubauen, Fähigkeiten zu entwickeln und weiterzukommen."
+        }
+      }
+    },
+    "possibilities": {
+      "eyebrow": "Was uns wirklich wichtig ist",
+      "title": "Nicht nur ein Rollstuhl. Eine Welt in Reichweite.",
+      "description": "Das Hilfsmittel zählt. Ebenso alles, was es ermöglicht: am Unterricht teilnehmen, Freunde treffen, etwas lernen oder den nächsten Schritt selbst wählen.",
+      "items": {
+        "school": "Ein Schultag statt einer verschlossenen Tür.",
+        "journey": "Ein selbstständig zurückgelegter Weg.",
+        "future": "Eine Zukunft voller Möglichkeiten."
+      },
+      "note": "Diese Möglichkeiten möchten wir mit unserer Arbeit unterstützen — ohne ein einheitliches Ergebnis für alle zu versprechen."
+    },
+    "process": {
+      "eyebrow": "So arbeiten wir",
+      "title": "Zuerst zuhören. Gemeinsam gestalten. Weiterdenken.",
+      "items": {
+        "listen": {
+          "eyebrow": "01 / Zuhören",
+          "title": "Beim Menschen beginnen.",
+          "description": "Mit lokalen Vereinen verstehen wir die Barrieren im Alltag und finden heraus, welche Unterstützung wirklich passt."
+        },
+        "build": {
+          "eyebrow": "02 / Gemeinsam gestalten",
+          "title": "Praktische Hilfe möglich machen.",
+          "description": "Technisches Wissen und lokale Erfahrung übersetzen Bedürfnisse in Hilfsmittel, barrierefreie Zugänge, Lernangebote oder Transport."
+        },
+        "sustain": {
+          "eyebrow": "03 / Langfristig denken",
+          "title": "Mehr als eine schnelle Lösung.",
+          "description": "Wir setzen auf Lösungen, die im Alltag ankommen. Lokale Partner verbinden die Projekte mit ihren Gemeinschaften."
+        }
+      }
+    },
+    "invitation": {
+      "eyebrow": "Dein Beitrag zu neuen Möglichkeiten",
+      "title": "Bring ein, was du kannst. Verändere, was möglich ist.",
+      "description": "Zeit, Wissen, Hilfsmittel oder eine Spende — es gibt viele Wege, eine Barriere abzubauen.",
+      "support": "Unsere Arbeit unterstützen",
+      "contact": "Lass uns sprechen"
+    }
+  },
   "about": {
     "hero": {
       "eyebrow": "Über TunisAid",
