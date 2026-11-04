@@ -36,6 +36,10 @@ export const Solid: Story = {
   args: { variant: 'solid' },
 }
 
+export const Featured: Story = {
+  args: { variant: 'featured' },
+}
+
 export const Floating: Story = {
   args: { animation: 'float' },
 }

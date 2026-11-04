@@ -5,7 +5,7 @@ import { cn } from '#/lib/utils'
 type GlassCardProps = {
   children: ReactNode
   className?: string
-  variant?: 'light' | 'inverse' | 'soft' | 'solid'
+  variant?: 'light' | 'inverse' | 'soft' | 'solid' | 'featured'
   animation?: 'reveal' | 'float'
   delay?: number
 }
@@ -35,13 +35,15 @@ export function GlassCard({
       }
       className={cn(
         'min-w-0 rounded-[28px] backdrop-blur-[12px]',
-        variant === 'solid'
-          ? 'border border-brand-line bg-brand-white text-brand-ink backdrop-blur-none'
-          : variant === 'inverse'
-            ? 'border border-brand-glass-inverse-border bg-brand-glass-inverse text-brand-white'
-            : variant === 'soft'
-              ? 'border-[1.5px] border-brand-glass-soft-border bg-brand-glass-soft text-brand-ink shadow-glass-card'
-              : 'border-[1.5px] border-brand-glass-border bg-brand-glass text-brand-ink shadow-glass-card',
+        variant === 'featured'
+          ? 'border-[1.5px] border-brand-glass-inverse-border bg-brand-glass-featured text-brand-white shadow-glass-featured'
+          : variant === 'solid'
+            ? 'border border-brand-line bg-brand-white text-brand-ink backdrop-blur-none'
+            : variant === 'inverse'
+              ? 'border border-brand-glass-inverse-border bg-brand-glass-inverse text-brand-white'
+              : variant === 'soft'
+                ? 'border-[1.5px] border-brand-glass-soft-border bg-brand-glass-soft text-brand-ink shadow-glass-card'
+                : 'border-[1.5px] border-brand-glass-border bg-brand-glass text-brand-ink shadow-glass-card',
         props.className,
       )}
     >
