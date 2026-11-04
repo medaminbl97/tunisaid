@@ -20,15 +20,22 @@
   --brand-hero-glass: rgba(26, 33, 32, 0.66);
   --brand-hero-foreground: var(--brand-lagoon-blue-foreground);
   --brand-container-width: 80rem;
-  --brand-header-height: 9rem;
-  --brand-header-expanded-height: 11rem;
-  --brand-header-logo-size: 3.5rem;
-  --brand-header-logo-expanded-size: 5rem;
-  --brand-header-glass: rgba(255, 255, 255, 0.55);
-  --brand-header-border: rgba(255, 255, 255, 0.65);
+  --brand-header-width: 82.5rem;
+  --brand-header-offset: 1.25rem;
+  --brand-header-radius: 2rem;
+  --brand-header-height: 8.25rem;
+  --brand-header-expanded-height: 9rem;
+  --brand-header-logo-size: 2.75rem;
+  --brand-header-logo-expanded-size: 3.125rem;
+  --brand-header-glass: rgba(255, 255, 255, 0.45);
+  --brand-header-border: rgba(255, 255, 255, 0.85);
   --brand-header-foreground: #173a40;
+  --brand-header-muted: #416166;
   --brand-header-accent: #247487;
-  --brand-header-shadow: 0 8px 32px rgba(23, 58, 64, 0.08);
+  --brand-header-chip: rgba(255, 255, 255, 0.35);
+  --brand-header-chip-border: rgba(255, 255, 255, 0.7);
+  --brand-header-active: rgba(255, 255, 255, 0.7);
+  --brand-header-shadow: 0 14px 40px -6px rgba(23, 59, 64, 0.16);
   --palm: #2f6a4a;
   --sand: #e7f0e8;
   --foam: #f3faf5;
@@ -94,7 +101,11 @@
   --brand-header-glass: rgba(10, 20, 24, 0.6);
   --brand-header-border: rgba(194, 247, 238, 0.18);
   --brand-header-foreground: #d7ece8;
+  --brand-header-muted: #afcdc8;
   --brand-header-accent: #8de5db;
+  --brand-header-chip: rgba(16, 30, 34, 0.35);
+  --brand-header-chip-border: rgba(194, 247, 238, 0.24);
+  --brand-header-active: rgba(24, 44, 49, 0.8);
   --brand-header-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   --palm: #6ec89a;
   --sand: #0f1a1e;
@@ -150,6 +161,7 @@
 
 @theme inline {
   --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
   --container-site: var(--brand-container-width);
   --shadow-header: var(--brand-header-shadow);
   --color-background: var(--background);
@@ -175,7 +187,11 @@
   --color-brand-header-glass: var(--brand-header-glass);
   --color-brand-header-border: var(--brand-header-border);
   --color-brand-header-foreground: var(--brand-header-foreground);
+  --color-brand-header-muted: var(--brand-header-muted);
   --color-brand-header-accent: var(--brand-header-accent);
+  --color-brand-header-chip: var(--brand-header-chip);
+  --color-brand-header-chip-border: var(--brand-header-chip-border);
+  --color-brand-header-active: var(--brand-header-active);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -206,17 +222,18 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-@media (width >= 64rem) {
+@media (width >= 80rem) {
   :root {
-    --brand-header-height: 6rem;
-    --brand-header-expanded-height: 8rem;
-    --brand-header-logo-size: 4rem;
-    --brand-header-logo-expanded-size: 6rem;
+    --brand-header-height: 4.75rem;
+    --brand-header-expanded-height: 5.5rem;
+    --brand-header-radius: 999px;
   }
 }
 
 html {
-  scroll-padding-top: calc(var(--brand-header-expanded-height) + 1rem);
+  scroll-padding-top: calc(
+    var(--brand-header-offset) + var(--brand-header-expanded-height) + 1rem
+  );
 }
 
 html,
