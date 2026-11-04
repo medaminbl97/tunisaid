@@ -22,7 +22,7 @@ export function ValuesSection() {
   return (
     <section
       aria-labelledby="home-values-heading"
-      className="relative isolate overflow-clip bg-brand-sun-soft px-6 py-16 sm:px-10 lg:py-[104px]"
+      className="relative isolate overflow-clip bg-brand-flow-sunset px-6 py-16 sm:px-10 lg:py-[104px]"
     >
       <div
         aria-hidden="true"

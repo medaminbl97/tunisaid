@@ -17,7 +17,7 @@ export function ProjectsSection() {
   return (
     <section
       aria-labelledby="home-projects-heading"
-      className="bg-brand-cream px-6 pt-16 pb-16 sm:px-10 lg:pt-28 lg:pb-24"
+      className="bg-brand-flow-sunrise px-6 pt-16 pb-16 sm:px-10 lg:pt-28 lg:pb-24"
     >
       <div className="mx-auto flex max-w-[75rem] flex-col gap-14">
         <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end">

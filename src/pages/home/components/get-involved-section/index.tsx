@@ -26,7 +26,7 @@ export function GetInvolvedSection() {
   return (
     <section
       aria-labelledby="home-get-involved-heading"
-      className="relative isolate overflow-clip bg-brand-cream px-6 py-16 sm:px-10 lg:py-28"
+      className="relative isolate overflow-clip bg-brand-flow-cool px-6 py-16 sm:px-10 lg:py-28"
     >
       <div
         aria-hidden="true"

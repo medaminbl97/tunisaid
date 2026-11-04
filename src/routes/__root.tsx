@@ -4,6 +4,7 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 import { useTranslation } from 'react-i18next'
 
 import { SiteHeader } from '../components/site-header'
+import { SiteFooter } from '../components/site-footer'
 import '../locales/i18n'
 import appCss from '../styles.css?url'
 
@@ -42,6 +43,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <SiteHeader />
         {children}
+        <SiteFooter />
         <TanStackDevtools
           config={{
             position: 'bottom-right',

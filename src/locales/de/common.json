@@ -1,5 +1,31 @@
 {
+  "siteContact": {
+    "label": "Kontakt zu TunisAid",
+    "eyebrow": "Lass uns sprechen",
+    "title": "Gutes beginnt mit einem Gespräch.",
+    "visit": "Besuche uns",
+    "email": "Schreib uns",
+    "call": "Ruf uns an",
+    "descriptions": {
+      "visit": "Du findest uns in München. Melde dich vor deinem Besuch, damit wir einen Termin vereinbaren können.",
+      "email": "Du hast eine Frage, eine Idee oder möchtest helfen? Schreib uns zu Spenden, Ehrenamt oder einer Zusammenarbeit.",
+      "call": "Du sprichst lieber persönlich mit uns? Ruf uns an und erfahre mehr über TunisAid und wie du mitmachen kannst."
+    }
+  },
+  "siteFooter": {
+    "explore": "Entdecken",
+    "follow": "Folge uns",
+    "socialPlaceholder": "{{name}} — Link folgt in Kürze",
+    "socialNotice": "Links zu unseren Social-Media-Profilen folgen in Kürze.",
+    "copyright": "© {{year}} Aid for Tunisians with Disabilities e.V. Alle Rechte vorbehalten."
+  },
   "home": {
+    "donation": {
+      "title": "Deine Großzügigkeit macht einen echten Unterschied.",
+      "description": "Setze deine Mittel dort ein, wo dein Herz ist — jede Spende erreicht Kinder und Familien mit Behinderungen in Tunesien.",
+      "donate": "Jetzt spenden",
+      "volunteer": "Ehrenamtlich mitmachen"
+    },
     "getInvolved": {
       "eyebrow": "Mitmachen",
       "title": "So kannst du TunisAid unterstützen",

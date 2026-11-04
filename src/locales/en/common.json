@@ -1,5 +1,31 @@
 {
+  "siteContact": {
+    "label": "Contact TunisAid",
+    "eyebrow": "Let’s connect",
+    "title": "Good things start with a conversation.",
+    "visit": "Visit us",
+    "email": "Email us",
+    "call": "Call us",
+    "descriptions": {
+      "visit": "Find us in Munich. Get in touch before visiting so we can arrange a time to meet.",
+      "email": "Have a question, an idea, or an offer to help? Write to us about donations, volunteering, or working together.",
+      "call": "Prefer a conversation? Give us a call to talk about TunisAid and how you can get involved."
+    }
+  },
+  "siteFooter": {
+    "explore": "Explore",
+    "follow": "Follow us",
+    "socialPlaceholder": "{{name}} — link coming soon",
+    "socialNotice": "Social profile links coming soon.",
+    "copyright": "© {{year}} Aid for Tunisians with Disabilities e.V. All rights reserved."
+  },
   "home": {
+    "donation": {
+      "title": "Your generosity makes a real difference.",
+      "description": "Put your treasure where your heart is — every donation reaches children and families with disabilities in Tunisia.",
+      "donate": "Donate now",
+      "volunteer": "Become a volunteer"
+    },
     "getInvolved": {
       "eyebrow": "Get involved",
       "title": "Ways to get involved with TunisAid",

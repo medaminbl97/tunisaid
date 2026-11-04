@@ -22,7 +22,7 @@ export function ImpactSection() {
   return (
     <section
       aria-labelledby="home-impact-heading"
-      className="bg-brand-cream px-4 pb-16 sm:px-10 lg:pb-24"
+      className="bg-brand-flow-warm px-4 pb-16 sm:px-10 lg:pb-24"
     >
       <div className="relative isolate mx-auto grid max-w-[85rem] items-center gap-10 overflow-clip rounded-[32px] bg-brand-impact p-6 sm:rounded-[48px] sm:p-12 lg:grid-cols-[minmax(0,27fr)_minmax(0,31fr)] lg:gap-16 lg:px-20 lg:py-24">
         <div
