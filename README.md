@@ -42,7 +42,7 @@ If you prefer not to use Tailwind CSS:
 
 ## Translations
 
-English is the default and fallback locale. Header labels and accessible names use the typed `siteHeader` keys in `src/locales/en/common.json`, with matching German translations in `src/locales/de/common.json`. Translation key types are derived from the English resources. The app and Storybook both initialize the shared i18next setup.
+English is the default and fallback locale. Header labels and accessible names use the typed `siteHeader` keys, while the hero and impact content use `home.hero` and `home.impact` in `src/locales/en/common.json`, with matching German translations in `src/locales/de/common.json`. Translation key types are derived from the English resources. The app and Storybook both initialize the shared i18next setup.
 
 ## Linting & Formatting
 
@@ -84,7 +84,9 @@ Keep route files thin: they configure the route and render a page imported from 
 
 Page-only components live in `src/pages/<page-name>/components/`. Group complex components in a named folder with an `index.tsx` entry point and an adjacent `components/` folder for their subcomponents. Add page-local `hooks/`, `utils/`, or `context/` folders only when needed. Shared components remain in `src/components/`, with UI primitives in `src/components/ui/`.
 
-The Home page renders `src/pages/home/components/hero-section/index.tsx`. Its gradient is temporary until the hero photo is supplied. The hero reuses the animated `Button` and a TanStack `Link` pointing to `/contact`; that destination page will be implemented separately. The link uses the router's `href` option until that route is registered.
+The Home page renders the hero followed by the impact section from `src/pages/home/components/`. The hero retains the Figma illustration placeholder (a photo has not been supplied), local decorative SVGs, and a floating support note. Its actions link to `/contact` and `/what-we-do`; the impact action also links to `/what-we-do`. These destination routes are still placeholders.
+
+Both sections compose `src/components/section-heading.tsx`, a shared animated heading with optional eyebrow and description, left/center alignment, inverse styling, and semantic heading levels. The impact section displays the four design-provided statistics as a responsive definition list. Entrance, hover, and floating motion respect reduced-motion preferences. Brand colors, glass surfaces, and gradients live in `src/styles.css`. Stories cover the hero, impact section, and shared heading variants.
 
 ### Adding A Route
 

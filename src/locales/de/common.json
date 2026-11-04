@@ -1,4 +1,27 @@
 {
+  "home": {
+    "hero": {
+      "eyebrow": "Gemeinsam handeln, gemeinsam helfen",
+      "title": "Wahre Größe liegt in den <emphasis>Händen, die geben.</emphasis>",
+      "description": "Seit 2016 finanziert und realisiert TunisAid Projekte in ganz Tunesien — von der COVID-19-Soforthilfe für Krankenhäuser bis zur langfristigen Bildungsförderung für Kinder mit mehrfachen Behinderungen.",
+      "primaryAction": "Reiche deine Hand",
+      "secondaryAction": "Unsere Projekte",
+      "noteTitle": "Jeder Beitrag zählt",
+      "noteDescription": "Kinder & Familien in Tunesien"
+    },
+    "impact": {
+      "eyebrow": "Unsere Wirkung",
+      "title": "Wir machen aus Engagement konkrete Hilfe.",
+      "description": "Von der Krankenhaushilfe während der Pandemie bis zu Rollstühlen und Klassenzimmern für Kinder mit Behinderungen — wir setzen uns nicht nur für eine bessere Zukunft ein, sondern schaffen die Voraussetzungen dafür, einen Rollstuhl und ein Lebensmittelpaket nach dem anderen.",
+      "action": "Was wir tun",
+      "statistics": {
+        "founded": "In München gegründet",
+        "partners": "Partnervereine",
+        "countries": "Länder, eine Mission",
+        "values": "Grundwerte, die wir leben"
+      }
+    }
+  },
   "siteHeader": {
     "tagline": "Hilfe für Menschen mit Behinderungen in Tunesien e.V.",
     "languageLabel": "Sprache der Website",

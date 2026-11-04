@@ -1,12 +1,11 @@
 import { HeroSection } from './components/hero-section'
+import { ImpactSection } from './components/impact-section'
 
 export function HomePage() {
   return (
-    <main lang="en" className="mx-auto max-w-[1600px] p-3 sm:p-4 lg:p-5">
+    <main className="-mt-[calc(var(--brand-header-height)+var(--brand-header-offset)+1rem)]">
       <HeroSection />
-      <HeroSection />
-      <HeroSection />
-      <HeroSection />
+      <ImpactSection />
     </main>
   )
 }
