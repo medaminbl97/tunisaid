@@ -79,6 +79,12 @@
     var(--brand-sun-soft),
     var(--brand-cream)
   );
+  --brand-flow-peach: linear-gradient(
+    to bottom,
+    var(--brand-cream),
+    var(--brand-terracotta-soft),
+    var(--brand-sun-soft)
+  );
   --brand-footer-end: #1f5963;
   --brand-footer-background: linear-gradient(
     to bottom,
@@ -263,6 +269,7 @@
   --background-image-brand-flow-sunset: var(--brand-flow-sunset);
   --background-image-brand-flow-lagoon: var(--brand-flow-lagoon);
   --background-image-brand-flow-glow: var(--brand-flow-glow);
+  --background-image-brand-flow-peach: var(--brand-flow-peach);
   --background-image-brand-footer: var(--brand-footer-background);
   --color-brand-ink: var(--brand-ink);
   --color-brand-ink-soft: var(--brand-ink-soft);

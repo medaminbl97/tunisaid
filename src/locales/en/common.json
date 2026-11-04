@@ -1,4 +1,43 @@
 {
+  "about": {
+    "hero": {
+      "eyebrow": "About TunisAid",
+      "title": "Engineered with care. Driven by compassion.",
+      "description": "We are a dedicated team of engineers and students who believe that technical expertise, when driven by compassion, can break down the barriers of disability.",
+      "snapshot": {
+        "eyebrow": "One shared purpose",
+        "title": "Germany and Tunisia. One human connection.",
+        "description": "Technical knowledge. Local partnerships. Lasting change for people with disabilities."
+      }
+    },
+    "story": {
+      "eyebrow": "Our story",
+      "title": "A bridge built on shared purpose.",
+      "origin": "TunisAid was born in November 2018 in Munich, fueled by a shared vision among the Tunisian diaspora. We saw the systemic challenges faced by people with disabilities in Tunisia—from the lack of basic mobility aids to the absence of accessible infrastructure. We knew that our skills as engineers and our drive as students could be the catalyst for real change.",
+      "bridge": "By bridging the gap between Germany and Tunisia, we don’t just provide aid; we build sustainable solutions. We collaborate directly with established local organizations and on-the-ground associations to ensure that every project we fund is implemented successfully and serves the community’s most urgent needs."
+    },
+    "team": {
+      "eyebrow": "The people behind the purpose",
+      "title": "Different skills. A shared commitment.",
+      "description": "Engineers and students, united by compassion and a commitment to creating lasting change.",
+      "photoTitle": "Team photograph",
+      "photoPlaceholder": "PLACEHOLDER — replace with the original team photo"
+    },
+    "approach": {
+      "eyebrow": "Our approach",
+      "title": "Practical help. A future without barriers.",
+      "mission": {
+        "eyebrow": "Our mission",
+        "title": "To engineer a future where disability is never a barrier to opportunity, dignity, or education.",
+        "description": "Our mission is to ensure that every individual with a disability in Tunisia has the tools they need to navigate the world. Whether it is providing life-changing mobility equipment, funding accessible transport, or creating inclusive educational spaces, we meet people where they are. We aren’t just giving help; we are restoring independence."
+      },
+      "vision": {
+        "eyebrow": "Our vision",
+        "title": "We envision a Tunisia where every public space is accessible and every child with a disability can pursue their dreams without limits.",
+        "description": "We want to build a world where a wheelchair isn’t a limitation to getting an education, and where a student isn’t left behind because a building lacks a ramp. Our goal is to expand our network across every region of Tunisia, making specialized schooling and professional training accessible to all, ensuring no one is left to face their struggles alone."
+      }
+    }
+  },
   "siteContact": {
     "label": "Contact TunisAid",
     "eyebrow": "Let’s connect",
