@@ -112,6 +112,12 @@ The `/what-we-do` route has an animated editorial hero, six areas of support, an
 
 Backgrounds transition from cream through lagoon and back, then from cream to sun and back. The feature keeps its horizontal deep-lagoon-to-ink gradient inside a rounded panel on cream, rather than fading dark colors into the surrounding section. The hero action targets the support section; invitation actions lead to Donate and Contact. English/German copy and stories cover every section.
 
+### Contact
+
+The `/contact` route composes a welcome, direct-contact/message hub, conversation starters, and closing note from `src/pages/contact/components/`. The shared `DirectContactCard` links to email, telephone, and the Munich map location using the same contact data as the footer. Conversation starters reuse compact statement cards. Cream/lagoon transitions and a soft sun glow follow the approved Figma design.
+
+The message form is intentionally unavailable until a delivery service is configured. A prominent localized notice directs visitors to the working email link; the fields and send button are disabled, and form submission is prevented. It does not collect, store, or send messages or display a false success state. Generated shadcn Input, Textarea, and Label primitives provide accessible labels and native field semantics; the first two have a reusable `brand` variant. Enable submission only alongside real delivery, validation, privacy handling, and explicit error/success feedback. English/German copy and stories cover every section, the unavailable form, and direct-contact cards.
+
 ### Adding A Route
 
 To add a new route to your application just add a new file in the `./src/routes` directory.
