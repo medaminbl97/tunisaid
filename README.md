@@ -29,7 +29,7 @@ npm run preview
 
 This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
 
-The site header is fixed with a translucent, blurred background and a centered 80rem content container. Hovering over it or focusing a navigation control expands the bar and enlarges the logo together with a Motion spring animation. Reduced-motion preferences disable the animation. Its layout slot reserves the collapsed height so the page does not jump during expansion, and the document scroll padding keeps anchor targets below the expanded bar. Header colors, heights, logo sizes, shadow, and container width are defined as `brand-` tokens in `src/styles.css`.
+The site header is a fixed, floating glass panel based on the Figma redesign, with a centered 82.5rem maximum width, the supplied heart-handshake mark, and a Fraunces wordmark. Navigation uses an animated active pill, the Donate action links to `/donate`, and EN/DE controls switch the bundled translations and document language. On smaller screens the navigation moves into a scrollable second row. Hovering over the header or focusing a control expands the bar and logo with a Motion spring; reduced-motion preferences disable movement. Its layout slot reserves the collapsed height to prevent page jumps, and document scroll padding keeps anchor targets below the expanded bar. Header colors, dimensions, and shadow are defined as `brand-` tokens in `src/styles.css`.
 
 ### Removing Tailwind CSS
 

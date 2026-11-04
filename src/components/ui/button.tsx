@@ -31,10 +31,15 @@ const buttonVariants = cva(
         'icon-sm': 'size-8',
         'icon-lg': 'size-10',
       },
+      shape: {
+        default: '',
+        pill: 'rounded-full',
+      },
     },
     defaultVariants: {
       variant: 'default',
       size: 'default',
+      shape: 'default',
     },
   },
 )
@@ -55,6 +60,7 @@ function Button({
   className,
   variant = 'default',
   size = 'default',
+  shape = 'default',
   asChild = false,
   ...props
 }: ButtonProps) {
@@ -67,7 +73,8 @@ function Button({
       data-slot="button"
       data-variant={variant}
       data-size={size}
-      className={cn(buttonVariants({ variant, size, className }))}
+      data-shape={shape}
+      className={cn(buttonVariants({ variant, size, shape, className }))}
       whileHover={animated ? { scale: 1.04, y: -1 } : undefined}
       whileTap={animated ? { scale: 0.95, y: 0 } : undefined}
       transition={spring}

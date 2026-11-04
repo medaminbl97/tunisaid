@@ -1,5 +1,11 @@
 {
   "siteHeader": {
+    "tagline": "Hilfe für Menschen mit Behinderungen in Tunesien e.V.",
+    "languageLabel": "Sprache der Website",
+    "languages": {
+      "en": "Zu Englisch wechseln",
+      "de": "Zu Deutsch wechseln"
+    },
     "homeLabel": "Tunisaid Startseite",
     "logoAlt": "Tunisaid - Hilfe für Menschen mit Behinderungen in Tunesien",
     "navigationLabel": "Hauptnavigation",

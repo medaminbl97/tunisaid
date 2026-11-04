@@ -1,5 +1,11 @@
 {
   "siteHeader": {
+    "tagline": "Aid for Tunisians with Disabilities e.V.",
+    "languageLabel": "Website language",
+    "languages": {
+      "en": "Switch to English",
+      "de": "Switch to German"
+    },
     "homeLabel": "Tunisaid home",
     "logoAlt": "Tunisaid - Aid for Tunisians with Disabilities",
     "navigationLabel": "Main navigation",
