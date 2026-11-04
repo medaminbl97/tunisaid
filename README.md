@@ -106,6 +106,12 @@ The `/about` route composes its hero, story, team, and approach sections from `s
 
 The approved About copy gives November 2018 as the founding date, while existing Home copy says 2016. Both are preserved pending factual confirmation.
 
+### What we do
+
+The `/what-we-do` route has an animated editorial hero, six areas of support, an everyday-possibilities feature, three process steps, and a peach invitation banner. Its page-local sections live in `src/pages/what-we-do/components/`. The compact `StatementCard` treatment is reused for support areas and process steps; `CtaBanner` also supports an optional eyebrow and peach tone without changing its default Home appearance.
+
+Backgrounds transition from cream through lagoon and back, then from cream to sun and back. The feature keeps its horizontal deep-lagoon-to-ink gradient inside a rounded panel on cream, rather than fading dark colors into the surrounding section. The hero action targets the support section; invitation actions lead to Donate and Contact. English/German copy and stories cover every section.
+
 ### Adding A Route
 
 To add a new route to your application just add a new file in the `./src/routes` directory.

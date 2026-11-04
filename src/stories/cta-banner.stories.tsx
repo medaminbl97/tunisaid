@@ -22,6 +22,13 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 export const Default: Story = {}
+export const Peach: Story = {
+  args: {
+    tone: 'peach',
+    eyebrow: 'Your part in the possibility',
+    title: 'Bring what you can. Help change what is possible.',
+  },
+}
 export const TwoActions: Story = {
   args: {
     actions: (

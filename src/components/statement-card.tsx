@@ -9,19 +9,22 @@ type StatementCardProps = {
   icon?: ReactNode
   tone?: 'white' | 'lagoon'
   as?: 'h2' | 'h3'
+  size?: 'default' | 'compact'
   className?: string
 }
 
 export function StatementCard({
   tone = 'white',
   as: Heading = 'h3',
+  size = 'default',
   ...props
 }: StatementCardProps) {
   return (
     <GlassCard
       variant="solid"
       className={cn(
-        'flex h-full flex-col items-start gap-5 rounded-[40px] border-0 p-8 sm:p-10',
+        'flex h-full flex-col items-start gap-5 border-0 p-8',
+        size === 'compact' ? 'rounded-[28px]' : 'rounded-[40px] sm:p-10',
         tone === 'lagoon' && 'bg-brand-lagoon-tint',
         props.className,
       )}
@@ -37,10 +40,20 @@ export function StatementCard({
       >
         {props.eyebrow}
       </p>
-      <Heading className="font-display text-[30px] leading-[1.14] font-bold text-balance">
+      <Heading
+        className={cn(
+          'font-display leading-[1.14] font-bold text-balance',
+          size === 'compact' ? 'text-[28px]' : 'text-[30px]',
+        )}
+      >
         {props.title}
       </Heading>
-      <p className="text-[17px] leading-relaxed text-brand-ink-soft">
+      <p
+        className={cn(
+          'leading-relaxed text-brand-ink-soft',
+          size === 'compact' ? 'text-base' : 'text-[17px]',
+        )}
+      >
         {props.description}
       </p>
     </GlassCard>
