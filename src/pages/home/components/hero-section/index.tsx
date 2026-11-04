@@ -11,6 +11,7 @@ import illustration from '#/assets/images/hero-illustration.svg'
 import kickerDot from '#/assets/images/hero-kicker-dot.svg'
 import sunDisc from '#/assets/images/hero-sun-disc.svg'
 import terracottaDisc from '#/assets/images/hero-terracotta-disc.svg'
+import { InfoCard } from '#/components/info-card'
 import { SectionHeading } from '#/components/section-heading'
 import { Button } from '#/components/ui/button'
 
@@ -127,28 +128,13 @@ export function HeroSection() {
               className="block h-auto max-w-full"
             />
           </div>
-          <motion.div
-            initial={false}
-            animate={{ y: reduceMotion ? 0 : [0, -6, 0] }}
-            transition={
-              reduceMotion
-                ? { duration: 0 }
-                : { duration: 5, repeat: Infinity, ease: 'easeInOut' }
-            }
-            className="absolute top-[73.44%] left-0 flex max-w-full items-center gap-3 rounded-[28px] border-[1.5px] border-brand-hero-card-border bg-brand-hero-card p-4 shadow-hero-card backdrop-blur-[12px] sm:gap-4 sm:py-5 sm:pr-7 sm:pl-5"
-          >
-            <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-brand-sun-soft sm:size-14">
-              <img src={heart} alt="" width={26} height={26} />
-            </span>
-            <div className="min-w-0">
-              <p className="font-display text-[17px] leading-[1.2] font-bold text-brand-ink">
-                {t('noteTitle')}
-              </p>
-              <p className="mt-0.5 text-[13px] leading-[1.3] font-medium text-brand-ink-soft">
-                {t('noteDescription')}
-              </p>
-            </div>
-          </motion.div>
+          <InfoCard
+            animation="float"
+            className="absolute top-[73.44%] left-0"
+            icon={<img src={heart} alt="" width={26} height={26} />}
+            title={t('noteTitle')}
+            description={t('noteDescription')}
+          />
         </motion.div>
       </div>
     </section>

@@ -88,6 +88,8 @@ The Home page renders the hero followed by the impact section from `src/pages/ho
 
 Both sections compose `src/components/section-heading.tsx`, a shared animated heading with optional eyebrow and description, left/center alignment, inverse styling, and semantic heading levels. The impact section displays the four design-provided statistics as a responsive definition list. Entrance, hover, and floating motion respect reduced-motion preferences. Brand colors, glass surfaces, and gradients live in `src/styles.css`. Stories cover the hero, impact section, and shared heading variants.
 
+Reusable cards live in `src/components/`: `GlassCard` provides light/inverse glass surfaces and reduced-motion-aware reveal/float animations; `StatCard` composes it for label/value pairs and must be placed inside a `<dl>`; `InfoCard` composes it for an icon, title, and description. The impact statistics and hero support note use these shared components. Keep section-specific content, decoration, and layout in the page components rather than duplicating shared card styling.
+
 ### Adding A Route
 
 To add a new route to your application just add a new file in the `./src/routes` directory.

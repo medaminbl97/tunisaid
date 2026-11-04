@@ -1,5 +1,4 @@
 import { Link } from '@tanstack/react-router'
-import { motion, useReducedMotion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import arrowRight from '#/assets/images/arrow-right-lagoon.svg'
 import decorCircle from '#/assets/images/impact-decor-circle.svg'
@@ -7,6 +6,7 @@ import glassBlob1 from '#/assets/images/impact-glass-blob-1.svg'
 import glassBlob2 from '#/assets/images/impact-glass-blob-2.svg'
 import glassBlob3 from '#/assets/images/impact-glass-blob-3.svg'
 import { SectionHeading } from '#/components/section-heading'
+import { StatCard } from '#/components/stat-card'
 import { Button } from '#/components/ui/button'
 
 const statistics = [
@@ -18,7 +18,6 @@ const statistics = [
 
 export function ImpactSection() {
   const { t } = useTranslation('common', { keyPrefix: 'home.impact' })
-  const reduceMotion = useReducedMotion()
 
   return (
     <section
@@ -71,25 +70,12 @@ export function ImpactSection() {
         </div>
         <dl className="grid min-w-0 gap-5 min-[400px]:grid-cols-2">
           {statistics.map((statistic, index) => (
-            <motion.div
+            <StatCard
               key={statistic.key}
-              initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              whileHover={reduceMotion ? undefined : { y: -4 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{
-                duration: reduceMotion ? 0 : 0.45,
-                delay: reduceMotion ? 0 : index * 0.08,
-              }}
-              className="flex min-w-0 flex-col gap-1.5 rounded-[28px] border border-brand-impact-border bg-brand-impact-glass p-5 backdrop-blur-[12px] xl:p-7"
-            >
-              <dt className="order-2 text-[15px] leading-normal font-medium text-brand-impact-label">
-                {t(`statistics.${statistic.key}`)}
-              </dt>
-              <dd className="font-display text-[clamp(2.5rem,3.62vw,3.25rem)] leading-[1.1] font-bold text-brand-white">
-                {statistic.value}
-              </dd>
-            </motion.div>
+              delay={index * 0.08}
+              label={t(`statistics.${statistic.key}`)}
+              value={statistic.value}
+            />
           ))}
         </dl>
       </div>
