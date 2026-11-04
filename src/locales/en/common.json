@@ -1,4 +1,68 @@
 {
+  "contact": {
+    "hero": {
+      "eyebrow": "Contact TunisAid",
+      "title": "A question. An idea. A way to help.",
+      "description": "Whatever brings you here, we’re glad you reached out. Let’s talk about practical ways to make life more accessible for people with disabilities in Tunisia.",
+      "noteTitle": "It starts with a hello.",
+      "noteDescription": "You don’t need a finished plan. A thoughtful question is a good place to begin."
+    },
+    "hub": {
+      "label": "Ways to contact TunisAid",
+      "eyebrow": "Prefer to reach us directly?",
+      "title": "Real people. An open conversation.",
+      "emailHint": "Questions, ideas, partnerships, or an offer to help.",
+      "phoneHint": "Prefer a conversation? Give us a call.",
+      "visit": "Find us",
+      "visitHint": "Please contact us before visiting to arrange a time."
+    },
+    "form": {
+      "eyebrow": "Send a message",
+      "title": "What’s on your mind?",
+      "description": "Tell us how we can help—or how you would like to help.",
+      "unavailable": "This form is not accepting messages yet. Please contact us directly by email:",
+      "privacy": "* Required fields. Please avoid including sensitive personal or medical details in your message.",
+      "submit": "Send message",
+      "fields": {
+        "firstName": { "label": "First name", "placeholder": "First name" },
+        "lastName": { "label": "Last name", "placeholder": "Last name" },
+        "email": { "label": "Email address", "placeholder": "you@example.com" },
+        "topic": {
+          "label": "What would you like to discuss?",
+          "placeholder": "A question, volunteering, donations, or a partnership"
+        },
+        "message": {
+          "label": "Your message",
+          "placeholder": "Tell us a little about what you have in mind..."
+        }
+      }
+    },
+    "prompts": {
+      "eyebrow": "Not sure where to start?",
+      "title": "There’s more than one way to begin.",
+      "items": {
+        "volunteer": {
+          "eyebrow": "Volunteer",
+          "title": "A little of your time.",
+          "description": "Tell us about your skills, interests, and how you would like to get involved."
+        },
+        "materials": {
+          "eyebrow": "Material donations",
+          "title": "Something useful to give.",
+          "description": "Describe the equipment or supplies you would like to offer so we can discuss what may be needed."
+        },
+        "partnerships": {
+          "eyebrow": "Partnerships",
+          "title": "A shared possibility.",
+          "description": "From local associations to technical expertise, let’s explore what we could build together."
+        }
+      }
+    },
+    "closing": {
+      "title": "Small conversations. Meaningful possibilities.",
+      "description": "Thank you for taking the first step toward a more inclusive tomorrow."
+    }
+  },
   "work": {
     "hero": {
       "eyebrow": "What we do",

@@ -1,4 +1,68 @@
 {
+  "contact": {
+    "hero": {
+      "eyebrow": "Kontakt zu TunisAid",
+      "title": "Eine Frage. Eine Idee. Ein Weg zu helfen.",
+      "description": "Was dich auch zu uns führt: Wir freuen uns über dein Interesse. Lass uns darüber sprechen, wie wir das Leben für Menschen mit Behinderungen in Tunesien zugänglicher machen können.",
+      "noteTitle": "Es beginnt mit einem Hallo.",
+      "noteDescription": "Du brauchst noch keinen fertigen Plan. Eine aufmerksame Frage ist ein guter Anfang."
+    },
+    "hub": {
+      "label": "Kontaktmöglichkeiten zu TunisAid",
+      "eyebrow": "Lieber direkt Kontakt aufnehmen?",
+      "title": "Echte Menschen. Ein offenes Gespräch.",
+      "emailHint": "Für Fragen, Ideen, Partnerschaften oder dein Angebot zu helfen.",
+      "phoneHint": "Du möchtest lieber sprechen? Ruf uns an.",
+      "visit": "Hier findest du uns",
+      "visitHint": "Bitte melde dich vor deinem Besuch, damit wir einen Termin vereinbaren können."
+    },
+    "form": {
+      "eyebrow": "Nachricht schreiben",
+      "title": "Was beschäftigt dich?",
+      "description": "Erzähl uns, wie wir helfen können — oder wie du helfen möchtest.",
+      "unavailable": "Über dieses Formular können noch keine Nachrichten gesendet werden. Bitte kontaktiere uns direkt per E-Mail:",
+      "privacy": "* Pflichtfelder. Bitte gib keine sensiblen persönlichen oder medizinischen Informationen in deiner Nachricht an.",
+      "submit": "Nachricht senden",
+      "fields": {
+        "firstName": { "label": "Vorname", "placeholder": "Vorname" },
+        "lastName": { "label": "Nachname", "placeholder": "Nachname" },
+        "email": { "label": "E-Mail-Adresse", "placeholder": "du@beispiel.de" },
+        "topic": {
+          "label": "Worüber möchtest du sprechen?",
+          "placeholder": "Eine Frage, Ehrenamt, Spenden oder eine Partnerschaft"
+        },
+        "message": {
+          "label": "Deine Nachricht",
+          "placeholder": "Erzähl uns ein wenig über dein Anliegen..."
+        }
+      }
+    },
+    "prompts": {
+      "eyebrow": "Du weißt noch nicht, wo du anfangen sollst?",
+      "title": "Es gibt mehr als einen Weg, zu beginnen.",
+      "items": {
+        "volunteer": {
+          "eyebrow": "Ehrenamt",
+          "title": "Ein wenig von deiner Zeit.",
+          "description": "Erzähl uns von deinen Fähigkeiten und Interessen und davon, wie du dich einbringen möchtest."
+        },
+        "materials": {
+          "eyebrow": "Sachspenden",
+          "title": "Etwas Nützliches geben.",
+          "description": "Beschreibe die Hilfsmittel oder Materialien, die du anbieten möchtest. Gemeinsam besprechen wir, was gebraucht wird."
+        },
+        "partnerships": {
+          "eyebrow": "Partnerschaften",
+          "title": "Eine gemeinsame Möglichkeit.",
+          "description": "Ob lokaler Verein oder technisches Fachwissen: Lass uns herausfinden, was wir gemeinsam aufbauen können."
+        }
+      }
+    },
+    "closing": {
+      "title": "Kleine Gespräche. Bedeutungsvolle Möglichkeiten.",
+      "description": "Danke, dass du den ersten Schritt in eine inklusivere Zukunft machst."
+    }
+  },
   "work": {
     "hero": {
       "eyebrow": "Was wir tun",
