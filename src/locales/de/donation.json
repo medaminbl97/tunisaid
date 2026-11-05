@@ -1,6 +1,8 @@
 {
   "shared": {
     "home": "Startseite",
+    "language": "Sprache",
+    "languages": { "en": "Zu Englisch wechseln", "de": "Zu Deutsch wechseln" },
     "layoutHint": "Ein sinnvoller Beitrag, ein einfacher Weg.",
     "footer": "TunisAid · Gemeinsam helfen, über Grenzen hinweg.",
     "contact": "Fragen? Kontaktiere unser Team",
@@ -23,6 +25,45 @@
     },
     "supportTitle": "Dein Beitrag hilft. Er ist keine Warenbestellung.",
     "supportDescription": "Diese Ideen zeigen mögliche Formen der Hilfe. Beträge und endgültige Verwendung müssen mit unserem Team abgestimmt werden; du erhältst keine Warenlieferung."
+  },
+  "checkout": {
+    "eyebrow": "Deine Hilfe, bewusst ausgewählt",
+    "title": "Lass deine Hilfe zählen.",
+    "description": "Prüfe deine Auswahl. Online-Zahlungen sind noch nicht verfügbar.",
+    "unavailableTitle": "Online-Zahlung nicht verfügbar",
+    "detailsTitle": "01 Deine Angaben",
+    "detailsHint": "Diese Felder zeigen die geplanten Angaben. Sie sind deaktiviert; es werden keine persönlichen Daten erfasst.",
+    "private": "Meinen Namen nicht veröffentlichen",
+    "privateHint": "Datenschutzoptionen werden vor der Freischaltung von Online-Spenden bestätigt.",
+    "paymentTitle": "02 Schließe deine Unterstützung ab",
+    "paymentMethod": "Geplante Zahlungsarten · Nicht verfügbar",
+    "methods": { "card": "Karte", "paypal": "PayPal", "bank": "Überweisung" },
+    "cardHeading": "Kredit- oder Debitkarte · Nicht verfügbar",
+    "hostedHint": "Gehostete Zahlungsfelder benötigen einen Zahlungsanbieter. Sende keine Kartendaten an TunisAid.",
+    "policyHint": "Spendenbedingungen, Datenschutzinformationen und Zahlungsarten müssen vor der Freischaltung von Online-Spenden festgelegt werden. Bei Fragen kontaktiere unser Team.",
+    "noPayment": "Es wurde keine Zahlung verarbeitet. Dies ist keine Spendenbestätigung.",
+    "reviewLabel": "Prüfe deine beispielhafte Auswahl",
+    "reviewTitle": "Ein wenig Herzlichkeit. Echte Möglichkeiten.",
+    "changeGifts": "Auswahl ändern",
+    "supportEyebrow": "Mit Sinn helfen",
+    "fields": {
+      "name": {
+        "label": "Vollständiger Name",
+        "placeholder": "Dein vollständiger Name"
+      },
+      "email": { "label": "E-Mail-Adresse", "placeholder": "du@beispiel.de" },
+      "country": { "label": "Wohnsitzland", "placeholder": "Wähle ein Land" },
+      "number": {
+        "label": "Kartennummer",
+        "placeholder": "Zahlungsfeld nicht verfügbar"
+      },
+      "expiry": { "label": "Ablaufdatum", "placeholder": "MM / JJ" },
+      "security": { "label": "Prüfnummer", "placeholder": "CVC" },
+      "cardName": {
+        "label": "Name auf der Karte",
+        "placeholder": "Name wie auf der Karte"
+      }
+    }
   },
   "hero": {
     "eyebrow": "Mit Sinn helfen",

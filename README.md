@@ -62,7 +62,17 @@ The groceries illustration is the original local Figma SVG. The basket starts
 empty rather than presenting the design's example €100 as an actual selection.
 Flexible input accepts decimal points or commas and replaces the previous flexible
 amount. All amounts are illustrative; real donation arrangements remain available
-through `/contact`. Checkout navigation stays disabled until its route is added.
+through `/contact`. A nonempty basket enables navigation to `/donate/checkout`.
+
+The checkout route implements Figma frame `47:318`, using the shared compact
+layout and editable basket summary. Personal, privacy and card controls are
+disabled. Payment methods are explicitly unavailable; no payment provider,
+submission endpoint, policy link placeholders, or simulated success is wired.
+The visible notice provides a working `/contact` alternative. Direct visits with
+an empty basket show the empty state and a working Change gifts link. The root
+owns the basket provider and chooses exactly one header/footer pair per route;
+other pages retain their existing site shell. EN/DE switching remains available
+in the compact layout.
 
 English is the default and fallback locale. Header labels and accessible names use the typed `siteHeader` keys, while homepage content uses the `home` keys in `src/locales/en/common.json`, with matching German translations in `src/locales/de/common.json`. Translation key types are derived from the English resources. The app and Storybook both initialize the shared i18next setup.
 

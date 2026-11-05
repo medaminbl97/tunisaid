@@ -124,14 +124,27 @@ export function PurposeSelection() {
             title={t('selection.basketTitle')}
             editable
             action={
-              <Button
-                disabled
-                className="w-full whitespace-normal"
-                size="cta"
-                shape="pill"
-              >
-                {t('selection.checkout')}
-              </Button>
+              total > 0 ? (
+                <Button
+                  asChild
+                  className="w-full whitespace-normal"
+                  size="cta"
+                  shape="pill"
+                >
+                  <Link to="/donate/checkout">
+                    {t('selection.checkout')} <ArrowRight aria-hidden="true" />
+                  </Link>
+                </Button>
+              ) : (
+                <Button
+                  disabled
+                  className="w-full whitespace-normal"
+                  size="cta"
+                  shape="pill"
+                >
+                  {t('selection.checkout')}
+                </Button>
+              )
             }
           >
             <IconLabel icon={<ShieldCheck className="size-7" />}>

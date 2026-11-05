@@ -1,4 +1,9 @@
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
+import {
+  HeadContent,
+  Scripts,
+  createRootRoute,
+  useRouterState,
+} from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { useTranslation } from 'react-i18next'
@@ -6,6 +11,7 @@ import { useTranslation } from 'react-i18next'
 import { SiteHeader } from '../components/site-header'
 import { SiteFooter } from '../components/site-footer'
 import { DonationProvider } from '#/components/donation-provider'
+import { DonationLayout } from '#/components/donation-layout'
 import '../locales/i18n'
 import appCss from '../styles.css?url'
 
@@ -35,6 +41,10 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   const { i18n } = useTranslation()
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  })
+  const compactLayout = pathname.replace(/\/$/, '') === '/donate/checkout'
 
   return (
     <html lang={i18n.resolvedLanguage}>
@@ -43,9 +53,15 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <DonationProvider>
-          <SiteHeader />
-          {children}
-          <SiteFooter />
+          {compactLayout ? (
+            <DonationLayout>{children}</DonationLayout>
+          ) : (
+            <>
+              <SiteHeader />
+              {children}
+              <SiteFooter />
+            </>
+          )}
         </DonationProvider>
         <TanStackDevtools
           config={{
