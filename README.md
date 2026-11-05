@@ -42,6 +42,20 @@ If you prefer not to use Tailwind CSS:
 
 ## Translations
 
+### Donation components
+
+Shared donation UI lives in `src/components/`: `PurposeCard`, `FilterGroup`,
+`QuantityStepper`, `DonationSummary`, `DonationBasketSummary`, `DonationSteps`,
+`IconLabel`, and the compact `DonationLayout`. Each visual component has stories.
+The existing Button, GlassCard, IconChip, and SectionHeading remain the foundations.
+
+`DonationProvider` owns an initially empty, in-memory basket. Amounts use integer
+EUR cents and are formatted for the active language. Selection survives client-side
+navigation while the provider remains mounted, but resets on a full reload; no
+personal or payment information is stored. The `donation` translation namespace
+contains matching English/German copy. Catalog prices are illustrative, not
+validated procurement costs. Payment processing is intentionally unavailable.
+
 English is the default and fallback locale. Header labels and accessible names use the typed `siteHeader` keys, while homepage content uses the `home` keys in `src/locales/en/common.json`, with matching German translations in `src/locales/de/common.json`. Translation key types are derived from the English resources. The app and Storybook both initialize the shared i18next setup.
 
 ## Linting & Formatting
