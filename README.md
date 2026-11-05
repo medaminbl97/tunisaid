@@ -31,6 +31,43 @@ This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
 
 The site header is a fixed, floating glass panel based on the Figma redesign, with a centered 82.5rem maximum width, the supplied heart-handshake mark, and a Fraunces wordmark. Navigation uses an animated active pill, the Donate action links to `/donate`, and EN/DE controls switch the bundled translations and document language. On smaller screens the navigation moves into a scrollable second row. Hovering over the header or focusing a control expands the bar and logo with a Motion spring; reduced-motion preferences disable movement. Its layout slot reserves the collapsed height to prevent page jumps, and document scroll padding keeps anchor targets below the expanded bar. Header colors, dimensions, and shadow are defined as `brand-` tokens in `src/styles.css`.
 
+### Generated website imagery
+
+Seven supplied Gemini images are integrated as illustrative artwork, not evidence
+of real TunisAid projects or team members. Home uses the courtyard scene and
+illustrated project covers; About uses the planning-table scene; What we do uses
+the workshop scene above six unboxed support descriptions; Contact reuses the
+planning-table scene because a separate contact image was not supplied. The real
+team-photo placeholder is unchanged. Donate uses four tactile illustrations and
+reuses the groceries image in its hero. Checkout and confirmation remain focused
+on their existing, explicitly unavailable-payment behavior.
+
+The original unoptimized `Gemini_Generated_Image_*.jpeg` files were removed after
+conversion. Application code imports only WebP derivatives from `src/assets/images/optimized/` through
+`src/lib/site-images.ts`. `ImagePanel` supplies responsive sources, intrinsic
+dimensions, lazy loading (except priority hero images), reduced-motion-aware
+entrances, and a token-based cream gradient wash. Generated editorial scenes have
+localized alt text and visible AI disclosure; donation illustrations repeat the
+adjacent content and have empty alt text with a disclosure below the collection.
+
+Derivatives were encoded with the existing `cwebp` CLI at quality 80, method 6,
+with metadata removed. Editorial widths are 800/1600px. Donation artwork is
+cropped to 1792×1536 before resizing to 480×412 and 960×823, keeping subjects
+intact while removing excess portrait whitespace:
+
+The seven originals totaled 17,883,050 bytes. All fourteen responsive WebP files
+combined total 574,684 bytes (96.8% smaller); each file is under 120 KB.
+
+| Source filename suffix  | Output stem             | Crop origin |
+| ----------------------- | ----------------------- | ----------- |
+| `gje4kygje4kygje4.jpeg` | `everyday-independence` | Uncropped   |
+| `4y67w54y67w54y67.jpeg` | `shared-purpose`        | Uncropped   |
+| `semrvtsemrvtsemr.jpeg` | `room-to-participate`   | Uncropped   |
+| `7d90o57d90o57d90.jpeg` | `donate-koffa`          | x=0, y=600  |
+| `c0bkzyc0bkzyc0bk.jpeg` | `donate-mobility`       | x=0, y=520  |
+| `oa4abdoa4abdoa4a.jpeg` | `donate-school`         | x=0, y=480  |
+| `gmodlcgmodlcgmod.jpeg` | `donate-warmth`         | x=0, y=640  |
+
 ### Removing Tailwind CSS
 
 If you prefer not to use Tailwind CSS:
@@ -58,7 +95,7 @@ validated procurement costs. Payment processing is intentionally unavailable.
 
 The `/donate` page implements Figma frame `47:314`: purpose cards, category
 filters, an editable local basket, flexible amounts, and the giving journey.
-The groceries illustration is the original local Figma SVG. The basket starts
+The groceries hero and purpose covers use optimized supplied Gemini illustrations. The basket starts
 empty rather than presenting the design's example €100 as an actual selection.
 Flexible input accepts decimal points or commas and replaces the previous flexible
 amount. All amounts are illustrative; real donation arrangements remain available
@@ -126,7 +163,7 @@ Keep route files thin: they configure the route and render a page imported from 
 
 Page-only components live in `src/pages/<page-name>/components/`. Group complex components in a named folder with an `index.tsx` entry point and an adjacent `components/` folder for their subcomponents. Add page-local `hooks/`, `utils/`, or `context/` folders only when needed. Shared components remain in `src/components/`, with UI primitives in `src/components/ui/`.
 
-The Home page renders the hero, impact, projects, values, get-involved, partners, and donation sections from `src/pages/home/components/`, followed by the shared contact strip. The shared site footer is rendered once in the root shell on every route, outside the page's main landmark. The hero retains the Figma illustration placeholder (a photo has not been supplied), local decorative SVGs, and a floating support note. Its actions link to `/contact` and `/what-we-do`; the impact and project actions also link to `/what-we-do`. These destination routes are still placeholders; individual project detail routes are not implemented yet.
+The Home page renders the hero, impact, projects, values, get-involved, partners, and donation sections from `src/pages/home/components/`, followed by the shared contact strip. The shared site footer is rendered once in the root shell on every route, outside the page's main landmark. The hero uses the supplied generated courtyard scene with a visible illustration disclosure and an inline support note instead of floating decorative cards. Its actions link to `/contact` and `/what-we-do`; the impact and project actions also link to `/what-we-do`. Individual project detail routes are not implemented yet.
 
 Both sections compose `src/components/section-heading.tsx`, a shared animated heading with optional eyebrow and description, left/center alignment, inverse styling, and semantic heading levels. The impact section displays the four design-provided statistics as a responsive definition list. Entrance, hover, and floating motion respect reduced-motion preferences. Brand colors, glass surfaces, and gradients live in `src/styles.css`. Stories cover the hero, impact section, and shared heading variants.
 

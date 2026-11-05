@@ -1,13 +1,14 @@
 import { Link } from '@tanstack/react-router'
-import { ArrowRight, Heart } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import illustration from '#/assets/images/donation-koffa.svg'
-import { GlassCard } from '#/components/glass-card'
+import { ImagePanel } from '#/components/image-panel'
+import { donationImages } from '#/lib/site-images'
 import { SectionHeading } from '#/components/section-heading'
 import { Button } from '#/components/ui/button'
 
 export function DonateHero() {
   const { t } = useTranslation('donation')
+  const { t: imageText } = useTranslation('common', { keyPrefix: 'imagery' })
 
   return (
     <section
@@ -34,31 +35,25 @@ export function DonateHero() {
             {t('shared.illustrative')}
           </p>
         </div>
-        <GlassCard
-          variant="solid"
-          className="space-y-5 rounded-[40px] border-0 bg-brand-lagoon-tint p-8"
-        >
-          <p className="flex items-center justify-between gap-4 text-[11px] font-extrabold uppercase">
-            {t('hero.artEyebrow')}{' '}
-            <Heart
-              aria-hidden="true"
-              className="size-6 text-brand-lagoon-deep"
-            />
-          </p>
-          <img
-            src={illustration}
+        <div className="space-y-4">
+          <ImagePanel
+            image={donationImages.koffa}
             alt=""
-            width={360}
-            height={240}
-            className="mx-auto h-auto w-full max-w-[360px]"
+            caption={imageText('donationCaption')}
+            priority
+            sizes="(min-width: 1280px) 460px, (min-width: 1024px) 40vw, calc(100vw - 48px)"
+            imageClassName="aspect-[7/6]"
           />
-          <h2 className="font-display text-[30px] leading-tight font-bold">
+          <p className="text-[11px] font-extrabold uppercase text-brand-lagoon-deep">
+            {t('hero.artEyebrow')}
+          </p>
+          <h2 className="font-display text-[28px] leading-tight font-bold">
             {t('hero.artTitle')}
           </h2>
           <p className="text-sm text-brand-ink-soft">
             {t('hero.artDescription')}
           </p>
-        </GlassCard>
+        </div>
       </div>
       <p className="mx-auto mt-10 max-w-[75rem] rounded-2xl bg-brand-sun-soft p-5 text-sm leading-relaxed">
         {t('shared.unavailable')}{' '}

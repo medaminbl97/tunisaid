@@ -1,6 +1,8 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import { SectionHeading } from '#/components/section-heading'
+import { ImagePanel } from '#/components/image-panel'
+import { editorialImages } from '#/lib/site-images'
 
 export function StorySection() {
   const { t } = useTranslation()
@@ -11,14 +13,22 @@ export function StorySection() {
       aria-labelledby="about-story-title"
       className="bg-brand-flow-warm px-6 py-16 sm:px-10 lg:py-20"
     >
-      <div className="mx-auto grid max-w-[75rem] gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
-        <SectionHeading
-          id="about-story-title"
-          align="left"
-          size="compact"
-          eyebrow={t('about.story.eyebrow')}
-          title={t('about.story.title')}
-        />
+      <div className="mx-auto grid max-w-[75rem] items-center gap-8 lg:grid-cols-2 lg:gap-16">
+        <div className="space-y-8">
+          <SectionHeading
+            id="about-story-title"
+            align="left"
+            size="compact"
+            eyebrow={t('about.story.eyebrow')}
+            title={t('about.story.title')}
+          />
+          <ImagePanel
+            image={editorialImages.collaboration}
+            alt={t('imagery.collaboration')}
+            caption={t('imagery.caption')}
+            sizes="(min-width: 1280px) 568px, (min-width: 1024px) 46vw, calc(100vw - 48px)"
+          />
+        </div>
         <motion.div
           initial={reduceMotion ? false : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

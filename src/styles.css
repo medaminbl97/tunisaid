@@ -19,6 +19,11 @@
   --brand-ink-soft: #416166;
   --brand-white: #ffffff;
   --brand-cream: #fff9ec;
+  --brand-image-wash: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--brand-cream) 45%, transparent),
+    transparent 30%
+  );
   --brand-terracotta: #d9774c;
   --brand-sun-soft: #fdf0c4;
   --brand-sun: #f5c93a;
@@ -289,6 +294,7 @@
   --background-image-brand-flow-from-sun: var(--brand-flow-from-sun);
   --background-image-brand-feature: var(--brand-feature-background);
   --background-image-brand-footer: var(--brand-footer-background);
+  --background-image-brand-image-wash: var(--brand-image-wash);
   --color-brand-ink: var(--brand-ink);
   --color-brand-ink-soft: var(--brand-ink-soft);
   --color-brand-white: var(--brand-white);

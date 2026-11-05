@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/tanstack-react'
 import { Package } from 'lucide-react'
 import { PurposeCard } from '#/components/purpose-card'
 import { Button } from '#/components/ui/button'
+import { ImagePanel } from '#/components/image-panel'
+import { donationImages } from '#/lib/site-images'
 
 const meta = {
   title: 'Components/PurposeCard',
@@ -33,3 +35,16 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 export const Default: Story = {}
+export const Illustrated: Story = {
+  args: {
+    image: (
+      <ImagePanel
+        image={donationImages.koffa}
+        alt=""
+        sizes="390px"
+        className="[&>div]:rounded-none"
+        imageClassName="aspect-[7/6]"
+      />
+    ),
+  },
+}
