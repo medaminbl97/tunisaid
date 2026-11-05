@@ -21,7 +21,7 @@ import {
   donationTotal,
   formatDonationAmount,
 } from '#/lib/donation'
-import type { DonationCategory } from '#/lib/donation'
+import type { DonationCategory, DonationPurposeId } from '#/lib/donation'
 
 const icons = {
   koffa: Package,
@@ -35,7 +35,10 @@ export function PurposeSelection() {
   const { t, i18n } = useTranslation('donation')
   const { basket, setQuantity } = useDonationBasket()
   const [filter, setFilter] = useState<DonationCategory | 'all'>('all')
-  const [announcement, setAnnouncement] = useState('')
+  const [lastAdded, setLastAdded] = useState<{
+    id: DonationPurposeId
+    quantity: number
+  } | null>(null)
   const total = donationTotal(basket)
   const visible = donationPurposes.filter(
     (purpose) => filter === 'all' || purpose.category === filter,
@@ -67,7 +70,11 @@ export function PurposeSelection() {
             onChange={setFilter}
           />
           <p role="status" className="sr-only">
-            {announcement}
+            {lastAdded &&
+              t('selection.added', {
+                title: t(`purposes.${lastAdded.id}.title`),
+                quantity: lastAdded.quantity,
+              })}
           </p>
           <ul className="grid gap-6 sm:grid-cols-2">
             {visible.map((purpose) => {
@@ -96,12 +103,10 @@ export function PurposeSelection() {
                             purpose.id,
                             basket.quantities[purpose.id] + 1,
                           )
-                          setAnnouncement(
-                            t('selection.added', {
-                              title,
-                              quantity: basket.quantities[purpose.id] + 1,
-                            }),
-                          )
+                          setLastAdded({
+                            id: purpose.id,
+                            quantity: basket.quantities[purpose.id] + 1,
+                          })
                         }}
                       >
                         {t('selection.add')} <ArrowRight aria-hidden="true" />

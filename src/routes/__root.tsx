@@ -44,7 +44,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   })
-  const compactLayout = pathname.replace(/\/$/, '') === '/donate/checkout'
+  const compactLayout = ['/donate/checkout', '/donate/thank-you'].includes(
+    pathname.replace(/\/$/, ''),
+  )
 
   return (
     <html lang={i18n.resolvedLanguage}>

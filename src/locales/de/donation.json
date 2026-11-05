@@ -26,6 +26,17 @@
     "supportTitle": "Dein Beitrag hilft. Er ist keine Warenbestellung.",
     "supportDescription": "Diese Ideen zeigen mögliche Formen der Hilfe. Beträge und endgültige Verwendung müssen mit unserem Team abgestimmt werden; du erhältst keine Warenlieferung."
   },
+  "thanks": {
+    "eyebrow": "Ein wenig Herzlichkeit bewirkt viel",
+    "title": "Jede Hilfe beginnt mit einem Menschen, dem andere am Herzen liegen.",
+    "description": "Danke für dein Interesse daran, Würde im Alltag in Tunesien zu unterstützen.",
+    "notice": "Diese Seite zeigt die künftige Bestätigungsansicht. Sie bestätigt keine Spende, stellt keine Quittung aus und versendet keine E-Mail.",
+    "recapLabel": "Beispielhafte Übersicht deiner Auswahl",
+    "recapTitle": "Deine ausgewählte Unterstützung",
+    "recapHint": "Die angezeigten Beträge sind nur deine lokale Auswahl und kein Zahlungsnachweis. Besprich die nächsten Schritte mit unserem Team.",
+    "explore": "Entdecke unsere Arbeit",
+    "back": "Zurück zur Auswahl"
+  },
   "checkout": {
     "eyebrow": "Deine Hilfe, bewusst ausgewählt",
     "title": "Lass deine Hilfe zählen.",
