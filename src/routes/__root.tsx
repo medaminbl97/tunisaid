@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import { SiteHeader } from '../components/site-header'
 import { SiteFooter } from '../components/site-footer'
+import { DonationProvider } from '#/components/donation-provider'
 import '../locales/i18n'
 import appCss from '../styles.css?url'
 
@@ -41,9 +42,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <SiteHeader />
-        {children}
-        <SiteFooter />
+        <DonationProvider>
+          <SiteHeader />
+          {children}
+          <SiteFooter />
+        </DonationProvider>
         <TanStackDevtools
           config={{
             position: 'bottom-right',

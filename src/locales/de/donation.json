@@ -24,6 +24,55 @@
     "supportTitle": "Dein Beitrag hilft. Er ist keine Warenbestellung.",
     "supportDescription": "Diese Ideen zeigen mögliche Formen der Hilfe. Beträge und endgültige Verwendung müssen mit unserem Team abgestimmt werden; du erhältst keine Warenlieferung."
   },
+  "hero": {
+    "eyebrow": "Mit Sinn helfen",
+    "title": "Gib ein wenig. Verändere den Alltag.",
+    "description": "Ein voller Vorratsschrank. Mehr Freiheit. Ein guter Anfang. Wähle, was deine Hilfe möglich machen kann.",
+    "action": "Finde deinen Zweck",
+    "artEyebrow": "Kleine Geste. Würde im Alltag.",
+    "artTitle": "Mehr als eine Tasche. Ein wenig Freiraum.",
+    "artDescription": "Lebensmittel für eine Familie. Herzlichkeit von dir."
+  },
+  "selection": {
+    "eyebrow": "Wähle deine Unterstützung",
+    "title": "Was wird aus deinem Beitrag?",
+    "description": "Praktische Hilfe. Menschliche Möglichkeiten.",
+    "filterLabel": "Spendenzwecke filtern",
+    "filters": {
+      "all": "Alle Zwecke",
+      "essentials": "Grundbedarf",
+      "mobility": "Mobilität",
+      "education": "Bildung"
+    },
+    "add": "Hinzufügen",
+    "addLabel": "{{title}} zum Spendenkorb hinzufügen",
+    "added": "{{title}} hinzugefügt. Ausgewählte Anzahl: {{quantity}}.",
+    "basketLabel": "Deine ausgewählte Unterstützung",
+    "basketTitle": "Deine Hilfe, zusammengebracht.",
+    "checkout": "Weiter zu den Angaben",
+    "reassurance": "Eine Absicht, keine Warenbestellung.",
+    "materialTitle": "Du möchtest Sachen spenden?",
+    "materialDescription": "Biete Ausrüstung, Materialien oder einen nicht mehr benötigten Rollstuhl an. Bitte stimme dich mit uns ab, bevor du etwas versendest.",
+    "materialAction": "Sprich mit unserem Team"
+  },
+  "flexible": {
+    "eyebrow": "Lass deine Hilfe ihren Weg finden",
+    "title": "Du bist noch unentschlossen?",
+    "description": "Wähle einen freien Betrag und besprich mit unserem Team, wo Unterstützung am dringendsten gebraucht wird.",
+    "label": "Freier Betrag in EUR",
+    "hint": "Nur ein Beispielbetrag. Eine Änderung ersetzt deinen bisherigen freien Betrag.",
+    "action": "Freien Betrag hinzufügen",
+    "error": "Gib einen positiven Betrag mit höchstens zwei Nachkommastellen innerhalb des unterstützten Zahlenbereichs ein.",
+    "added": "{{amount}} flexible Unterstützung zum Spendenkorb hinzugefügt."
+  },
+  "journey": {
+    "eyebrow": "Der Weg deiner Unterstützung",
+    "title": "Von Anfang bis Ende durchdacht.",
+    "choose": "Wähle einen sinnvollen Zweck",
+    "review": "Prüfe deine Auswahl",
+    "contact": "Besprich nächste Schritte mit unserem Team",
+    "note": "Online-Zahlungen sind noch nicht verfügbar. Stimme Beträge, Verfügbarkeit und Verwendung vor einer Spende mit unserem Team ab."
+  },
   "purposes": {
     "koffa": {
       "category": "Lebensmittel & Würde",
