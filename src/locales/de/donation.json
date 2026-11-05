@@ -1,0 +1,61 @@
+{
+  "shared": {
+    "home": "Startseite",
+    "layoutHint": "Ein sinnvoller Beitrag, ein einfacher Weg.",
+    "footer": "TunisAid · Gemeinsam helfen, über Grenzen hinweg.",
+    "contact": "Fragen? Kontaktiere unser Team",
+    "illustrative": "Beispielbeträge in EUR · Keine bestätigten Beschaffungskosten.",
+    "unavailable": "Online-Spenden sind noch nicht verfügbar. Es wird keine Zahlung verarbeitet, und es werden keine persönlichen Daten oder Kartendaten erfasst. Kontaktiere unser Team, um über Unterstützung für TunisAid zu sprechen.",
+    "empty": "Dein Spendenkorb ist leer. Wähle einen Zweck oder einen freien Betrag aus.",
+    "total": "Beispielsumme",
+    "flexible": "Flexible Unterstützung",
+    "flexibleDetail": "Ein Betrag ohne festgelegten Zweck",
+    "quantity": "Anzahl für {{title}}",
+    "decrease": "Anzahl für {{title}} verringern",
+    "increase": "Anzahl für {{title}} erhöhen",
+    "remove": "{{title}} entfernen",
+    "lineDetail": "{{quantity}} × {{amount}}",
+    "stepsLabel": "Spendenschritte",
+    "steps": {
+      "choose": "Unterstützung auswählen",
+      "payment": "Angaben & Zahlung",
+      "thanks": "Danke"
+    },
+    "supportTitle": "Dein Beitrag hilft. Er ist keine Warenbestellung.",
+    "supportDescription": "Diese Ideen zeigen mögliche Formen der Hilfe. Beträge und endgültige Verwendung müssen mit unserem Team abgestimmt werden; du erhältst keine Warenlieferung."
+  },
+  "purposes": {
+    "koffa": {
+      "category": "Lebensmittel & Würde",
+      "title": "Verschenke eine Koffa",
+      "description": "Eine Tasche mit Lebensmitteln für den Alltag einer Familie in Tunesien.",
+      "impact": "Eine Familie. Wichtige Lebensmittel.",
+      "unit": "pro Koffa",
+      "basketTitle": "Koffa-Lebensmittel"
+    },
+    "wheelchair": {
+      "category": "Mobilität & Selbstständigkeit",
+      "title": "Trage zu einem Rollstuhl bei",
+      "description": "Hilf anteilig bei einem Rollstuhl für beispielhaft 180 €. Sechs Anteile ergeben einen ganzen Rollstuhl.",
+      "impact": "Ein Schritt zu mehr Freiheit im Alltag.",
+      "unit": "pro Rollstuhlanteil",
+      "basketTitle": "Rollstuhl-Unterstützung"
+    },
+    "school": {
+      "category": "Lernen & Möglichkeiten",
+      "title": "Packe eine Schultasche",
+      "description": "Hilf einem Kind mit einer Tasche, Heften und wichtigen Schulmaterialien beim Schulstart.",
+      "impact": "Das Werkzeug für einen guten Anfang.",
+      "unit": "pro Schulset",
+      "basketTitle": "Schulmaterialien"
+    },
+    "warmth": {
+      "category": "Fürsorge & Geborgenheit",
+      "title": "Schenke ein wenig Wärme",
+      "description": "Trage zu warmen Decken und saisonalen Grundbedarfsartikeln für einen Haushalt bei.",
+      "impact": "Geborgenheit, wenn sie gebraucht wird.",
+      "unit": "pro Wärmeset",
+      "basketTitle": "Wärme & Geborgenheit"
+    }
+  }
+}

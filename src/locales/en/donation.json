@@ -1,0 +1,61 @@
+{
+  "shared": {
+    "home": "Home",
+    "layoutHint": "A purposeful gift, one simple checkout.",
+    "footer": "TunisAid · Giving with purpose, across borders.",
+    "contact": "Questions? Contact our team",
+    "illustrative": "Illustrative amounts in EUR · Not confirmed procurement costs.",
+    "unavailable": "Online donations are not available yet. No payment will be processed and no personal or card details are collected. Contact our team to discuss supporting TunisAid.",
+    "empty": "Your basket is empty. Choose a purpose or a flexible amount to get started.",
+    "total": "Illustrative total",
+    "flexible": "Flexible support",
+    "flexibleDetail": "An amount without a selected purpose",
+    "quantity": "Quantity for {{title}}",
+    "decrease": "Decrease quantity for {{title}}",
+    "increase": "Increase quantity for {{title}}",
+    "remove": "Remove {{title}}",
+    "lineDetail": "{{quantity}} × {{amount}}",
+    "stepsLabel": "Donation steps",
+    "steps": {
+      "choose": "Choose your gifts",
+      "payment": "Details & payment",
+      "thanks": "Thank you"
+    },
+    "supportTitle": "Your gift is support. Not a delivery.",
+    "supportDescription": "These gift ideas illustrate ways to help. Amounts and final allocation need confirmation with our team; nothing is shipped to you."
+  },
+  "purposes": {
+    "koffa": {
+      "category": "Food & dignity",
+      "title": "Give a Koffa",
+      "description": "A bag of everyday groceries, chosen for a family in Tunisia.",
+      "impact": "One family. Essential groceries.",
+      "unit": "per Koffa",
+      "basketTitle": "Koffa groceries"
+    },
+    "wheelchair": {
+      "category": "Mobility & independence",
+      "title": "Share a wheelchair",
+      "description": "Help fund an illustrative €180 wheelchair, one share at a time. Six shares make a whole chair.",
+      "impact": "A step toward everyday freedom.",
+      "unit": "per wheelchair share",
+      "basketTitle": "Wheelchair support"
+    },
+    "school": {
+      "category": "Learning & possibility",
+      "title": "Pack a school bag",
+      "description": "Help a child start school with a bag, notebooks and essential supplies.",
+      "impact": "The tools for a brighter start.",
+      "unit": "per school kit",
+      "basketTitle": "School supplies"
+    },
+    "warmth": {
+      "category": "Care & comfort",
+      "title": "Bring a little warmth",
+      "description": "Contribute to warm blankets and seasonal essentials for a household.",
+      "impact": "Comfort when it is needed most.",
+      "unit": "per warmth kit",
+      "basketTitle": "Warmth & comfort"
+    }
+  }
+}
