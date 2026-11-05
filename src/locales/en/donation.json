@@ -1,6 +1,8 @@
 {
   "shared": {
     "home": "Home",
+    "language": "Language",
+    "languages": { "en": "Switch to English", "de": "Switch to German" },
     "layoutHint": "A purposeful gift, one simple checkout.",
     "footer": "TunisAid · Giving with purpose, across borders.",
     "contact": "Questions? Contact our team",
@@ -23,6 +25,45 @@
     },
     "supportTitle": "Your gift is support. Not a delivery.",
     "supportDescription": "These gift ideas illustrate ways to help. Amounts and final allocation need confirmation with our team; nothing is shipped to you."
+  },
+  "checkout": {
+    "eyebrow": "Your gift, thoughtfully chosen",
+    "title": "Make your kindness count.",
+    "description": "Review your selection. Online payment is not available yet.",
+    "unavailableTitle": "Online payment unavailable",
+    "detailsTitle": "01 Your details",
+    "detailsHint": "These fields show the planned checkout. They are disabled, and no personal information is collected.",
+    "private": "Keep my name private",
+    "privateHint": "Privacy options will be confirmed before online donations are enabled.",
+    "paymentTitle": "02 Complete your gift",
+    "paymentMethod": "Planned payment methods · Unavailable",
+    "methods": { "card": "Card", "paypal": "PayPal", "bank": "Bank transfer" },
+    "cardHeading": "Credit or debit card · Unavailable",
+    "hostedHint": "Hosted payment fields require a payment provider. Do not send card details to TunisAid.",
+    "policyHint": "Donation terms, privacy information and payment methods must be finalized before online donations can be enabled. Contact our team with any questions.",
+    "noPayment": "No payment has been processed. This is not a donation confirmation.",
+    "reviewLabel": "Review your illustrative gift selection",
+    "reviewTitle": "A little kindness. Real possibilities.",
+    "changeGifts": "Change gifts",
+    "supportEyebrow": "Giving with purpose",
+    "fields": {
+      "name": { "label": "Full name", "placeholder": "Your full name" },
+      "email": { "label": "Email address", "placeholder": "you@example.com" },
+      "country": {
+        "label": "Country of residence",
+        "placeholder": "Select a country"
+      },
+      "number": {
+        "label": "Card number",
+        "placeholder": "Payment field unavailable"
+      },
+      "expiry": { "label": "Expiry date", "placeholder": "MM / YY" },
+      "security": { "label": "Security code", "placeholder": "CVC" },
+      "cardName": {
+        "label": "Name on card",
+        "placeholder": "Name as shown on card"
+      }
+    }
   },
   "hero": {
     "eyebrow": "Give with purpose",
