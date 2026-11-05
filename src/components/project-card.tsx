@@ -9,6 +9,7 @@ type ProjectCardProps = {
   action: ReactNode
   cover?: 'lagoon' | 'terracotta'
   delay?: number
+  coverImage?: ReactNode
 }
 
 export function ProjectCard({ cover = 'lagoon', ...props }: ProjectCardProps) {
@@ -20,13 +21,16 @@ export function ProjectCard({ cover = 'lagoon', ...props }: ProjectCardProps) {
     >
       <div
         className={cn(
-          'flex min-h-60 flex-col items-start justify-end p-6',
+          'relative flex min-h-60 flex-col items-start justify-end overflow-hidden p-6',
           cover === 'lagoon'
             ? 'bg-brand-project-lagoon'
             : 'bg-brand-project-terracotta',
         )}
       >
-        <span className="rounded-full border border-brand-header-border bg-brand-glass-chip px-3.5 py-[7px] text-[13px] leading-none font-bold text-brand-lagoon-deep backdrop-blur-[6px]">
+        {props.coverImage && (
+          <div className="absolute inset-0">{props.coverImage}</div>
+        )}
+        <span className="relative rounded-full border border-brand-header-border bg-brand-glass-chip px-3.5 py-[7px] text-[13px] leading-none font-bold text-brand-lagoon-deep backdrop-blur-[6px]">
           {props.tag}
         </span>
       </div>

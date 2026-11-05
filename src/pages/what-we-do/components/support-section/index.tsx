@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { SectionHeading } from '#/components/section-heading'
-import { StatementCard } from '#/components/statement-card'
+import { ImagePanel } from '#/components/image-panel'
+import { editorialImages } from '#/lib/site-images'
 
 const areas = [
   'mobility',
@@ -30,16 +31,29 @@ export function SupportSection() {
           description={t('work.support.description')}
           className="max-w-[45rem]"
         />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <ImagePanel
+          image={editorialImages.learning}
+          alt={t('imagery.learning')}
+          caption={t('imagery.caption')}
+          sizes="(min-width: 1280px) 1200px, calc(100vw - 48px)"
+          imageClassName="aspect-[4/3] sm:aspect-[2/1] object-[center_40%]"
+        />
+        <div className="grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
           {areas.map((area) => (
-            <StatementCard
+            <div
               key={area}
-              size="compact"
-              eyebrow={t(`work.support.items.${area}.eyebrow`)}
-              title={t(`work.support.items.${area}.title`)}
-              description={t(`work.support.items.${area}.description`)}
-              className="lg:min-h-80"
-            />
+              className="space-y-3 border-t border-brand-contact-divider pt-5"
+            >
+              <p className="text-xs font-extrabold uppercase text-brand-lagoon-deep">
+                {t(`work.support.items.${area}.eyebrow`)}
+              </p>
+              <h3 className="font-display text-[28px] leading-tight font-bold">
+                {t(`work.support.items.${area}.title`)}
+              </h3>
+              <p className="text-base leading-relaxed text-brand-ink-soft">
+                {t(`work.support.items.${area}.description`)}
+              </p>
+            </div>
           ))}
         </div>
       </div>

@@ -16,6 +16,8 @@ import { IconLabel } from '#/components/icon-label'
 import { PurposeCard } from '#/components/purpose-card'
 import { SectionHeading } from '#/components/section-heading'
 import { Button } from '#/components/ui/button'
+import { ImagePanel } from '#/components/image-panel'
+import { donationImages } from '#/lib/site-images'
 import {
   donationPurposes,
   donationTotal,
@@ -33,6 +35,7 @@ const filters = ['all', 'essentials', 'mobility', 'education'] as const
 
 export function PurposeSelection() {
   const { t, i18n } = useTranslation('donation')
+  const { t: imageText } = useTranslation('common', { keyPrefix: 'imagery' })
   const { basket, setQuantity } = useDonationBasket()
   const [filter, setFilter] = useState<DonationCategory | 'all'>('all')
   const [lastAdded, setLastAdded] = useState<{
@@ -83,6 +86,15 @@ export function PurposeSelection() {
               return (
                 <li key={purpose.id}>
                   <PurposeCard
+                    image={
+                      <ImagePanel
+                        image={donationImages[purpose.id]}
+                        alt=""
+                        sizes="(min-width: 1280px) 386px, (min-width: 1024px) 30vw, (min-width: 640px) 44vw, calc(100vw - 48px)"
+                        className="[&>div]:rounded-none"
+                        imageClassName="aspect-[7/6]"
+                      />
+                    }
                     icon={<Icon aria-hidden="true" className="size-7" />}
                     category={t(`purposes.${purpose.id}.category`)}
                     title={title}
@@ -118,7 +130,7 @@ export function PurposeSelection() {
             })}
           </ul>
           <p className="text-xs text-brand-ink-soft">
-            {t('shared.illustrative')}
+            {t('shared.illustrative')} {imageText('donationCaption')}
           </p>
         </div>
         <aside

@@ -5,6 +5,8 @@ import arrowInk from '#/assets/images/arrow-right-ink.svg'
 import { ProjectCard } from '#/components/project-card'
 import { SectionHeading } from '#/components/section-heading'
 import { Button } from '#/components/ui/button'
+import { ImagePanel } from '#/components/image-panel'
+import { editorialImages } from '#/lib/site-images'
 
 const projects = [
   { key: 'education', cover: 'lagoon' },
@@ -13,6 +15,7 @@ const projects = [
 
 export function ProjectsSection() {
   const { t } = useTranslation('common', { keyPrefix: 'home.projects' })
+  const { t: imageText } = useTranslation('common', { keyPrefix: 'imagery' })
 
   return (
     <section
@@ -45,6 +48,23 @@ export function ProjectsSection() {
                 tag={t(`items.${project.key}.tag`)}
                 cover={project.cover}
                 delay={index * 0.1}
+                coverImage={
+                  <ImagePanel
+                    image={
+                      project.key === 'education'
+                        ? editorialImages.learning
+                        : editorialImages.collaboration
+                    }
+                    alt={imageText(
+                      project.key === 'education'
+                        ? 'learning'
+                        : 'collaboration',
+                    )}
+                    sizes="(min-width: 1280px) 588px, (min-width: 768px) 46vw, calc(100vw - 48px)"
+                    className="h-full [&>div]:h-full [&>div]:rounded-none"
+                    imageClassName="h-full object-center"
+                  />
+                }
                 action={
                   <Button
                     asChild
@@ -66,6 +86,9 @@ export function ProjectsSection() {
             </li>
           ))}
         </ul>
+        <p className="-mt-8 text-xs leading-relaxed text-brand-ink-soft">
+          {imageText('caption')}
+        </p>
       </div>
     </section>
   )
