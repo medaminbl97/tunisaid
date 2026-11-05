@@ -26,6 +26,17 @@
     "supportTitle": "Your gift is support. Not a delivery.",
     "supportDescription": "These gift ideas illustrate ways to help. Amounts and final allocation need confirmation with our team; nothing is shipped to you."
   },
+  "thanks": {
+    "eyebrow": "A little kindness goes a long way",
+    "title": "Every gift starts with someone who cares.",
+    "description": "Thank you for your interest in supporting everyday dignity in Tunisia.",
+    "notice": "This page previews the future confirmation layout. It does not confirm a donation, issue a receipt or trigger an email.",
+    "recapLabel": "Illustrative gift recap",
+    "recapTitle": "Your selected support",
+    "recapHint": "Any amounts shown are your local selection only, not a payment record. Contact our team to discuss the next steps.",
+    "explore": "Explore our work",
+    "back": "Back to gift selection"
+  },
   "checkout": {
     "eyebrow": "Your gift, thoughtfully chosen",
     "title": "Make your kindness count.",

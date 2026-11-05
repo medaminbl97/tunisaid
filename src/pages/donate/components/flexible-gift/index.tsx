@@ -18,7 +18,7 @@ export function FlexibleGift() {
   const id = useId()
   const [amount, setAmount] = useState('50')
   const [error, setError] = useState(false)
-  const [message, setMessage] = useState('')
+  const [lastAddedCents, setLastAddedCents] = useState<number | null>(null)
 
   return (
     <section
@@ -47,16 +47,12 @@ export function FlexibleGift() {
               )
             ) {
               setError(true)
-              setMessage('')
+              setLastAddedCents(null)
               return
             }
             setFlexibleCents(cents)
             setError(false)
-            setMessage(
-              t('flexible.added', {
-                amount: formatDonationAmount(cents, i18n.language),
-              }),
-            )
+            setLastAddedCents(cents)
           }}
         >
           <Label htmlFor={id} className="font-bold text-brand-ink">
@@ -93,7 +89,10 @@ export function FlexibleGift() {
             {t('flexible.action')} <ArrowRight aria-hidden="true" />
           </Button>
           <p role="status" className="text-sm text-brand-ink-soft">
-            {message}
+            {lastAddedCents !== null &&
+              t('flexible.added', {
+                amount: formatDonationAmount(lastAddedCents, i18n.language),
+              })}
           </p>
         </form>
       </div>

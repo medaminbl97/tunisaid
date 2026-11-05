@@ -74,6 +74,16 @@ owns the basket provider and chooses exactly one header/footer pair per route;
 other pages retain their existing site shell. EN/DE switching remains available
 in the compact layout.
 
+The `/donate/thank-you` route follows Figma frame `47:322` without pretending
+that a payment succeeded. It thanks visitors for their interest, explicitly states
+that no payment was processed, and shows only their illustrative local selection
+(or the empty basket). No receipt, confirmation email, or success event is created.
+Checkout does not navigate there on submit. The route is marked `noindex`; it is
+available by direct URL for design review until a real payment integration supplies
+server-verified confirmation. Production work must validate prices and allocation,
+use hosted payment fields, calculate totals on the server, finalize privacy/terms,
+and verify provider confirmation before enabling any success state.
+
 English is the default and fallback locale. Header labels and accessible names use the typed `siteHeader` keys, while homepage content uses the `home` keys in `src/locales/en/common.json`, with matching German translations in `src/locales/de/common.json`. Translation key types are derived from the English resources. The app and Storybook both initialize the shared i18next setup.
 
 ## Linting & Formatting

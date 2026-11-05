@@ -15,6 +15,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DonateRouteImport } from './routes/donate'
 import { Route as WhatWeDoRouteImport } from './routes/what-we-do'
 import { Route as DonateCheckoutRouteImport } from './routes/donate_.checkout'
+import { Route as DonateThankYouRouteImport } from './routes/donate_.thank-you'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +47,11 @@ const DonateCheckoutRoute = DonateCheckoutRouteImport.update({
   path: '/donate/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DonateThankYouRoute = DonateThankYouRouteImport.update({
+  id: '/donate_/thank-you',
+  path: '/donate/thank-you',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/donate': typeof DonateRoute
   '/what-we-do': typeof WhatWeDoRoute
   '/donate/checkout': typeof DonateCheckoutRoute
+  '/donate/thank-you': typeof DonateThankYouRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/donate': typeof DonateRoute
   '/what-we-do': typeof WhatWeDoRoute
   '/donate/checkout': typeof DonateCheckoutRoute
+  '/donate/thank-you': typeof DonateThankYouRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,14 +79,27 @@ export interface FileRoutesById {
   '/donate': typeof DonateRoute
   '/what-we-do': typeof WhatWeDoRoute
   '/donate_/checkout': typeof DonateCheckoutRoute
+  '/donate_/thank-you': typeof DonateThankYouRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/about' | '/contact' | '/donate' | '/what-we-do' | '/donate/checkout'
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/donate'
+    | '/what-we-do'
+    | '/donate/checkout'
+    | '/donate/thank-you'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/about' | '/contact' | '/donate' | '/what-we-do' | '/donate/checkout'
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/donate'
+    | '/what-we-do'
+    | '/donate/checkout'
+    | '/donate/thank-you'
   id:
     | '__root__'
     | '/'
@@ -87,6 +108,7 @@ export interface FileRouteTypes {
     | '/donate'
     | '/what-we-do'
     | '/donate_/checkout'
+    | '/donate_/thank-you'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -96,6 +118,7 @@ export interface RootRouteChildren {
   DonateRoute: typeof DonateRoute
   WhatWeDoRoute: typeof WhatWeDoRoute
   DonateCheckoutRoute: typeof DonateCheckoutRoute
+  DonateThankYouRoute: typeof DonateThankYouRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -142,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DonateCheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/donate_/thank-you': {
+      id: '/donate_/thank-you'
+      path: '/donate/thank-you'
+      fullPath: '/donate/thank-you'
+      preLoaderRoute: typeof DonateThankYouRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -152,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   DonateRoute: DonateRoute,
   WhatWeDoRoute: WhatWeDoRoute,
   DonateCheckoutRoute: DonateCheckoutRoute,
+  DonateThankYouRoute: DonateThankYouRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
