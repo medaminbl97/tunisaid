@@ -56,6 +56,14 @@ personal or payment information is stored. The `donation` translation namespace
 contains matching English/German copy. Catalog prices are illustrative, not
 validated procurement costs. Payment processing is intentionally unavailable.
 
+The `/donate` page implements Figma frame `47:314`: purpose cards, category
+filters, an editable local basket, flexible amounts, and the giving journey.
+The groceries illustration is the original local Figma SVG. The basket starts
+empty rather than presenting the design's example €100 as an actual selection.
+Flexible input accepts decimal points or commas and replaces the previous flexible
+amount. All amounts are illustrative; real donation arrangements remain available
+through `/contact`. Checkout navigation stays disabled until its route is added.
+
 English is the default and fallback locale. Header labels and accessible names use the typed `siteHeader` keys, while homepage content uses the `home` keys in `src/locales/en/common.json`, with matching German translations in `src/locales/de/common.json`. Translation key types are derived from the English resources. The app and Storybook both initialize the shared i18next setup.
 
 ## Linting & Formatting

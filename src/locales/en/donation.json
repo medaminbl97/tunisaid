@@ -24,6 +24,55 @@
     "supportTitle": "Your gift is support. Not a delivery.",
     "supportDescription": "These gift ideas illustrate ways to help. Amounts and final allocation need confirmation with our team; nothing is shipped to you."
   },
+  "hero": {
+    "eyebrow": "Give with purpose",
+    "title": "Give a little. Change the everyday.",
+    "description": "A full pantry. A freer day. A brighter start. Choose what your kindness can help make possible.",
+    "action": "Find your purpose",
+    "artEyebrow": "Small gesture. Everyday dignity.",
+    "artTitle": "More than a bag. A little breathing room.",
+    "artDescription": "Groceries for a family. Kindness from you."
+  },
+  "selection": {
+    "eyebrow": "Choose your impact",
+    "title": "What will your gift become?",
+    "description": "Practical support. Human possibilities.",
+    "filterLabel": "Filter donation purposes",
+    "filters": {
+      "all": "All purposes",
+      "essentials": "Essentials",
+      "mobility": "Mobility",
+      "education": "Education"
+    },
+    "add": "Add gift",
+    "addLabel": "Add {{title}} to your basket",
+    "added": "{{title}} added. Selected quantity: {{quantity}}.",
+    "basketLabel": "Your selected gifts",
+    "basketTitle": "Your kindness, brought together.",
+    "checkout": "Continue to checkout",
+    "reassurance": "An intention, not a shopping order.",
+    "materialTitle": "Have goods to donate?",
+    "materialDescription": "Offer equipment, supplies or a wheelchair you no longer need. Please coordinate with us before sending anything.",
+    "materialAction": "Talk to our team"
+  },
+  "flexible": {
+    "eyebrow": "Let your kindness find its way",
+    "title": "Not sure what to choose?",
+    "description": "Select a flexible amount and discuss where support is most needed with our team.",
+    "label": "Flexible amount in EUR",
+    "hint": "Example amount only. Updating this replaces your previous flexible amount.",
+    "action": "Add flexible amount",
+    "error": "Enter a positive amount with at most two decimal places, within the supported numeric range.",
+    "added": "{{amount}} of flexible support added to your basket."
+  },
+  "journey": {
+    "eyebrow": "The journey of your gift",
+    "title": "Thoughtful from start to finish.",
+    "choose": "Choose a meaningful purpose",
+    "review": "Review your selected support",
+    "contact": "Discuss next steps with our team",
+    "note": "Online payment is not available yet. Confirm amounts, availability and allocation with our team before donating."
+  },
   "purposes": {
     "koffa": {
       "category": "Food & dignity",
