@@ -18,7 +18,13 @@ export default [
     },
   },
   {
-    ignores: ['.output/**', 'eslint.config.js', 'prettier.config.js'],
+    ignores: [
+      '.output/**',
+      'src/api/generated/**',
+      'directus/extensions/**',
+      'eslint.config.js',
+      'prettier.config.js',
+    ],
   },
   ...storybook.configs['flat/recommended'],
 ]
