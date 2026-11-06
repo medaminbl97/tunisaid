@@ -9,6 +9,113 @@ npm install
 npm run dev
 ```
 
+## Local backend
+
+A root [Directus 11 + PostgreSQL stack](./directus/README.md) provides private
+content, fundraising and donation-tracking collections with mounted, versioned
+API migrations and repeatable draft seeds. The root `docker-compose.yml` includes
+`directus/compose.yaml` to run this backend at localhost:8056. Checkout records
+donations in Directus through a **mock** payment provider; no real payments are
+processed (see [Donation checkout](#donation-checkout)).
+
+## API generation and Projects
+
+The Projects API foundation uses Hey API's Fetch SDK, generated TypeScript and
+Zod 4 response validators. With the local backend running:
+
+```bash
+npm run api:generate
+npm run api:test
+```
+
+Generation requires Node.js 22.18+. Set `OPENAPI_TOKEN` in the git-ignored root
+`.env.local` or your shell; the generator uses it as a Bearer token to fetch
+Directus's OpenAPI specification. It does not log in with administrator credentials
+or read `directus/.env`. Optionally set `DIRECTUS_URL` for another Directus server.
+The anonymous specification omits private collections. The token is used only
+by the local generator, never written to the generated client. Never prefix it
+with `VITE_` or commit it. To use another contract, run
+`OPENAPI_INPUT=/path/to/openapi.json npm run api:generate` (a URL also works).
+For a URL, `OPENAPI_TOKEN` is sent if set; use only trusted spec URLs. Redirects
+are rejected. Local input files do not require a token.
+The input must expose the Projects list/detail operations and expanded translations.
+Generated output lives in `src/api/generated/`; never edit it manually.
+Regenerate after changing the Directus schema or OpenAPI contract. Only
+`/items/*` operations are generated; the token's Directus role decides which
+collections and methods appear in the spec, so grant it read access to expose a
+new collection. Use an administrator token so the one generated SDK covers both
+the public collections and the private donation collections the server uses.
+Bundling an operation grants nothing: Directus enforces the caller's policy on
+every request.
+
+The browser and the server share that SDK through different client instances. The
+browser uses the default client (`VITE_API_BASE_URL`, no token).
+`src/server/donations/directus.ts` creates a server-only client with the donation
+service token, a timeout, Directus query serialization and `DirectusError`
+mapping; import it only from server functions. Its reads call the generated
+`readItems*` operations. Writes go through typed `create`/`update` helpers because
+Directus' spec reuses read schemas for request bodies, marking `id` as required.
+Directus returns only the requested `fields`, so responses are parsed with narrow
+schemas derived from `zod.gen.ts` instead of the generated full-record validators.
+
+`src/api/runtime-config.ts` uses `VITE_API_BASE_URL`, defaulting to
+`http://localhost:8056`. Do not put admin credentials in any `VITE_` variable.
+The Projects domain exports `getProjects`, `getProject`, `projectKeys`,
+`projectsQueryOptions` and `projectQueryOptions` under
+`src/api/collections/projects/`. Lists use language, limit (default 12, maximum 100) and offset (default 0); detail queries use UUID and language. Both reject
+unpublished projects, missing/duplicate translations, invalid data and request
+failures. Rich-text HTML is returned unchanged, not rendered; sanitize it at the
+eventual display boundary.
+
+The Campaigns domain (`src/api/collections/campaigns/`) exports
+`getActiveCampaigns`/`activeCampaignsQueryOptions` (published campaigns that have
+not ended, without bodies) and `getCampaignBySlug`/`campaignBySlugQueryOptions`
+(body plus linked projects that are published and translated). Unknown or invalid
+slugs throw `CampaignNotFoundError` without retrying. The home page shows active
+campaigns and `/campaigns/<slug>` renders the sanitized body with the shared
+`ArticleContent` table-of-contents layout.
+
+`/projects` lists published projects with campaign badges and a single-campaign
+filter. The unfiltered list includes projects without a campaign; filtering shows
+only projects linked to the selected campaign. Opening a project from a campaign
+filter carries that campaign context into the project detail route.
+
+The Donation purposes domain (`src/api/collections/donation-purposes/`) exports
+`getDonationPurposes`/`donationPurposesQueryOptions` (the published catalog for
+one language, sorted by `sort` then slug) and `donationPurposeCategories`.
+Purposes without a translation in the requested language are skipped, and
+unpublished categories or projects are dropped from each purpose. `/donate`
+loads this catalog through `useDonationPurposes`, derives its category filters
+from the data and shows loading, error-with-retry and empty states; the flexible
+amount works regardless. The basket is keyed by purpose slug and snapshots the
+unit price when a gift is added, so checkout and thank-you totals do not depend
+on the catalog request. Local images are matched by slug; purposes without one
+show their category icon.
+
+The router provides a React Query client (fresh per SSR router/request, shared in
+the browser) using `src/integration/tanstack-query.ts`. Consume exported query
+options with `useQuery`, or use that client's `fetchQuery`/`ensureQueryData` for
+loading. Keys include all varying inputs. The temporary Directus serializer
+handles nested JSON filters; it is not a generic serializer for other backends.
+
+The Directus baseline migration (`directus/migrations/001-initial-schema.mjs`)
+grants anonymous read access to published projects, campaigns, categories and
+donation purposes only, and CORS allows `GET` from the website origin (see
+`directus/README.md`). Project and campaign bodies and purpose descriptions are
+rich-text HTML, sanitized before rendering. Seeds stay drafts unless setup runs with
+`SEED_PUBLISH_DEMO=true`. Directus files remain private; never use an
+administrator credential in a browser.
+
+For an authenticated local integration check:
+
+```bash
+API_INTEGRATION=true node --env-file=directus/.env --test scripts/projects-api.test.mjs
+```
+
+It verifies private access and creates/deletes a synthetic published project and
+translation to test the generated SDK, localization and rich HTML. Audit entries
+remain; run only against a local development backend.
+
 # Building For Production
 
 To build this application for production:
@@ -91,7 +198,10 @@ EUR cents and are formatted for the active language. Selection survives client-s
 navigation while the provider remains mounted, but resets on a full reload; no
 personal or payment information is stored. The `donation` translation namespace
 contains matching English/German copy. Catalog prices are illustrative, not
-validated procurement costs. Payment processing is intentionally unavailable.
+validated procurement costs. Donors never choose a campaign: `/donate?campaign=<slug>`
+(the campaign page's donate link) only pre-filters purposes to that campaign's
+projects, and checkout derives each line's campaign. `CampaignProgress` shows
+raised-so-far totals.
 
 The `/donate` page implements Figma frame `47:314`: purpose cards, category
 filters, an editable local basket, flexible amounts, and the giving journey.
@@ -102,24 +212,47 @@ amount. All amounts are illustrative; real donation arrangements remain availabl
 through `/contact`. A nonempty basket enables navigation to `/donate/checkout`.
 
 The checkout route implements Figma frame `47:318`, using the shared compact
-layout and editable basket summary. Personal, privacy and card controls are
-disabled. Payment methods are explicitly unavailable; no payment provider,
-submission endpoint, policy link placeholders, or simulated success is wired.
-The visible notice provides a working `/contact` alternative. Direct visits with
-an empty basket show the empty state and a working Change gifts link. The root
-owns the basket provider and chooses exactly one header/footer pair per route;
-other pages retain their existing site shell. EN/DE switching remains available
-in the compact layout.
+layout and editable basket summary. The root owns the basket provider and chooses
+exactly one header/footer pair per route; EN/DE switching remains available in
+the compact layout. Direct visits with an empty basket show the empty state and a
+working Change gifts link.
 
-The `/donate/thank-you` route follows Figma frame `47:322` without pretending
-that a payment succeeded. It thanks visitors for their interest, explicitly states
-that no payment was processed, and shows only their illustrative local selection
-(or the empty basket). No receipt, confirmation email, or success event is created.
-Checkout does not navigate there on submit. The route is marked `noindex`; it is
-available by direct URL for design review until a real payment integration supplies
-server-verified confirmation. Production work must validate prices and allocation,
-use hosted payment fields, calculate totals on the server, finalize privacy/terms,
-and verify provider confirmation before enabling any success state.
+### Donation checkout
+
+The flow is `/donate` → `/donate/checkout` → `/donate/mock-payment` →
+`/donate/thank-you?reference=…&token=…`. Name, email and country are optional, and
+names stay private by default. Server functions in
+`src/api/collections/donations/functions.ts` call `src/server/donations/` with
+the Directus service token; the token and signing secret never reach the browser.
+
+- **Checkout** reprices every line from published purposes, rejects changed
+  prices (the form refreshes the basket) and checks the amount limits. Each line's
+  campaign is derived from purpose → project → the project's open campaign;
+  flexible amounts and unlinked purposes are general. A project in more than one
+  open campaign fails with `campaign_conflict`. It then creates the donor (only if
+  details were given), one `pending` checkout with one payment attempt, one
+  donation per campaign (plus one general donation when needed) and the items
+  with title snapshots.
+- **Mock payment** links are HMAC-signed for one attempt. Succeed, fail or cancel
+  records an idempotent payment event (`mock:<event id>`) that moves the attempt
+  and the pending checkout to a final status; repeats and late events change nothing.
+- **Thank-you** shows a signed, personal-data-free receipt that refreshes until
+  the status is final; each line links to the campaign it counts toward, and a
+  paid checkout clears the basket. Without parameters the page keeps its design
+  preview, which states that no payment was processed.
+- **Raised totals** on campaigns sum their donations whose checkout is paid,
+  minus succeeded refunds. A receipt shows `partially_refunded`/`refunded`
+  derived from linked succeeded refunds; the stored checkout status stays `paid`.
+
+Run `node directus/scripts/init-env.mjs` to create the root `.env` (keys are listed
+in `.env.example`). Checkout is disabled unless `DIRECTUS_SERVICE_TOKEN`,
+`DONATION_SIGNING_SECRET` and `PAYMENT_PROVIDER=mock` are set, and the mock is
+refused when `NODE_ENV=production` unless `ALLOW_MOCK_PAYMENTS=true`. Refunds
+are recorded by staff in Directus after they were issued at the provider (see
+`directus/README.md`).
+
+Not done yet: a real payment provider and webhook route, email receipts, rate
+limiting and expiry of abandoned pending donations. Privacy and terms copy must be finalized before going live.
 
 English is the default and fallback locale. Header labels and accessible names use the typed `siteHeader` keys, while homepage content uses the `home` keys in `src/locales/en/common.json`, with matching German translations in `src/locales/de/common.json`. Translation key types are derived from the English resources. The app and Storybook both initialize the shared i18next setup.
 
