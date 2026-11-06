@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import {
   Accessibility,
@@ -17,35 +17,100 @@ import { PurposeCard } from '#/components/purpose-card'
 import { SectionHeading } from '#/components/section-heading'
 import { Button } from '#/components/ui/button'
 import { ImagePanel } from '#/components/image-panel'
-import { donationImages } from '#/lib/site-images'
+import { donationPurposeCategories } from '#/api/collections/donation-purposes/queries'
+import { useDonationPurposes } from '#/hooks/use-donation-purposes'
+import { donationImage } from '#/lib/site-images'
 import {
-  donationPurposes,
+  basketQuantity,
   donationTotal,
   formatDonationAmount,
 } from '#/lib/donation'
-import type { DonationCategory, DonationPurposeId } from '#/lib/donation'
 
-const icons = {
-  koffa: Package,
-  wheelchair: Accessibility,
-  school: GraduationCap,
-  warmth: Heart,
+const categoryIcons: Partial<Record<string, typeof Heart>> = {
+  essentials: Package,
+  mobility: Accessibility,
+  education: GraduationCap,
 }
-const filters = ['all', 'essentials', 'mobility', 'education'] as const
 
-export function PurposeSelection() {
+type PurposeSelectionProps = {
+  // Gifts are attributed by project, so a campaign filters to its projects.
+  campaign?: { slug: string; title: string; projectSlugs: string[] }
+  projectSlug?: string
+  generalPurpose?: boolean
+}
+
+export function PurposeSelection(props: PurposeSelectionProps) {
   const { t, i18n } = useTranslation('donation')
   const { t: imageText } = useTranslation('common', { keyPrefix: 'imagery' })
   const { basket, setQuantity } = useDonationBasket()
-  const [filter, setFilter] = useState<DonationCategory | 'all'>('all')
+  const purposesQuery = useDonationPurposes()
+  const purposes = purposesQuery.data ?? []
+  const categories = donationPurposeCategories(purposes)
+  const { campaign } = props
+  const searchFilter = props.generalPurpose
+    ? 'general'
+    : props.projectSlug
+      ? `project:${props.projectSlug}`
+      : campaign
+        ? `campaign:${campaign.slug}`
+        : 'all'
+  const [selectedFilter, setFilter] = useState(searchFilter)
+  useEffect(() => {
+    setFilter(searchFilter)
+  }, [searchFilter])
+  const projects = useMemo(() => {
+    const linked = new Map<string, string>()
+    for (const purpose of purposes) {
+      if (purpose.project)
+        linked.set(purpose.project.slug, purpose.project.title)
+    }
+    return [...linked].sort((a, b) => a[1].localeCompare(b[1]))
+  }, [purposes])
+  const filterOptions = [
+    { value: 'all', label: t('selection.filters.all') },
+    ...categories.map((category) => ({
+      value: `category:${category.slug}`,
+      label: category.title,
+    })),
+    ...(campaign
+      ? [
+          {
+            value: `campaign:${campaign.slug}`,
+            label: t('selection.filters.campaign', { title: campaign.title }),
+          },
+        ]
+      : []),
+    ...projects.map(([slug, title]) => ({
+      value: `project:${slug}`,
+      label: t('selection.filters.project', { title }),
+    })),
+    ...(purposes.some((purpose) => purpose.project === null) ||
+    props.generalPurpose
+      ? [{ value: 'general', label: t('selection.filters.general') }]
+      : []),
+  ]
   const [lastAdded, setLastAdded] = useState<{
-    id: DonationPurposeId
+    title: string
     quantity: number
   } | null>(null)
   const total = donationTotal(basket)
-  const visible = donationPurposes.filter(
-    (purpose) => filter === 'all' || purpose.category === filter,
-  )
+  const visible = purposes.filter((purpose) => {
+    if (selectedFilter === 'all') return true
+    if (selectedFilter === 'general') return purpose.project === null
+    if (selectedFilter.startsWith('category:')) {
+      return purpose.category?.slug === selectedFilter.slice(9)
+    }
+    if (selectedFilter.startsWith('project:')) {
+      return purpose.project?.slug === selectedFilter.slice(8)
+    }
+    if (campaign && selectedFilter === `campaign:${campaign.slug}`) {
+      return (
+        purpose.project !== null &&
+        campaign.projectSlugs.includes(purpose.project.slug)
+      )
+    }
+    return false
+  })
 
   return (
     <section
@@ -63,75 +128,127 @@ export function PurposeSelection() {
             title={t('selection.title')}
             description={t('selection.description')}
           />
-          <FilterGroup
-            label={t('selection.filterLabel')}
-            options={filters.map((value) => ({
-              value,
-              label: t(`selection.filters.${value}`),
-            }))}
-            value={filter}
-            onChange={setFilter}
-          />
+          {filterOptions.length > 1 && (
+            <FilterGroup
+              label={t('selection.filterLabel')}
+              options={filterOptions}
+              value={selectedFilter}
+              onChange={setFilter}
+            />
+          )}
           <p role="status" className="sr-only">
             {lastAdded &&
               t('selection.added', {
-                title: t(`purposes.${lastAdded.id}.title`),
+                title: lastAdded.title,
                 quantity: lastAdded.quantity,
               })}
           </p>
-          <ul className="grid gap-6 sm:grid-cols-2">
-            {visible.map((purpose) => {
-              const Icon = icons[purpose.id]
-              const title = t(`purposes.${purpose.id}.title`)
-              return (
-                <li key={purpose.id}>
-                  <PurposeCard
-                    image={
-                      <ImagePanel
-                        image={donationImages[purpose.id]}
-                        alt=""
-                        sizes="(min-width: 1280px) 386px, (min-width: 1024px) 30vw, (min-width: 640px) 44vw, calc(100vw - 48px)"
-                        className="[&>div]:rounded-none"
-                        imageClassName="aspect-[7/6]"
-                      />
-                    }
-                    icon={<Icon aria-hidden="true" className="size-7" />}
-                    category={t(`purposes.${purpose.id}.category`)}
-                    title={title}
-                    description={t(`purposes.${purpose.id}.description`)}
-                    impact={t(`purposes.${purpose.id}.impact`)}
-                    amount={formatDonationAmount(purpose.cents, i18n.language)}
-                    unit={t(`purposes.${purpose.id}.unit`)}
-                    action={
-                      <Button
-                        type="button"
-                        variant="sun"
-                        shape="pill"
-                        className="min-h-12"
-                        aria-label={t('selection.addLabel', { title })}
-                        disabled={!Number.isSafeInteger(total + purpose.cents)}
-                        onClick={() => {
-                          setQuantity(
-                            purpose.id,
-                            basket.quantities[purpose.id] + 1,
-                          )
-                          setLastAdded({
-                            id: purpose.id,
-                            quantity: basket.quantities[purpose.id] + 1,
-                          })
-                        }}
-                      >
-                        {t('selection.add')} <ArrowRight aria-hidden="true" />
-                      </Button>
-                    }
-                  />
-                </li>
-              )
-            })}
-          </ul>
-          <p className="text-xs text-brand-ink-soft">
-            {t('shared.illustrative')} {imageText('donationCaption')}
-          </p>
+          {purposesQuery.isPending ? (
+            <p
+              role="status"
+              className="rounded-[24px] bg-brand-white p-6 text-brand-ink-soft"
+            >
+              {t('selection.loading')}
+            </p>
+          ) : purposesQuery.isError ? (
+            <div
+              role="alert"
+              className="space-y-4 rounded-[24px] bg-brand-white p-6"
+            >
+              <p className="text-brand-ink">{t('selection.error')}</p>
+              <Button
+                type="button"
+                variant="brandOutline"
+                shape="pill"
+                disabled={purposesQuery.isFetching}
+                onClick={() => void purposesQuery.refetch()}
+              >
+                {t('selection.retry')}
+              </Button>
+            </div>
+          ) : purposes.length === 0 ? (
+            <p className="rounded-[24px] bg-brand-white p-6 text-brand-ink-soft">
+              {t('selection.empty')}
+            </p>
+          ) : visible.length === 0 ? (
+            <p className="rounded-[24px] bg-brand-white p-6 text-brand-ink-soft">
+              {t('selection.noMatchingPurposes')}
+            </p>
+          ) : (
+            <ul className="grid gap-6 sm:grid-cols-2">
+              {visible.map((purpose) => {
+                const Icon =
+                  (purpose.category && categoryIcons[purpose.category.slug]) ??
+                  Heart
+                const image = donationImage(purpose.slug)
+                const quantity = basketQuantity(basket, purpose.slug)
+                return (
+                  <li key={purpose.id}>
+                    <PurposeCard
+                      image={
+                        image && (
+                          <ImagePanel
+                            image={image}
+                            alt=""
+                            sizes="(min-width: 1280px) 386px, (min-width: 1024px) 30vw, (min-width: 640px) 44vw, calc(100vw - 48px)"
+                            className="[&>div]:rounded-none"
+                            imageClassName="aspect-[7/6]"
+                          />
+                        )
+                      }
+                      icon={<Icon aria-hidden="true" className="size-7" />}
+                      category={purpose.categoryLabel}
+                      title={purpose.title}
+                      description={purpose.description}
+                      impact={purpose.impact}
+                      project={purpose.project}
+                      projectLabel={t('selection.projectLabel')}
+                      generalPurposeLabel={t('selection.generalPurposeLabel')}
+                      amount={formatDonationAmount(
+                        purpose.unitAmountCents,
+                        i18n.language,
+                      )}
+                      unit={purpose.unitLabel}
+                      action={
+                        <Button
+                          type="button"
+                          variant="sun"
+                          shape="pill"
+                          className="min-h-12"
+                          aria-label={t('selection.addLabel', {
+                            title: purpose.title,
+                          })}
+                          disabled={
+                            !Number.isSafeInteger(
+                              total + purpose.unitAmountCents,
+                            )
+                          }
+                          onClick={() => {
+                            setQuantity(
+                              purpose.slug,
+                              purpose.unitAmountCents,
+                              quantity + 1,
+                            )
+                            setLastAdded({
+                              title: purpose.title,
+                              quantity: quantity + 1,
+                            })
+                          }}
+                        >
+                          {t('selection.add')} <ArrowRight aria-hidden="true" />
+                        </Button>
+                      }
+                    />
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+          {purposes.some((purpose) => purpose.isIllustrative) && (
+            <p className="text-xs text-brand-ink-soft">
+              {t('shared.illustrative')} {imageText('donationCaption')}
+            </p>
+          )}
         </div>
         <aside
           aria-label={t('selection.basketLabel')}

@@ -1,4 +1,63 @@
 {
+  "projectDetail": {
+    "back": "All projects",
+    "eyebrow": "Project",
+    "contents": "On this page",
+    "loading": "Loading project…",
+    "empty": "More details about this project will follow soon.",
+    "notFound": {
+      "title": "Project not found",
+      "description": "This project does not exist or has not been published yet."
+    },
+    "error": {
+      "title": "The project could not be loaded",
+      "description": "Please check your connection and try again.",
+      "retry": "Try again"
+    },
+    "relationships": {
+      "label": "Related campaigns and donation purposes",
+      "campaigns": "Campaigns featuring this project",
+      "purposes": "Donation purposes linked to this project",
+      "donate": "See donation options",
+      "loading": "Loading related campaigns and donation purposes…",
+      "error": "Some project relationships could not be loaded.",
+      "retry": "Try again"
+    }
+  },
+  "campaignDetail": {
+    "back": "Back to campaigns",
+    "eyebrow": "Campaign",
+    "contents": "On this page",
+    "loading": "Loading campaign…",
+    "empty": "More details about this campaign will follow soon.",
+    "notFound": {
+      "title": "Campaign not found",
+      "description": "This campaign does not exist, has ended or has not been published yet."
+    },
+    "error": {
+      "title": "The campaign could not be loaded",
+      "description": "Please check your connection and try again.",
+      "retry": "Try again"
+    },
+    "facts": {
+      "goal": "Fundraising goal",
+      "raised": "Raised so far",
+      "progress": "{{percent}}% of the goal raised",
+      "period": "Campaign period",
+      "projects": "Projects",
+      "openEnded": "Open-ended",
+      "range": "{{start}} – {{end}}"
+    },
+    "donate": "Donate now",
+    "projects": {
+      "eyebrow": "Supported projects",
+      "title": "Where your gift goes",
+      "tag": "Project",
+      "readMore": "Read more",
+      "readMoreLabel": "Read more about {{title}}",
+      "campaignLabel": "Campaign"
+    }
+  },
   "imagery": {
     "caption": "AI-generated illustration · Not a photograph of TunisAid projects or team members.",
     "independence": "An imagined courtyard conversation between a wheelchair user and a friend.",
@@ -31,9 +90,18 @@
       "privacy": "* Required fields. Please avoid including sensitive personal or medical details in your message.",
       "submit": "Send message",
       "fields": {
-        "firstName": { "label": "First name", "placeholder": "First name" },
-        "lastName": { "label": "Last name", "placeholder": "Last name" },
-        "email": { "label": "Email address", "placeholder": "you@example.com" },
+        "firstName": {
+          "label": "First name",
+          "placeholder": "First name"
+        },
+        "lastName": {
+          "label": "Last name",
+          "placeholder": "Last name"
+        },
+        "email": {
+          "label": "Email address",
+          "placeholder": "you@example.com"
+        },
         "topic": {
           "label": "What would you like to discuss?",
           "placeholder": "A question, volunteering, donations, or a partnership"
@@ -261,24 +329,40 @@
       "description": "Local associations in Tunisia carry our projects every day.",
       "association": "Partner association"
     },
+    "campaigns": {
+      "eyebrow": "Current campaigns",
+      "title": "Help us reach these goals",
+      "tag": "Campaign",
+      "goal": "Goal",
+      "raised": "Raised",
+      "progress": "{{percent}}% of the goal raised",
+      "period": "Timeframe",
+      "until": "Until {{date}}",
+      "starts": "Starts {{date}}",
+      "openEnded": "Open-ended",
+      "view": "View campaign",
+      "viewLabel": "View campaign: {{title}}",
+      "loading": "Loading campaigns…",
+      "error": "Campaigns could not be loaded right now. Please try again later.",
+      "empty": "There are no active campaigns at the moment."
+    },
     "projects": {
       "eyebrow": "Our projects",
       "title": "Projects built with the people they serve",
       "allProjects": "All projects",
       "readMore": "Read more",
       "readMoreLabel": "Read more about {{title}}",
-      "items": {
-        "education": {
-          "tag": "Education",
-          "title": "Educational Project",
-          "description": "Our partner associations APH EL AJA (Djerba) accommodate and support children with severe and multiple disabilities. They coach and teach…"
-        },
-        "fundraiser": {
-          "tag": "Fundraiser",
-          "title": "Coronavirus Fundraiser – Third Wave",
-          "description": "Ramadan Mubarak dear friends. Every single one of us is aware of the major impact that the coronavirus has had…"
-        }
-      }
+      "tag": "Project",
+      "campaignsLabel": "Campaigns",
+      "campaignsError": "Campaign relationships could not be loaded.",
+      "campaignsLoading": "Loading campaign filters…",
+      "campaignsRetry": "Try again",
+      "directoryDescription": "Browse our projects and filter them by campaign.",
+      "filterLabel": "Filter by campaign",
+      "filteredEmpty": "No projects are linked to this campaign.",
+      "loading": "Loading projects…",
+      "error": "Projects could not be loaded right now. Please try again later.",
+      "empty": "New projects will be published here soon."
     },
     "values": {
       "eyebrow": "Our values",

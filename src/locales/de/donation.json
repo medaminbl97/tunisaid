@@ -2,7 +2,10 @@
   "shared": {
     "home": "Startseite",
     "language": "Sprache",
-    "languages": { "en": "Zu Englisch wechseln", "de": "Zu Deutsch wechseln" },
+    "languages": {
+      "en": "Zu Englisch wechseln",
+      "de": "Zu Deutsch wechseln"
+    },
     "layoutHint": "Ein sinnvoller Beitrag, ein einfacher Weg.",
     "footer": "TunisAid · Gemeinsam helfen, über Grenzen hinweg.",
     "contact": "Fragen? Kontaktiere unser Team",
@@ -30,30 +33,92 @@
     "eyebrow": "Ein wenig Herzlichkeit bewirkt viel",
     "title": "Jede Hilfe beginnt mit einem Menschen, dem andere am Herzen liegen.",
     "description": "Danke für dein Interesse daran, Würde im Alltag in Tunesien zu unterstützen.",
-    "notice": "Diese Seite zeigt die künftige Bestätigungsansicht. Sie bestätigt keine Spende, stellt keine Quittung aus und versendet keine E-Mail.",
-    "recapLabel": "Beispielhafte Übersicht deiner Auswahl",
+    "notice": "Diese Seite zeigt die Bestätigungsansicht als Vorschau. Sie bestätigt keine Spende, stellt keine Quittung aus und versendet keine E-Mail.",
+    "recapLabel": "Übersicht deiner Auswahl",
     "recapTitle": "Deine ausgewählte Unterstützung",
     "recapHint": "Die angezeigten Beträge sind nur deine lokale Auswahl und kein Zahlungsnachweis. Besprich die nächsten Schritte mit unserem Team.",
     "explore": "Entdecke unsere Arbeit",
-    "back": "Zurück zur Auswahl"
+    "back": "Zurück zur Auswahl",
+    "retry": "Erneut versuchen",
+    "testMode": "Testmodus: Es wurde kein Geld bewegt.",
+    "loading": "Deine Spende wird geladen …",
+    "notFound": "Wir konnten diese Spende nicht finden. Prüfe den Link oder kontaktiere unser Team.",
+    "error": "Der Status deiner Spende konnte nicht geladen werden.",
+    "receipt": {
+      "label": "Spendenübersicht",
+      "title": "Deine Spende",
+      "reference": "Referenz",
+      "status": "Status",
+      "total": "Summe",
+      "countsToward": "Zählt für {{title}}",
+      "date": "Datum"
+    },
+    "statuses": {
+      "pending": {
+        "name": "Ausstehend",
+        "title": "Wir bestätigen deine Spende.",
+        "description": "Deine Zahlung wird bestätigt. Diese Seite aktualisiert sich automatisch."
+      },
+      "paid": {
+        "name": "Bezahlt",
+        "title": "Danke. Deine Hilfe ist unterwegs.",
+        "description": "Deine Spende ist bestätigt. Bewahre deine Referenz für Rückfragen auf."
+      },
+      "failed": {
+        "name": "Fehlgeschlagen",
+        "title": "Deine Zahlung hat nicht geklappt.",
+        "description": "Es wurde kein Geld abgebucht. Dein Spendenkorb ist noch da, wenn du es erneut versuchen möchtest."
+      },
+      "cancelled": {
+        "name": "Abgebrochen",
+        "title": "Deine Zahlung wurde abgebrochen.",
+        "description": "Es wurde kein Geld abgebucht. Dein Spendenkorb ist noch da, wenn du es erneut versuchen möchtest."
+      },
+      "expired": {
+        "name": "Abgelaufen",
+        "title": "Diese Zahlung ist abgelaufen.",
+        "description": "Es wurde kein Geld abgebucht. Starte einfach erneut über deinen Spendenkorb."
+      },
+      "partially_refunded": {
+        "name": "Teilweise erstattet",
+        "title": "Ein Teil deiner Spende wurde erstattet.",
+        "description": "Kontaktiere unser Team, wenn du Fragen zu dieser Erstattung hast."
+      },
+      "refunded": {
+        "name": "Erstattet",
+        "title": "Deine Spende wurde erstattet.",
+        "description": "Kontaktiere unser Team, wenn du Fragen zu dieser Erstattung hast."
+      }
+    }
   },
   "checkout": {
     "eyebrow": "Deine Hilfe, bewusst ausgewählt",
     "title": "Lass deine Hilfe zählen.",
-    "description": "Prüfe deine Auswahl. Online-Zahlungen sind noch nicht verfügbar.",
+    "description": "Prüfe deine Auswahl und schließe deine Unterstützung ab.",
     "unavailableTitle": "Online-Zahlung nicht verfügbar",
+    "testModeTitle": "Testmodus",
+    "testMode": "Zahlungen laufen im Testmodus. Es wird kein Geld bewegt: Auf der nächsten Seite wählst du ein simuliertes Ergebnis.",
     "detailsTitle": "01 Deine Angaben",
-    "detailsHint": "Diese Felder zeigen die geplanten Angaben. Sie sind deaktiviert; es werden keine persönlichen Daten erfasst.",
+    "detailsHint": "Alle Felder sind freiwillig. Du kannst anonym spenden oder eine E-Mail-Adresse für deine Quittung angeben.",
+    "optional": "Freiwillig",
     "private": "Meinen Namen nicht veröffentlichen",
-    "privateHint": "Datenschutzoptionen werden vor der Freischaltung von Online-Spenden bestätigt.",
+    "privateHint": "Wenn angehakt, nennen wir deinen Namen nie öffentlich.",
+    "emailHint": "Wird nur für deine Spendenquittung verwendet.",
     "paymentTitle": "02 Schließe deine Unterstützung ab",
-    "paymentMethod": "Geplante Zahlungsarten · Nicht verfügbar",
-    "methods": { "card": "Karte", "paypal": "PayPal", "bank": "Überweisung" },
-    "cardHeading": "Kredit- oder Debitkarte · Nicht verfügbar",
-    "hostedHint": "Gehostete Zahlungsfelder benötigen einen Zahlungsanbieter. Sende keine Kartendaten an TunisAid.",
-    "policyHint": "Spendenbedingungen, Datenschutzinformationen und Zahlungsarten müssen vor der Freischaltung von Online-Spenden festgelegt werden. Bei Fragen kontaktiere unser Team.",
+    "policyHint": "Deine Spende wird für die gewählten Zwecke erfasst. Bei Fragen kontaktiere unser Team.",
+    "submit": "Weiter zur Zahlung",
+    "submitting": "Deine Spende wird vorbereitet …",
+    "emptyBasket": "Füge einen Zweck oder einen freien Betrag hinzu, bevor du fortfährst.",
+    "errors": {
+      "unavailable": "Online-Zahlungen sind gerade nicht verfügbar. Bitte versuche es später erneut.",
+      "catalog_changed": "Einige Beträge haben sich geändert. Bitte prüfe deinen Spendenkorb und versuche es erneut.",
+      "campaign_conflict": "Eine deiner Spenden ist mit mehr als einer Kampagne verknüpft. Bitte kontaktiere unser Team, damit wir das korrigieren.",
+      "invalid_amount": "Deine Spende muss mindestens 1 € betragen.",
+      "failed": "Deine Spende konnte nicht gestartet werden. Bitte versuche es erneut.",
+      "email": "Gib eine gültige E-Mail-Adresse ein oder lass das Feld leer."
+    },
     "noPayment": "Es wurde keine Zahlung verarbeitet. Dies ist keine Spendenbestätigung.",
-    "reviewLabel": "Prüfe deine beispielhafte Auswahl",
+    "reviewLabel": "Prüfe deine Auswahl",
     "reviewTitle": "Ein wenig Herzlichkeit. Echte Möglichkeiten.",
     "changeGifts": "Auswahl ändern",
     "supportEyebrow": "Mit Sinn helfen",
@@ -62,19 +127,33 @@
         "label": "Vollständiger Name",
         "placeholder": "Dein vollständiger Name"
       },
-      "email": { "label": "E-Mail-Adresse", "placeholder": "du@beispiel.de" },
-      "country": { "label": "Wohnsitzland", "placeholder": "Wähle ein Land" },
-      "number": {
-        "label": "Kartennummer",
-        "placeholder": "Zahlungsfeld nicht verfügbar"
+      "email": {
+        "label": "E-Mail-Adresse",
+        "placeholder": "du@beispiel.de"
       },
-      "expiry": { "label": "Ablaufdatum", "placeholder": "MM / JJ" },
-      "security": { "label": "Prüfnummer", "placeholder": "CVC" },
-      "cardName": {
-        "label": "Name auf der Karte",
-        "placeholder": "Name wie auf der Karte"
+      "country": {
+        "label": "Wohnsitzland",
+        "placeholder": "Wähle ein Land"
       }
     }
+  },
+  "mockPayment": {
+    "eyebrow": "Testzahlung",
+    "title": "Simuliere das Zahlungsergebnis.",
+    "description": "Diese Seite ersetzt einen Zahlungsanbieter. Es wird kein Geld bewegt. Wähle ein Ergebnis, um zu sehen, wie TunisAid es erfasst.",
+    "reference": "Referenz",
+    "amount": "Betrag",
+    "status": "Zahlungsstatus",
+    "succeed": "Erfolgreiche Zahlung simulieren",
+    "fail": "Abgelehnte Zahlung simulieren",
+    "cancel": "Zahlung abbrechen",
+    "processing": "Ergebnis wird erfasst …",
+    "loading": "Zahlung wird geladen …",
+    "invalid": "Dieser Zahlungslink ist ungültig oder abgelaufen.",
+    "error": "Die Zahlung konnte nicht geladen oder aktualisiert werden. Bitte versuche es erneut.",
+    "retry": "Erneut versuchen",
+    "done": "Diese Zahlung ist bereits abgeschlossen.",
+    "back": "Zurück zur Kasse"
   },
   "hero": {
     "eyebrow": "Mit Sinn helfen",
@@ -92,10 +171,13 @@
     "filterLabel": "Spendenzwecke filtern",
     "filters": {
       "all": "Alle Zwecke",
-      "essentials": "Grundbedarf",
-      "mobility": "Mobilität",
-      "education": "Bildung"
+      "campaign": "Kampagne: {{title}}",
+      "project": "Projekt: {{title}}",
+      "general": "Allgemeiner Zweck"
     },
+    "projectLabel": "Projekt",
+    "generalPurposeLabel": "Allgemeiner Zweck",
+    "noMatchingPurposes": "Für diesen Filter gibt es derzeit keine Spendenzwecke.",
     "add": "Hinzufügen",
     "addLabel": "{{title}} zum Spendenkorb hinzufügen",
     "added": "{{title}} hinzugefügt. Ausgewählte Anzahl: {{quantity}}.",
@@ -105,7 +187,11 @@
     "reassurance": "Eine Absicht, keine Warenbestellung.",
     "materialTitle": "Du möchtest Sachen spenden?",
     "materialDescription": "Biete Ausrüstung, Materialien oder einen nicht mehr benötigten Rollstuhl an. Bitte stimme dich mit uns ab, bevor du etwas versendest.",
-    "materialAction": "Sprich mit unserem Team"
+    "materialAction": "Sprich mit unserem Team",
+    "loading": "Spendenzwecke werden geladen …",
+    "error": "Die Spendenzwecke konnten nicht geladen werden. Versuche es erneut oder gib unten einen freien Betrag.",
+    "retry": "Erneut versuchen",
+    "empty": "Derzeit sind keine Spendenzwecke verfügbar. Du kannst unten trotzdem einen freien Betrag geben."
   },
   "flexible": {
     "eyebrow": "Lass deine Hilfe ihren Weg finden",
@@ -123,40 +209,6 @@
     "choose": "Wähle einen sinnvollen Zweck",
     "review": "Prüfe deine Auswahl",
     "contact": "Besprich nächste Schritte mit unserem Team",
-    "note": "Online-Zahlungen sind noch nicht verfügbar. Stimme Beträge, Verfügbarkeit und Verwendung vor einer Spende mit unserem Team ab."
-  },
-  "purposes": {
-    "koffa": {
-      "category": "Lebensmittel & Würde",
-      "title": "Verschenke eine Koffa",
-      "description": "Eine Tasche mit Lebensmitteln für den Alltag einer Familie in Tunesien.",
-      "impact": "Eine Familie. Wichtige Lebensmittel.",
-      "unit": "pro Koffa",
-      "basketTitle": "Koffa-Lebensmittel"
-    },
-    "wheelchair": {
-      "category": "Mobilität & Selbstständigkeit",
-      "title": "Trage zu einem Rollstuhl bei",
-      "description": "Hilf anteilig bei einem Rollstuhl für beispielhaft 180 €. Sechs Anteile ergeben einen ganzen Rollstuhl.",
-      "impact": "Ein Schritt zu mehr Freiheit im Alltag.",
-      "unit": "pro Rollstuhlanteil",
-      "basketTitle": "Rollstuhl-Unterstützung"
-    },
-    "school": {
-      "category": "Lernen & Möglichkeiten",
-      "title": "Packe eine Schultasche",
-      "description": "Hilf einem Kind mit einer Tasche, Heften und wichtigen Schulmaterialien beim Schulstart.",
-      "impact": "Das Werkzeug für einen guten Anfang.",
-      "unit": "pro Schulset",
-      "basketTitle": "Schulmaterialien"
-    },
-    "warmth": {
-      "category": "Fürsorge & Geborgenheit",
-      "title": "Schenke ein wenig Wärme",
-      "description": "Trage zu warmen Decken und saisonalen Grundbedarfsartikeln für einen Haushalt bei.",
-      "impact": "Geborgenheit, wenn sie gebraucht wird.",
-      "unit": "pro Wärmeset",
-      "basketTitle": "Wärme & Geborgenheit"
-    }
+    "note": "Fragen zu Beträgen oder zur Verwendung deiner Spende? Unser Team hilft dir gern – vor oder nach deiner Spende."
   }
 }

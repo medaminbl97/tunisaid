@@ -11,7 +11,7 @@ export function CheckoutReview() {
   return (
     <aside
       aria-label={t('checkout.reviewLabel')}
-      className="min-w-0 lg:sticky lg:top-8"
+      className="min-w-0 space-y-5 lg:sticky lg:top-8"
     >
       <DonationBasketSummary
         title={t('checkout.reviewTitle')}

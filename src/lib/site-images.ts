@@ -67,3 +67,9 @@ export const donationImages = {
     height: 823,
   },
 } satisfies Record<string, SiteImage>
+
+export function donationImage(slug: string): SiteImage | undefined {
+  return Object.hasOwn(donationImages, slug)
+    ? donationImages[slug as keyof typeof donationImages]
+    : undefined
+}

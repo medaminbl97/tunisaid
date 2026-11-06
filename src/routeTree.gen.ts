@@ -13,9 +13,13 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DonateRouteImport } from './routes/donate'
+import { Route as ProjectsRouteImport } from './routes/projects_'
 import { Route as WhatWeDoRouteImport } from './routes/what-we-do'
+import { Route as CampaignsSlugRouteImport } from './routes/campaigns.$slug'
 import { Route as DonateCheckoutRouteImport } from './routes/donate_.checkout'
+import { Route as DonateMockPaymentRouteImport } from './routes/donate_.mock-payment'
 import { Route as DonateThankYouRouteImport } from './routes/donate_.thank-you'
+import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -37,9 +41,19 @@ const DonateRoute = DonateRouteImport.update({
   path: '/donate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects_',
+  path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WhatWeDoRoute = WhatWeDoRouteImport.update({
   id: '/what-we-do',
   path: '/what-we-do',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CampaignsSlugRoute = CampaignsSlugRouteImport.update({
+  id: '/campaigns/$slug',
+  path: '/campaigns/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DonateCheckoutRoute = DonateCheckoutRouteImport.update({
@@ -47,9 +61,19 @@ const DonateCheckoutRoute = DonateCheckoutRouteImport.update({
   path: '/donate/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DonateMockPaymentRoute = DonateMockPaymentRouteImport.update({
+  id: '/donate_/mock-payment',
+  path: '/donate/mock-payment',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DonateThankYouRoute = DonateThankYouRouteImport.update({
   id: '/donate_/thank-you',
   path: '/donate/thank-you',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
+  id: '/projects/$slug',
+  path: '/projects/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -58,18 +82,26 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
+  '/projects': typeof ProjectsRoute
   '/what-we-do': typeof WhatWeDoRoute
+  '/campaigns/$slug': typeof CampaignsSlugRoute
   '/donate/checkout': typeof DonateCheckoutRoute
+  '/donate/mock-payment': typeof DonateMockPaymentRoute
   '/donate/thank-you': typeof DonateThankYouRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
+  '/projects': typeof ProjectsRoute
   '/what-we-do': typeof WhatWeDoRoute
+  '/campaigns/$slug': typeof CampaignsSlugRoute
   '/donate/checkout': typeof DonateCheckoutRoute
+  '/donate/mock-payment': typeof DonateMockPaymentRoute
   '/donate/thank-you': typeof DonateThankYouRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -77,9 +109,13 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
+  '/projects_': typeof ProjectsRoute
   '/what-we-do': typeof WhatWeDoRoute
+  '/campaigns/$slug': typeof CampaignsSlugRoute
   '/donate_/checkout': typeof DonateCheckoutRoute
+  '/donate_/mock-payment': typeof DonateMockPaymentRoute
   '/donate_/thank-you': typeof DonateThankYouRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -88,27 +124,39 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/donate'
+    | '/projects'
     | '/what-we-do'
+    | '/campaigns/$slug'
     | '/donate/checkout'
+    | '/donate/mock-payment'
     | '/donate/thank-you'
+    | '/projects/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/contact'
     | '/donate'
+    | '/projects'
     | '/what-we-do'
+    | '/campaigns/$slug'
     | '/donate/checkout'
+    | '/donate/mock-payment'
     | '/donate/thank-you'
+    | '/projects/$slug'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/contact'
     | '/donate'
+    | '/projects_'
     | '/what-we-do'
+    | '/campaigns/$slug'
     | '/donate_/checkout'
+    | '/donate_/mock-payment'
     | '/donate_/thank-you'
+    | '/projects/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -116,9 +164,13 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
   DonateRoute: typeof DonateRoute
+  ProjectsRoute: typeof ProjectsRoute
   WhatWeDoRoute: typeof WhatWeDoRoute
+  CampaignsSlugRoute: typeof CampaignsSlugRoute
   DonateCheckoutRoute: typeof DonateCheckoutRoute
+  DonateMockPaymentRoute: typeof DonateMockPaymentRoute
   DonateThankYouRoute: typeof DonateThankYouRoute
+  ProjectsSlugRoute: typeof ProjectsSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -151,11 +203,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DonateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/projects_': {
+      id: '/projects_'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/what-we-do': {
       id: '/what-we-do'
       path: '/what-we-do'
       fullPath: '/what-we-do'
       preLoaderRoute: typeof WhatWeDoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/campaigns/$slug': {
+      id: '/campaigns/$slug'
+      path: '/campaigns/$slug'
+      fullPath: '/campaigns/$slug'
+      preLoaderRoute: typeof CampaignsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/donate_/checkout': {
@@ -165,11 +231,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DonateCheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/donate_/mock-payment': {
+      id: '/donate_/mock-payment'
+      path: '/donate/mock-payment'
+      fullPath: '/donate/mock-payment'
+      preLoaderRoute: typeof DonateMockPaymentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/donate_/thank-you': {
       id: '/donate_/thank-you'
       path: '/donate/thank-you'
       fullPath: '/donate/thank-you'
       preLoaderRoute: typeof DonateThankYouRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/$slug': {
+      id: '/projects/$slug'
+      path: '/projects/$slug'
+      fullPath: '/projects/$slug'
+      preLoaderRoute: typeof ProjectsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -180,9 +260,13 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
   DonateRoute: DonateRoute,
+  ProjectsRoute: ProjectsRoute,
   WhatWeDoRoute: WhatWeDoRoute,
+  CampaignsSlugRoute: CampaignsSlugRoute,
   DonateCheckoutRoute: DonateCheckoutRoute,
+  DonateMockPaymentRoute: DonateMockPaymentRoute,
   DonateThankYouRoute: DonateThankYouRoute,
+  ProjectsSlugRoute: ProjectsSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
