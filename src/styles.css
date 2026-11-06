@@ -152,6 +152,9 @@
   --brand-header-chip-border: rgba(255, 255, 255, 0.7);
   --brand-header-active: rgba(255, 255, 255, 0.7);
   --brand-header-shadow: 0 14px 40px -6px rgba(23, 59, 64, 0.16);
+  --brand-scroll-offset: calc(
+    var(--brand-header-height) + var(--brand-header-offset) + 1.5rem
+  );
   --palm: #2f6a4a;
   --sand: #e7f0e8;
   --foam: #f3faf5;

@@ -1,4 +1,63 @@
 {
+  "projectDetail": {
+    "back": "Alle Projekte",
+    "eyebrow": "Projekt",
+    "contents": "Auf dieser Seite",
+    "loading": "Projekt wird geladen…",
+    "empty": "Weitere Details zu diesem Projekt folgen bald.",
+    "notFound": {
+      "title": "Projekt nicht gefunden",
+      "description": "Dieses Projekt gibt es nicht oder es wurde noch nicht veröffentlicht."
+    },
+    "error": {
+      "title": "Das Projekt konnte nicht geladen werden",
+      "description": "Bitte prüfe deine Verbindung und versuche es erneut.",
+      "retry": "Erneut versuchen"
+    },
+    "relationships": {
+      "label": "Verknüpfte Kampagnen und Spendenzwecke",
+      "campaigns": "Kampagnen mit diesem Projekt",
+      "purposes": "Spendenzwecke für dieses Projekt",
+      "donate": "Spendenmöglichkeiten ansehen",
+      "loading": "Verknüpfte Kampagnen und Spendenzwecke werden geladen …",
+      "error": "Einige Projektverknüpfungen konnten nicht geladen werden.",
+      "retry": "Erneut versuchen"
+    }
+  },
+  "campaignDetail": {
+    "back": "Zurück zu den Kampagnen",
+    "eyebrow": "Kampagne",
+    "contents": "Auf dieser Seite",
+    "loading": "Kampagne wird geladen…",
+    "empty": "Weitere Details zu dieser Kampagne folgen bald.",
+    "notFound": {
+      "title": "Kampagne nicht gefunden",
+      "description": "Diese Kampagne gibt es nicht, sie ist beendet oder wurde noch nicht veröffentlicht."
+    },
+    "error": {
+      "title": "Die Kampagne konnte nicht geladen werden",
+      "description": "Bitte prüfe deine Verbindung und versuche es erneut.",
+      "retry": "Erneut versuchen"
+    },
+    "facts": {
+      "goal": "Spendenziel",
+      "raised": "Bisher gesammelt",
+      "progress": "{{percent}} % des Ziels erreicht",
+      "period": "Zeitraum",
+      "projects": "Projekte",
+      "openEnded": "Unbefristet",
+      "range": "{{start}} – {{end}}"
+    },
+    "donate": "Jetzt spenden",
+    "projects": {
+      "eyebrow": "Unterstützte Projekte",
+      "title": "Wohin deine Spende geht",
+      "tag": "Projekt",
+      "readMore": "Mehr erfahren",
+      "readMoreLabel": "Mehr über {{title}} erfahren",
+      "campaignLabel": "Kampagne"
+    }
+  },
   "imagery": {
     "caption": "KI-generierte Illustration · Kein Foto von TunisAid-Projekten oder Teammitgliedern.",
     "independence": "Ein vorgestelltes Gespräch im Innenhof zwischen einem Rollstuhlnutzer und einer Freundin.",
@@ -31,9 +90,18 @@
       "privacy": "* Pflichtfelder. Bitte gib keine sensiblen persönlichen oder medizinischen Informationen in deiner Nachricht an.",
       "submit": "Nachricht senden",
       "fields": {
-        "firstName": { "label": "Vorname", "placeholder": "Vorname" },
-        "lastName": { "label": "Nachname", "placeholder": "Nachname" },
-        "email": { "label": "E-Mail-Adresse", "placeholder": "du@beispiel.de" },
+        "firstName": {
+          "label": "Vorname",
+          "placeholder": "Vorname"
+        },
+        "lastName": {
+          "label": "Nachname",
+          "placeholder": "Nachname"
+        },
+        "email": {
+          "label": "E-Mail-Adresse",
+          "placeholder": "du@beispiel.de"
+        },
         "topic": {
           "label": "Worüber möchtest du sprechen?",
           "placeholder": "Eine Frage, Ehrenamt, Spenden oder eine Partnerschaft"
@@ -261,24 +329,40 @@
       "description": "Lokale Vereine in Tunesien tragen unsere Projekte jeden Tag.",
       "association": "Partnerverein"
     },
+    "campaigns": {
+      "eyebrow": "Aktuelle Kampagnen",
+      "title": "Hilf uns, diese Ziele zu erreichen",
+      "tag": "Kampagne",
+      "goal": "Ziel",
+      "raised": "Gesammelt",
+      "progress": "{{percent}} % des Ziels erreicht",
+      "period": "Zeitraum",
+      "until": "Bis {{date}}",
+      "starts": "Ab {{date}}",
+      "openEnded": "Unbefristet",
+      "view": "Zur Kampagne",
+      "viewLabel": "Zur Kampagne: {{title}}",
+      "loading": "Kampagnen werden geladen…",
+      "error": "Die Kampagnen konnten gerade nicht geladen werden. Bitte versuche es später erneut.",
+      "empty": "Derzeit gibt es keine aktiven Kampagnen."
+    },
     "projects": {
       "eyebrow": "Unsere Projekte",
       "title": "Projekte gemeinsam mit den Menschen, denen sie helfen",
       "allProjects": "Alle Projekte",
       "readMore": "Mehr erfahren",
       "readMoreLabel": "Mehr über {{title}} erfahren",
-      "items": {
-        "education": {
-          "tag": "Bildung",
-          "title": "Bildungsprojekt",
-          "description": "Unsere Partnervereine APH EL AJA (Djerba) betreuen und unterstützen Kinder mit schweren und mehrfachen Behinderungen. Sie begleiten und unterrichten…"
-        },
-        "fundraiser": {
-          "tag": "Spendenaktion",
-          "title": "Corona-Spendenaktion – Dritte Welle",
-          "description": "Ramadan Mubarak, liebe Freunde. Uns allen ist bewusst, welche großen Auswirkungen das Coronavirus hatte…"
-        }
-      }
+      "tag": "Projekt",
+      "campaignsLabel": "Kampagnen",
+      "campaignsError": "Kampagnenverknüpfungen konnten nicht geladen werden.",
+      "campaignsLoading": "Kampagnenfilter werden geladen…",
+      "campaignsRetry": "Erneut versuchen",
+      "directoryDescription": "Entdecke unsere Projekte und filtere sie nach Kampagne.",
+      "filterLabel": "Nach Kampagne filtern",
+      "filteredEmpty": "Dieser Kampagne sind keine Projekte zugeordnet.",
+      "loading": "Projekte werden geladen…",
+      "error": "Die Projekte konnten gerade nicht geladen werden. Bitte versuche es später erneut.",
+      "empty": "Neue Projekte werden hier bald veröffentlicht."
     },
     "values": {
       "eyebrow": "Unsere Werte",

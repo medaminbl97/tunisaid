@@ -13,7 +13,8 @@ const meta = {
     icon: <Package aria-hidden="true" />,
     category: 'Food & dignity',
     title: 'Give a Koffa',
-    description: 'A bag of everyday groceries, chosen for a family in Tunisia.',
+    description:
+      '<p>A bag of everyday groceries, chosen for a family in Tunisia.</p>',
     impact: 'One family. Essential groceries.',
     amount: '€35',
     unit: 'per Koffa · illustrative amount',
@@ -46,5 +47,19 @@ export const Illustrated: Story = {
         imageClassName="aspect-[7/6]"
       />
     ),
+  },
+}
+export const LinkedProject: Story = {
+  args: {
+    project: {
+      slug: 'ramadan-food-boxes',
+      title: 'Ramadan food boxes',
+    },
+    projectLabel: 'Project',
+  },
+}
+export const GeneralPurpose: Story = {
+  args: {
+    generalPurposeLabel: 'General purpose',
   },
 }

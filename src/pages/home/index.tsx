@@ -1,3 +1,4 @@
+import { CampaignsSection } from './components/campaigns-section'
 import { HeroSection } from './components/hero-section'
 import { ImpactSection } from './components/impact-section'
 import { ProjectsSection } from './components/projects-section'
@@ -12,6 +13,7 @@ export function HomePage() {
     <main className="-mt-[calc(var(--brand-header-height)+var(--brand-header-offset)+1rem)]">
       <HeroSection />
       <ImpactSection />
+      <CampaignsSection />
       <ProjectsSection />
       <ValuesSection />
       <GetInvolvedSection />

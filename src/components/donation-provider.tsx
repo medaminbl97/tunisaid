@@ -1,12 +1,13 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useCallback, useContext, useState } from 'react'
 import type { ReactNode } from 'react'
 import { donationTotal, emptyDonationBasket } from '#/lib/donation'
-import type { DonationBasket, DonationPurposeId } from '#/lib/donation'
+import type { DonationBasket } from '#/lib/donation'
 
 type DonationContextValue = {
   basket: DonationBasket
-  setQuantity: (id: DonationPurposeId, quantity: number) => void
+  setQuantity: (slug: string, unitCents: number, quantity: number) => void
   setFlexibleCents: (cents: number) => void
+  clearBasket: () => void
 }
 
 const DonationContext = createContext<DonationContextValue | null>(null)
@@ -14,14 +15,19 @@ const DonationContext = createContext<DonationContextValue | null>(null)
 export function DonationProvider(props: { children: ReactNode }) {
   const [basket, setBasket] = useState(emptyDonationBasket)
 
-  function setQuantity(id: DonationPurposeId, quantity: number) {
+  function setQuantity(slug: string, unitCents: number, quantity: number) {
     if (!Number.isSafeInteger(quantity) || quantity < 0) {
       throw new Error('Donation quantities must be non-negative safe integers.')
     }
+    if (!Number.isSafeInteger(unitCents) || unitCents <= 0) {
+      throw new Error('Donation unit amounts must be positive integer cents.')
+    }
     setBasket((current) => {
+      const { [slug]: _removed, ...items } = current.items
       const next = {
         ...current,
-        quantities: { ...current.quantities, [id]: quantity },
+        items:
+          quantity > 0 ? { ...items, [slug]: { quantity, unitCents } } : items,
       }
       if (!Number.isSafeInteger(donationTotal(next))) {
         throw new Error('Donation total exceeds the supported range.')
@@ -43,8 +49,19 @@ export function DonationProvider(props: { children: ReactNode }) {
     })
   }
 
+  const clearBasket = useCallback(() => {
+    setBasket(emptyDonationBasket)
+  }, [])
+
   return (
-    <DonationContext.Provider value={{ basket, setQuantity, setFlexibleCents }}>
+    <DonationContext.Provider
+      value={{
+        basket,
+        setQuantity,
+        setFlexibleCents,
+        clearBasket,
+      }}
+    >
       {props.children}
     </DonationContext.Provider>
   )
