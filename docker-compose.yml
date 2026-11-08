@@ -1,0 +1,4 @@
+name: tunisaid-backend
+
+include:
+  - ./directus/compose.yaml
