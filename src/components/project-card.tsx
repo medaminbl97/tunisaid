@@ -7,6 +7,7 @@ type ProjectCardProps = {
   description: string
   tag: string
   action: ReactNode
+  relationships?: ReactNode
   cover?: 'lagoon' | 'terracotta'
   delay?: number
   coverImage?: ReactNode
@@ -41,6 +42,7 @@ export function ProjectCard({ cover = 'lagoon', ...props }: ProjectCardProps) {
         <p className="min-h-[72px] text-base leading-normal text-brand-ink-soft">
           {props.description}
         </p>
+        {props.relationships}
         <div className="mt-auto">{props.action}</div>
       </div>
     </GlassCard>

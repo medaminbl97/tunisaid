@@ -1,0 +1,92 @@
+x-directus-image: &directus-image directus/directus:11.17.4
+
+services:
+  database:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_DB: tunisaid
+      POSTGRES_USER: tunisaid
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?Run node directus/scripts/init-env.mjs first}
+    env_file:
+      - .env
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U tunisaid -d tunisaid']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  directus:
+    image: *directus-image
+    ports:
+      - '127.0.0.1:${DIRECTUS_PORT:-8056}:8055'
+    env_file:
+      - .env
+    environment:
+      SECRET: ${DIRECTUS_SECRET:?Run node directus/scripts/init-env.mjs first}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:?Set ADMIN_EMAIL in directus/.env}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD in directus/.env}
+      DB_CLIENT: pg
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_DATABASE: tunisaid
+      DB_USER: tunisaid
+      DB_PASSWORD: ${DATABASE_PASSWORD:?Set DATABASE_PASSWORD in directus/.env}
+      PUBLIC_URL: http://localhost:${DIRECTUS_PORT:-8056}
+      PROJECT_NAME: TunisAid
+      TELEMETRY: 'false'
+      WEBSOCKETS_ENABLED: 'false'
+      CORS_ENABLED: 'true'
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      CORS_METHODS: GET
+      CACHE_SCHEMA: 'false'
+    command:
+      - /bin/sh
+      - -c
+      - node cli.js bootstrap && node cli.js start
+    volumes:
+      - uploads:/directus/uploads
+      - ./migrations:/directus/project/migrations:ro
+      - ./scripts:/directus/project/scripts:ro
+    depends_on:
+      database:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8055/server/ping').then(async r => { if (!r.ok || await r.text() !== 'pong') process.exit(1) }).catch(() => process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      start_period: 60s
+      retries: 30
+    restart: unless-stopped
+
+  setup:
+    image: *directus-image
+    env_file:
+      - .env
+    environment:
+      DIRECTUS_URL: http://directus:8055
+      ADMIN_EMAIL: ${ADMIN_EMAIL:?Set ADMIN_EMAIL in directus/.env}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD in directus/.env}
+      SEED_PUBLISH_DEMO: ${SEED_PUBLISH_DEMO:-false}
+      DONATION_SERVICE_TOKEN: ${DONATION_SERVICE_TOKEN:-}
+    entrypoint: ['node', '/directus/project/scripts/setup.mjs']
+    volumes:
+      - ./migrations:/directus/project/migrations:ro
+      - ./scripts:/directus/project/scripts:ro
+      - ./seeds:/directus/project/seeds:ro
+    depends_on:
+      directus:
+        condition: service_healthy
+    restart: 'no'
+
+volumes:
+  database:
+    name: tunisaid-backend-v11_database
+  uploads:
+    name: tunisaid-backend-v11_uploads

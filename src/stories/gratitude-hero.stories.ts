@@ -9,3 +9,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 export const NoPaymentConfirmation: Story = {}
+export const Paid: Story = { args: { status: 'paid', testMode: true } }
+export const Pending: Story = { args: { status: 'pending', testMode: true } }
+export const Failed: Story = { args: { status: 'failed', testMode: true } }
+export const Cancelled: Story = { args: { status: 'cancelled' } }

@@ -2,7 +2,10 @@
   "shared": {
     "home": "Home",
     "language": "Language",
-    "languages": { "en": "Switch to English", "de": "Switch to German" },
+    "languages": {
+      "en": "Switch to English",
+      "de": "Switch to German"
+    },
     "layoutHint": "A purposeful gift, one simple checkout.",
     "footer": "TunisAid · Giving with purpose, across borders.",
     "contact": "Questions? Contact our team",
@@ -30,51 +33,127 @@
     "eyebrow": "A little kindness goes a long way",
     "title": "Every gift starts with someone who cares.",
     "description": "Thank you for your interest in supporting everyday dignity in Tunisia.",
-    "notice": "This page previews the future confirmation layout. It does not confirm a donation, issue a receipt or trigger an email.",
-    "recapLabel": "Illustrative gift recap",
+    "notice": "This page previews the confirmation layout. It does not confirm a donation, issue a receipt or trigger an email.",
+    "recapLabel": "Gift recap",
     "recapTitle": "Your selected support",
     "recapHint": "Any amounts shown are your local selection only, not a payment record. Contact our team to discuss the next steps.",
     "explore": "Explore our work",
-    "back": "Back to gift selection"
+    "back": "Back to gift selection",
+    "retry": "Try again",
+    "testMode": "Test mode: no money was moved.",
+    "loading": "Loading your donation…",
+    "notFound": "We couldn't find this donation. Check the link or contact our team.",
+    "error": "Your donation status could not be loaded.",
+    "receipt": {
+      "label": "Donation summary",
+      "title": "Your donation",
+      "reference": "Reference",
+      "status": "Status",
+      "total": "Total",
+      "countsToward": "Counts toward {{title}}",
+      "date": "Date"
+    },
+    "statuses": {
+      "pending": {
+        "name": "Pending",
+        "title": "We're confirming your gift.",
+        "description": "Your payment is being confirmed. This page updates automatically."
+      },
+      "paid": {
+        "name": "Paid",
+        "title": "Thank you. Your gift is on its way.",
+        "description": "Your donation is confirmed. Keep your reference for any questions."
+      },
+      "failed": {
+        "name": "Failed",
+        "title": "Your payment didn't go through.",
+        "description": "No money was taken. Your basket is still here if you'd like to try again."
+      },
+      "cancelled": {
+        "name": "Cancelled",
+        "title": "Your payment was cancelled.",
+        "description": "No money was taken. Your basket is still here if you'd like to try again."
+      },
+      "expired": {
+        "name": "Expired",
+        "title": "This payment has expired.",
+        "description": "No money was taken. Start again from your basket whenever you're ready."
+      },
+      "partially_refunded": {
+        "name": "Partially refunded",
+        "title": "Part of your gift was refunded.",
+        "description": "Contact our team if you have questions about this refund."
+      },
+      "refunded": {
+        "name": "Refunded",
+        "title": "Your gift was refunded.",
+        "description": "Contact our team if you have questions about this refund."
+      }
+    }
   },
   "checkout": {
     "eyebrow": "Your gift, thoughtfully chosen",
     "title": "Make your kindness count.",
-    "description": "Review your selection. Online payment is not available yet.",
+    "description": "Review your selection and complete your gift.",
     "unavailableTitle": "Online payment unavailable",
+    "testModeTitle": "Test mode",
+    "testMode": "Payments run in test mode. No money moves: on the next page you choose a simulated outcome.",
     "detailsTitle": "01 Your details",
-    "detailsHint": "These fields show the planned checkout. They are disabled, and no personal information is collected.",
+    "detailsHint": "Every field is optional. You can give anonymously or leave an email for your receipt.",
+    "optional": "Optional",
     "private": "Keep my name private",
-    "privateHint": "Privacy options will be confirmed before online donations are enabled.",
+    "privateHint": "When ticked, we never mention your name publicly.",
+    "emailHint": "Only used for your donation receipt.",
     "paymentTitle": "02 Complete your gift",
-    "paymentMethod": "Planned payment methods · Unavailable",
-    "methods": { "card": "Card", "paypal": "PayPal", "bank": "Bank transfer" },
-    "cardHeading": "Credit or debit card · Unavailable",
-    "hostedHint": "Hosted payment fields require a payment provider. Do not send card details to TunisAid.",
-    "policyHint": "Donation terms, privacy information and payment methods must be finalized before online donations can be enabled. Contact our team with any questions.",
+    "policyHint": "Your gift is recorded for the purposes you selected. Contact our team with any questions.",
+    "submit": "Continue to payment",
+    "submitting": "Preparing your gift…",
+    "emptyBasket": "Add a purpose or a flexible amount before you continue.",
+    "errors": {
+      "unavailable": "Online payment is not available right now. Please try again later.",
+      "catalog_changed": "Some gift amounts have changed. Please review your basket and try again.",
+      "campaign_conflict": "One of your gifts is linked to more than one campaign. Please contact our team so we can fix it.",
+      "invalid_amount": "Your gift must be at least €1.",
+      "failed": "We couldn't start your donation. Please try again.",
+      "email": "Enter a valid email address or leave the field empty."
+    },
     "noPayment": "No payment has been processed. This is not a donation confirmation.",
-    "reviewLabel": "Review your illustrative gift selection",
+    "reviewLabel": "Review your gift selection",
     "reviewTitle": "A little kindness. Real possibilities.",
     "changeGifts": "Change gifts",
     "supportEyebrow": "Giving with purpose",
     "fields": {
-      "name": { "label": "Full name", "placeholder": "Your full name" },
-      "email": { "label": "Email address", "placeholder": "you@example.com" },
+      "name": {
+        "label": "Full name",
+        "placeholder": "Your full name"
+      },
+      "email": {
+        "label": "Email address",
+        "placeholder": "you@example.com"
+      },
       "country": {
         "label": "Country of residence",
         "placeholder": "Select a country"
-      },
-      "number": {
-        "label": "Card number",
-        "placeholder": "Payment field unavailable"
-      },
-      "expiry": { "label": "Expiry date", "placeholder": "MM / YY" },
-      "security": { "label": "Security code", "placeholder": "CVC" },
-      "cardName": {
-        "label": "Name on card",
-        "placeholder": "Name as shown on card"
       }
     }
+  },
+  "mockPayment": {
+    "eyebrow": "Test payment",
+    "title": "Simulate the payment outcome.",
+    "description": "This page stands in for a payment provider. No money moves. Choose an outcome to see how TunisAid records it.",
+    "reference": "Reference",
+    "amount": "Amount",
+    "status": "Payment status",
+    "succeed": "Simulate successful payment",
+    "fail": "Simulate declined payment",
+    "cancel": "Cancel payment",
+    "processing": "Recording the outcome…",
+    "loading": "Loading payment…",
+    "invalid": "This payment link is invalid or has expired.",
+    "error": "The payment could not be loaded or updated. Please try again.",
+    "retry": "Try again",
+    "done": "This payment is already complete.",
+    "back": "Back to checkout"
   },
   "hero": {
     "eyebrow": "Give with purpose",
@@ -92,10 +171,13 @@
     "filterLabel": "Filter donation purposes",
     "filters": {
       "all": "All purposes",
-      "essentials": "Essentials",
-      "mobility": "Mobility",
-      "education": "Education"
+      "campaign": "Campaign: {{title}}",
+      "project": "Project: {{title}}",
+      "general": "General purpose"
     },
+    "projectLabel": "Project",
+    "generalPurposeLabel": "General purpose",
+    "noMatchingPurposes": "There are no donation purposes for this filter yet.",
     "add": "Add gift",
     "addLabel": "Add {{title}} to your basket",
     "added": "{{title}} added. Selected quantity: {{quantity}}.",
@@ -105,7 +187,11 @@
     "reassurance": "An intention, not a shopping order.",
     "materialTitle": "Have goods to donate?",
     "materialDescription": "Offer equipment, supplies or a wheelchair you no longer need. Please coordinate with us before sending anything.",
-    "materialAction": "Talk to our team"
+    "materialAction": "Talk to our team",
+    "loading": "Loading donation purposes…",
+    "error": "We could not load the donation purposes. You can try again or give a flexible amount below.",
+    "retry": "Try again",
+    "empty": "There are no donation purposes available right now. You can still give a flexible amount below."
   },
   "flexible": {
     "eyebrow": "Let your kindness find its way",
@@ -123,40 +209,6 @@
     "choose": "Choose a meaningful purpose",
     "review": "Review your selected support",
     "contact": "Discuss next steps with our team",
-    "note": "Online payment is not available yet. Confirm amounts, availability and allocation with our team before donating."
-  },
-  "purposes": {
-    "koffa": {
-      "category": "Food & dignity",
-      "title": "Give a Koffa",
-      "description": "A bag of everyday groceries, chosen for a family in Tunisia.",
-      "impact": "One family. Essential groceries.",
-      "unit": "per Koffa",
-      "basketTitle": "Koffa groceries"
-    },
-    "wheelchair": {
-      "category": "Mobility & independence",
-      "title": "Share a wheelchair",
-      "description": "Help fund an illustrative €180 wheelchair, one share at a time. Six shares make a whole chair.",
-      "impact": "A step toward everyday freedom.",
-      "unit": "per wheelchair share",
-      "basketTitle": "Wheelchair support"
-    },
-    "school": {
-      "category": "Learning & possibility",
-      "title": "Pack a school bag",
-      "description": "Help a child start school with a bag, notebooks and essential supplies.",
-      "impact": "The tools for a brighter start.",
-      "unit": "per school kit",
-      "basketTitle": "School supplies"
-    },
-    "warmth": {
-      "category": "Care & comfort",
-      "title": "Bring a little warmth",
-      "description": "Contribute to warm blankets and seasonal essentials for a household.",
-      "impact": "Comfort when it is needed most.",
-      "unit": "per warmth kit",
-      "basketTitle": "Warmth & comfort"
-    }
+    "note": "Questions about amounts or how your gift is used? Our team is happy to help before or after you give."
   }
 }

@@ -1,27 +1,27 @@
-export const donationPurposes = [
-  { id: 'koffa', category: 'essentials', cents: 3500 },
-  { id: 'wheelchair', category: 'mobility', cents: 3000 },
-  { id: 'school', category: 'education', cents: 2500 },
-  { id: 'warmth', category: 'essentials', cents: 4500 },
-] as const
+export type DonationBasketItem = {
+  quantity: number
+  unitCents: number
+}
 
-export type DonationPurposeId = (typeof donationPurposes)[number]['id']
-export type DonationCategory = (typeof donationPurposes)[number]['category']
 export type DonationBasket = {
-  quantities: Record<DonationPurposeId, number>
+  items: Record<string, DonationBasketItem | undefined>
   flexibleCents: number
 }
 
 export const emptyDonationBasket: DonationBasket = {
-  quantities: { koffa: 0, wheelchair: 0, school: 0, warmth: 0 },
+  items: {},
   flexibleCents: 0,
 }
 
 export function donationTotal(basket: DonationBasket) {
-  return donationPurposes.reduce(
-    (total, purpose) => total + basket.quantities[purpose.id] * purpose.cents,
+  return Object.values(basket.items).reduce(
+    (total, item) => total + (item ? item.quantity * item.unitCents : 0),
     basket.flexibleCents,
   )
+}
+
+export function basketQuantity(basket: DonationBasket, slug: string) {
+  return basket.items[slug]?.quantity ?? 0
 }
 
 export function parseDonationAmount(value: string): number | null {

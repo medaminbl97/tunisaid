@@ -4,11 +4,8 @@ import { DonationSummary } from '#/components/donation-summary'
 import { QuantityStepper } from '#/components/quantity-stepper'
 import { useDonationBasket } from '#/components/donation-provider'
 import { Button } from '#/components/ui/button'
-import {
-  donationPurposes,
-  donationTotal,
-  formatDonationAmount,
-} from '#/lib/donation'
+import { useDonationPurposes } from '#/hooks/use-donation-purposes'
+import { donationTotal, formatDonationAmount } from '#/lib/donation'
 
 type DonationBasketSummaryProps = {
   title: string
@@ -21,29 +18,36 @@ type DonationBasketSummaryProps = {
 export function DonationBasketSummary(props: DonationBasketSummaryProps) {
   const { t, i18n } = useTranslation('donation')
   const { basket, setQuantity, setFlexibleCents } = useDonationBasket()
+  const { data: purposes = [] } = useDonationPurposes()
   const total = donationTotal(basket)
   const format = (cents: number) => formatDonationAmount(cents, i18n.language)
-  const lines = donationPurposes
-    .filter((purpose) => basket.quantities[purpose.id] > 0)
-    .map((purpose) => {
-      const quantity = basket.quantities[purpose.id]
-      const title = t(`purposes.${purpose.id}.basketTitle`)
+  const order = new Map(purposes.map((purpose, index) => [purpose.slug, index]))
+  const lines = Object.entries(basket.items)
+    .flatMap(([slug, item]) => (item ? [{ slug, ...item }] : []))
+    .sort(
+      (a, b) =>
+        (order.get(a.slug) ?? order.size) - (order.get(b.slug) ?? order.size),
+    )
+    .map((item) => {
+      const title =
+        purposes.find((purpose) => purpose.slug === item.slug)?.basketTitle ??
+        item.slug
       return {
-        id: purpose.id,
+        id: item.slug,
         title,
         detail: t('shared.lineDetail', {
-          quantity,
-          amount: format(purpose.cents),
+          quantity: item.quantity,
+          amount: format(item.unitCents),
         }),
-        amount: format(quantity * purpose.cents),
+        amount: format(item.quantity * item.unitCents),
         controls: props.editable ? (
           <QuantityStepper
-            value={quantity}
+            value={item.quantity}
             label={t('shared.quantity', { title })}
             decreaseLabel={t('shared.decrease', { title })}
             increaseLabel={t('shared.increase', { title })}
-            canIncrease={Number.isSafeInteger(total + purpose.cents)}
-            onChange={(value) => setQuantity(purpose.id, value)}
+            canIncrease={Number.isSafeInteger(total + item.unitCents)}
+            onChange={(value) => setQuantity(item.slug, item.unitCents, value)}
           />
         ) : undefined,
       }

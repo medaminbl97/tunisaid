@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/tanstack-react'
 import { Link } from '@tanstack/react-router'
 import { ProjectCard } from '#/components/project-card'
+import { RelationshipBadge } from '#/components/relationship-badge'
 import { Button } from '#/components/ui/button'
 import { ImagePanel } from '#/components/image-panel'
 import { editorialImages } from '#/lib/site-images'
@@ -14,6 +15,21 @@ const meta = {
     title: 'Educational Project',
     description:
       'Our partner associations support children with severe and multiple disabilities.',
+    relationships: (
+      <div className="space-y-2">
+        <p className="text-xs font-bold text-brand-ink-soft">
+          Donation purposes for this project
+        </p>
+        <ul className="flex flex-wrap gap-2">
+          <li>
+            <RelationshipBadge>School kit</RelationshipBadge>
+          </li>
+          <li>
+            <RelationshipBadge>Wheelchair share</RelationshipBadge>
+          </li>
+        </ul>
+      </div>
+    ),
     action: (
       <Button asChild variant="link">
         <Link to="/what-we-do">Read more</Link>
