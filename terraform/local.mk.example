@@ -1,0 +1,4 @@
+# Copy to local.mk (gitignored). Defaults: SSH_TARGET=root@<server_ip>, DOCKER_CMD=docker.
+SSH_TARGET = azure-vm-dokploy
+# SSH_OPTS = -i ~/.ssh/server_key
+DOCKER_CMD = sudo -n docker
