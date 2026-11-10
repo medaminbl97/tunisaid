@@ -1,3 +1,7 @@
 package-lock.json
 pnpm-lock.yaml
 yarn.lock
+# Terraform provider cache and local secrets
+terraform/.terraform
+terraform/.secrets
+terraform/*.tfstate*
