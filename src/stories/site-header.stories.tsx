@@ -31,6 +31,12 @@ export const German: Story = {
   ],
 }
 
+export const Mobile: Story = {
+  globals: {
+    viewport: { value: 'mobile1', isRotated: false },
+  },
+}
+
 export const WithPageContent: Story = {
   render: () => (
     <div className="min-h-[150vh]">

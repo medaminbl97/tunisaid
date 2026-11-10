@@ -418,6 +418,10 @@
     "homeLabel": "Tunisaid home",
     "logoAlt": "Tunisaid - Aid for Tunisians with Disabilities",
     "navigationLabel": "Main navigation",
+    "menu": {
+      "open": "Open menu",
+      "close": "Close menu"
+    },
     "navigation": {
       "home": "Home",
       "about": "About",

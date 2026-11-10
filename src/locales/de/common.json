@@ -418,6 +418,10 @@
     "homeLabel": "Tunisaid Startseite",
     "logoAlt": "Tunisaid - Hilfe für Menschen mit Behinderungen in Tunesien",
     "navigationLabel": "Hauptnavigation",
+    "menu": {
+      "open": "Menü öffnen",
+      "close": "Menü schließen"
+    },
     "navigation": {
       "home": "Startseite",
       "about": "Über uns",
