@@ -138,11 +138,11 @@
   --brand-container-width: 80rem;
   --brand-header-width: 82.5rem;
   --brand-header-offset: 1.25rem;
-  --brand-header-radius: 2rem;
-  --brand-header-height: 8.25rem;
-  --brand-header-expanded-height: 9rem;
-  --brand-header-logo-size: 2.75rem;
-  --brand-header-logo-expanded-size: 3.125rem;
+  --brand-header-radius: 999px;
+  --brand-header-height: 4.5rem;
+  --brand-header-expanded-height: 4.5rem;
+  --brand-header-logo-size: 3.25rem;
+  --brand-header-logo-expanded-size: 3.75rem;
   --brand-header-glass: rgba(255, 255, 255, 0.45);
   --brand-header-border: rgba(255, 255, 255, 0.85);
   --brand-header-foreground: #173a40;
@@ -390,7 +390,6 @@
   :root {
     --brand-header-height: 4.75rem;
     --brand-header-expanded-height: 5.5rem;
-    --brand-header-radius: 999px;
   }
 }
 
