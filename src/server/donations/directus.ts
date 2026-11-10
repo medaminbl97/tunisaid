@@ -7,6 +7,7 @@ import type {
   ItemsDonors,
   ItemsPaymentAttempts,
   ItemsPaymentEvents,
+  ItemsRefunds,
 } from '#/api/generated/types.gen'
 import { serializeDirectusQuery } from '#/api/directus-query'
 
@@ -36,6 +37,7 @@ type WritableItems = {
   donation_items: ItemsDonationItems
   payment_attempts: ItemsPaymentAttempts
   payment_events: ItemsPaymentEvents
+  refunds: ItemsRefunds
 }
 // Directus' spec reuses read schemas for writes, marking ids and other fields
 // as required. Writes send only the fields being set; Directus creates ids.

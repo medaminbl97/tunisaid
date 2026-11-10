@@ -21,6 +21,7 @@ import {
   readItemsCheckouts,
   readItemsDonationItems,
   readItemsDonationPurposes,
+  readItemsDonations,
   readItemsPaymentAttempts,
   readItemsPaymentEvents,
   readItemsRefunds,
@@ -37,6 +38,7 @@ import {
 } from '#/api/generated/zod.gen'
 import { DirectusError, createServiceClient } from './directus'
 import type { ServiceConnection } from './directus'
+import { allocateRefund } from './refund-allocation'
 
 const flexibleTitles = { en: 'Flexible support', de: 'Flexible Unterstützung' }
 
@@ -73,6 +75,8 @@ const campaignLinkSchema = z.object({
 })
 const attemptRowSchema = zItemsPaymentAttempts.pick({ id: true }).extend({
   checkout: z.uuid(),
+  provider: z.string(),
+  provider_payment_id: z.string().nullish(),
   status: z.enum(['created', 'pending', 'succeeded', 'failed', 'cancelled']),
   amount_cents: z.int(),
   currency: z.literal('EUR'),
@@ -108,6 +112,16 @@ const eventRowSchema = zItemsPaymentEvents.pick({ id: true }).extend({
   status: z.enum(['received', 'processed', 'failed']),
 })
 const amountSchema = z.object({ amount_cents: z.int() })
+const refundRowSchema = z.object({
+  id: z.uuid(),
+  donation: z.uuid(),
+  status: z.enum(['pending', 'succeeded', 'failed']),
+  amount_cents: z.int(),
+})
+const donationRowSchema = z.object({
+  id: z.uuid(),
+  total_cents: z.int(),
+})
 
 function rowsOf<T extends z.ZodType>(
   schema: T,
@@ -126,6 +140,14 @@ const attemptOutcomes = {
   failed: { attempt: 'failed', checkout: 'failed', failure: 'mock_declined' },
   cancelled: { attempt: 'cancelled', checkout: 'cancelled', failure: null },
 } as const
+
+export type CheckoutLine = {
+  title: string
+  quantity: number
+  unitCents: number
+}
+
+export type RefundStatus = 'pending' | 'succeeded' | 'failed'
 
 export type DonationServiceOptions = ServiceConnection & {
   now?: () => Date
@@ -204,9 +226,18 @@ export function createDonationService(options: DonationServiceOptions) {
 
   async function createCheckout(
     rawInput: CheckoutInput,
-    provider: 'mock',
+    provider: string,
+    maxTotalCents = maxDonationCents,
   ): Promise<
-    | { ok: true; reference: string; attemptId: string }
+    | {
+        ok: true
+        reference: string
+        attemptId: string
+        idempotencyKey: string
+        totalCents: number
+        lines: CheckoutLine[]
+        donorEmail: string | null
+      }
     | Extract<CheckoutResult, { ok: false }>
   > {
     const input = checkoutInputSchema.parse(rawInput)
@@ -252,7 +283,10 @@ export function createDonationService(options: DonationServiceOptions) {
       })
     }
     const total = lines.reduce((sum, line) => sum + line.total_cents, 0)
-    if (total < minDonationCents || total > maxDonationCents) {
+    if (
+      total < minDonationCents ||
+      total > Math.min(maxDonationCents, maxTotalCents)
+    ) {
       return { ok: false, code: 'invalid_amount' }
     }
     if (total !== input.expectedTotalCents) {
@@ -321,12 +355,13 @@ export function createDonationService(options: DonationServiceOptions) {
           })),
         ),
       )
+      const idempotencyKey = `checkout:${randomUUID()}`
       const attempt = idSchema.parse(
         await create('payment_attempts', {
           checkout: checkout.id,
           provider,
           provider_payment_id: `${provider}_${randomUUID()}`,
-          idempotency_key: `checkout:${randomUUID()}`,
+          idempotency_key: idempotencyKey,
           status: 'pending',
           amount_cents: total,
           currency: 'EUR',
@@ -334,7 +369,19 @@ export function createDonationService(options: DonationServiceOptions) {
           updated_at: createdAt,
         }),
       )
-      return { ok: true, reference, attemptId: attempt.id }
+      return {
+        ok: true,
+        reference,
+        attemptId: attempt.id,
+        idempotencyKey,
+        totalCents: total,
+        lines: lines.map((line) => ({
+          title: line.title_snapshot,
+          quantity: line.quantity,
+          unitCents: line.unit_amount_cents,
+        })),
+        donorEmail: donor.email ?? null,
+      }
     } catch (error) {
       await update('checkouts', checkout.id, { status: 'failed' }).catch(
         () => undefined,
@@ -347,12 +394,30 @@ export function createDonationService(options: DonationServiceOptions) {
     const response = await readItemsPaymentAttempts({
       ...reads,
       query: {
-        fields: ['id', 'checkout', 'status', 'amount_cents', 'currency'],
+        fields: [
+          'id',
+          'checkout',
+          'provider',
+          'provider_payment_id',
+          'status',
+          'amount_cents',
+          'currency',
+        ],
         filter: { id: { _eq: id } },
         limit: 1,
       },
     })
     return rowsOf(attemptRowSchema, response).at(0) ?? null
+  }
+
+  async function attachProviderPayment(
+    attemptId: string,
+    providerPaymentId: string,
+  ) {
+    await update('payment_attempts', z.uuid().parse(attemptId), {
+      provider_payment_id: providerPaymentId,
+      updated_at: now(),
+    })
   }
 
   async function readCheckout(filter: Record<string, unknown>) {
@@ -402,13 +467,17 @@ export function createDonationService(options: DonationServiceOptions) {
     return rowsOf(eventRowSchema, response).at(0) ?? null
   }
 
-  // Shared by the mock provider and a future provider webhook: each provider
-  // event is stored once, and only open attempts/donations move forward.
+  // Shared by the mock provider and provider webhooks: each provider event is
+  // stored once, and only open attempts/donations move forward. A provider
+  // that reports the amount it collected must match the attempt, otherwise the
+  // event is flagged for review and nothing moves.
   async function recordPaymentEvent(event: {
     provider: string
     eventId: string
     attemptId: string
     outcome: MockPaymentOutcome
+    failureCode?: string
+    collectedCents?: number
   }) {
     const attemptId = z.uuid().parse(event.attemptId)
     const key = `${event.provider}:${event.eventId}`
@@ -443,6 +512,19 @@ export function createDonationService(options: DonationServiceOptions) {
 
     const attempt = await readAttempt(attemptId)
     const transition = attemptOutcomes[event.outcome]
+    if (
+      attempt &&
+      event.outcome === 'succeeded' &&
+      event.collectedCents !== undefined &&
+      event.collectedCents !== attempt.amount_cents
+    ) {
+      await update('payment_events', stored.id, {
+        status: 'failed',
+        processed_at: now(),
+        error_code: 'amount_mismatch',
+      })
+      return { duplicate: false, applied: false }
+    }
     let applied = false
     if (
       attempt &&
@@ -450,7 +532,10 @@ export function createDonationService(options: DonationServiceOptions) {
     ) {
       await update('payment_attempts', attempt.id, {
         status: transition.attempt,
-        failure_code: transition.failure,
+        failure_code:
+          event.outcome === 'failed'
+            ? (event.failureCode ?? transition.failure)
+            : transition.failure,
         updated_at: now(),
       })
       const checkout = await readCheckout({ id: { _eq: attempt.checkout } })
@@ -468,6 +553,118 @@ export function createDonationService(options: DonationServiceOptions) {
       error_code: applied ? null : 'stale_transition',
     })
     return { duplicate: false, applied }
+  }
+
+  // A provider refund covers a whole payment, so it is split across the
+  // checkout's campaign shares. Rows are keyed by `<refund id>:<donation id>`,
+  // which keeps repeated and out-of-order provider events idempotent.
+  async function syncRefund(refund: {
+    provider: string
+    refundId: string
+    attemptId: string
+    amountCents: number
+    status: RefundStatus
+    reason?: string | null
+  }): Promise<{ applied: boolean; reason?: string }> {
+    const attempt = await readAttempt(z.uuid().parse(refund.attemptId))
+    if (!attempt) return { applied: false, reason: 'unknown_attempt' }
+    const keyPrefix = `${refund.refundId}:`
+
+    async function readRecorded() {
+      return rowsOf(
+        refundRowSchema,
+        await readItemsRefunds({
+          ...reads,
+          query: {
+            fields: ['id', 'donation', 'status', 'amount_cents'],
+            filter: { provider_refund_id: { _starts_with: keyPrefix } },
+            limit: -1,
+          },
+        }),
+      )
+    }
+
+    async function applyStatus(recorded: z.infer<typeof refundRowSchema>[]) {
+      for (const row of recorded) {
+        if (row.status === 'pending' && refund.status !== 'pending') {
+          await update('refunds', row.id, { status: refund.status })
+        }
+      }
+      return { applied: true }
+    }
+
+    const recorded = await readRecorded()
+    if (recorded.length) return applyStatus(recorded)
+    // A refund that failed before it was recorded never reduced anything.
+    if (refund.status === 'failed') return { applied: false }
+
+    const donations = rowsOf(
+      donationRowSchema,
+      await readItemsDonations({
+        ...reads,
+        query: {
+          fields: ['id', 'total_cents'],
+          filter: { checkout: { _eq: attempt.checkout } },
+          limit: -1,
+        },
+      }),
+    )
+    const taken = rowsOf(
+      refundRowSchema,
+      await readItemsRefunds({
+        ...reads,
+        query: {
+          fields: ['id', 'donation', 'status', 'amount_cents'],
+          filter: {
+            _and: [
+              { donation: { _in: donations.map((donation) => donation.id) } },
+              { status: { _in: ['pending', 'succeeded'] } },
+            ],
+          },
+          limit: -1,
+        },
+      }),
+    )
+    const shares = allocateRefund(
+      refund.amountCents,
+      donations.map((donation) => ({
+        donationId: donation.id,
+        remainingCents:
+          donation.total_cents -
+          taken
+            .filter((row) => row.donation === donation.id)
+            .reduce((sum, row) => sum + row.amount_cents, 0),
+      })),
+    )
+    if (!shares) return { applied: false, reason: 'exceeds_paid_amount' }
+
+    try {
+      await create(
+        'refunds',
+        shares.map((share) => ({
+          donation: share.donationId,
+          payment_attempt: attempt.id,
+          provider: refund.provider,
+          provider_refund_id: `${keyPrefix}${share.donationId}`,
+          idempotency_key: `${refund.provider}:${keyPrefix}${share.donationId}`,
+          status: refund.status,
+          amount_cents: share.amountCents,
+          currency: 'EUR',
+          reason_code: refund.reason ?? null,
+          created_at: now(),
+        })),
+      )
+    } catch (error) {
+      // A concurrent delivery of the same refund won the race.
+      if (
+        !(error instanceof DirectusError) ||
+        error.code !== 'RECORD_NOT_UNIQUE'
+      ) {
+        throw error
+      }
+      return applyStatus(await readRecorded())
+    }
+    return { applied: true }
   }
 
   async function getReceipt(
@@ -635,7 +832,10 @@ export function createDonationService(options: DonationServiceOptions) {
   return {
     createCheckout,
     getMockPayment,
+    getAttempt: readAttempt,
+    attachProviderPayment,
     recordPaymentEvent,
+    syncRefund,
     getReceipt,
     getCampaignRaised,
   }
