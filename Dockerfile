@@ -9,6 +9,10 @@ RUN npm ci
 
 # Copy source and build
 COPY . .
+
+# Vite inlines this public URL into the browser bundle at build time
+ARG VITE_API_BASE_URL
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 RUN npm run build
 
 # Production stage
