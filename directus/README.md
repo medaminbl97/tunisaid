@@ -253,15 +253,20 @@ only from server functions; it is never sent to the browser. The policy can:
 - move open attempts and `pending` checkouts to a final status, and create and
   process payment events (unique per `provider:event` key).
 
-It cannot read donor emails, other users or refund reasons, cannot change a
-donation after creation, and cannot create refunds or checkouts that are
-already paid.
+- create refunds (migration `002-stripe-refunds`) and move their `pending` status
+  to `succeeded` or `failed`, which the Stripe refund webhook uses.
 
-Refunds are recorded by staff in Directus **after** they were issued at the
-payment provider. No custom hook is installed: relationships are enforced by
+It cannot read donor emails, other users or refund reasons, cannot change a
+donation after creation, and cannot create checkouts that are already paid.
+
+With Stripe, refunds issued in the Stripe dashboard are recorded automatically
+by the website's webhook. Each refund is split across the checkout's campaign
+shares in proportion to what each can still give back, as one row per share keyed
+`<refund id>:<donation id>`. Staff can still record a refund by hand (for example
+after a bank transfer). No custom hook is installed: relationships are enforced by
 foreign keys, and refund state is derived rather than copied onto the donation.
-Foreign keys cannot enforce a sum rule, so staff must make sure succeeded refunds
-never exceed the paid amount; the website clamps campaign totals at zero.
+Foreign keys cannot enforce a sum rule; the webhook never allocates more than a
+share's paid amount, and the website clamps campaign totals at zero.
 
 ## Intentionally not enabled
 

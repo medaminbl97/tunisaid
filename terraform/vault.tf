@@ -6,6 +6,8 @@ locals {
     "directus_admin_password",
     "donation_service_token",
     "donation_signing_secret",
+    "stripe_secret_key",
+    "stripe_webhook_secret",
   ]
 
   # Dokploy resolves ${{vault.<provider>.<path>:<field>}} at deploy time. The

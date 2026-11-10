@@ -77,6 +77,10 @@ export function CheckoutForm() {
       }),
     onSuccess: async (result) => {
       if (result.ok) {
+        if (/^https?:\/\//i.test(result.redirectUrl)) {
+          window.location.assign(result.redirectUrl)
+          return
+        }
         await router.navigate({ href: result.redirectUrl })
         return
       }

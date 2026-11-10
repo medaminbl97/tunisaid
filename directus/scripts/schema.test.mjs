@@ -113,7 +113,7 @@ test('migrations resume after failure, run once and reject changed checksums', a
   await migrate(request)
   assert.deepEqual(
     ledger.map((row) => row.id),
-    ['001'],
+    ['001', '002'],
   )
   assert.equal(accessLinks.length, 1)
   const grants = new Set(
@@ -129,7 +129,17 @@ test('migrations resume after failure, run once and reject changed checksums', a
       .find((grant) => grant.collection === 'donations')
       .fields.every((name) => !name.includes('allocation')),
   )
-  assert.ok(!grants.has('refunds:create'))
+  // Provider refund webhooks record refunds from migration 002 on.
+  assert.ok(grants.has('refunds:create'))
+  assert.ok(grants.has('refunds:update'))
+  assert.ok(
+    servicePermissions
+      .filter((grant) => grant.collection === 'refunds')
+      .every(
+        (grant) =>
+          !grant.fields.includes('reason_code') || grant.action === 'create',
+      ),
+  )
   assert.ok(servicePermissions.every((grant) => !grant.fields.includes('*')))
   const completedWrites = writes
   await migrate(request)
@@ -200,6 +210,7 @@ test('only the essential collections exist and refund state is not stored', () =
     serviceGrants.every(
       (grant) => grant.collection !== 'refunds' || grant.action === 'read',
     ),
+    'the baseline only reads refunds; migration 002 adds the webhook grants',
   )
 })
 

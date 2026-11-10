@@ -219,7 +219,8 @@ working Change gifts link.
 
 ### Donation checkout
 
-The flow is `/donate` → `/donate/checkout` → `/donate/mock-payment` →
+The flow is `/donate` → `/donate/checkout` → the payment provider (the local
+`/donate/mock-payment` page, or hosted Stripe Checkout) →
 `/donate/thank-you?reference=…&token=…`. Name, email and country are optional, and
 names stay private by default. Server functions in
 `src/api/collections/donations/functions.ts` call `src/server/donations/` with
@@ -236,6 +237,21 @@ the Directus service token; the token and signing secret never reach the browser
 - **Mock payment** links are HMAC-signed for one attempt. Succeed, fail or cancel
   records an idempotent payment event (`mock:<event id>`) that moves the attempt
   and the pending checkout to a final status; repeats and late events change nothing.
+- **Stripe** (`PAYMENT_PROVIDER=stripe`) creates a hosted Checkout Session from the
+  repriced lines (`submit_type: donate`, language from the site, payment methods
+  from the Stripe dashboard) and redirects the donor to it. The session carries the
+  payment attempt id in its metadata. Nothing is marked paid by the browser
+  redirect: `POST /api/stripe/webhook` verifies Stripe's signature on the raw body
+  and records one idempotent `stripe:<event id>` payment event per delivery:
+  `checkout.session.completed` (when paid) and `async_payment_succeeded` mark the
+  checkout paid after checking the collected amount equals the attempt (a mismatch
+  is flagged `amount_mismatch` and changes nothing); `async_payment_failed`
+  fails it; `expired` cancels it. If the donor leaves Stripe, `/api/stripe/cancel`
+  (HMAC-signed per attempt) expires the session so it cannot be paid later and
+  lands on the receipt. Refunds issued in Stripe (`refund.created|updated|failed`)
+  are written to `refunds` automatically, split across the campaign shares, and
+  show up in receipts and raised totals. Processing errors answer `500` so Stripe
+  retries. A single payment is limited to 999,999.99 EUR.
 - **Thank-you** shows a signed, personal-data-free receipt that refreshes until
   the status is final; each line links to the campaign it counts toward, and a
   paid checkout clears the basket. Without parameters the page keeps its design
@@ -246,12 +262,41 @@ the Directus service token; the token and signing secret never reach the browser
 
 Run `node directus/scripts/init-env.mjs` to create the root `.env` (keys are listed
 in `.env.example`). Checkout is disabled unless `DIRECTUS_SERVICE_TOKEN`,
-`DONATION_SIGNING_SECRET` and `PAYMENT_PROVIDER=mock` are set, and the mock is
-refused when `NODE_ENV=production` unless `ALLOW_MOCK_PAYMENTS=true`. Refunds
-are recorded by staff in Directus after they were issued at the provider (see
-`directus/README.md`).
+`DONATION_SIGNING_SECRET` and `PAYMENT_PROVIDER` are set, and the mock is refused
+when `NODE_ENV=production` unless `ALLOW_MOCK_PAYMENTS=true`. Stripe also needs
+`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and `SITE_URL`, otherwise checkout
+stays disabled. Staff can still record refunds by hand in Directus (see
+`directus/README.md`); Directus migration `002-stripe-refunds` lets the donation
+service user write them.
 
-Not done yet: a real payment provider and webhook route, email receipts, rate
+#### Testing Stripe locally
+
+1. In a Stripe **test-mode** account, copy the secret key (Developers → API keys).
+2. Install the [Stripe CLI](https://docs.stripe.com/stripe-cli), run `stripe login`,
+   then forward the events the site handles (newer CLI versions require the list):
+
+   ```bash
+   stripe listen \
+     --events checkout.session.completed,checkout.session.async_payment_succeeded,checkout.session.async_payment_failed,checkout.session.expired,refund.created,refund.updated,refund.failed \
+     --forward-to localhost:3000/api/stripe/webhook
+   ```
+
+   It prints a `whsec_…` signing secret. Use your dev server's port in the URL and
+   in `SITE_URL`.
+
+3. Put `PAYMENT_PROVIDER=stripe`, `SITE_URL=http://localhost:3000`,
+   `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` in `.env`, make sure the Directus
+   backend ran `002-stripe-refunds`, and start `npm run dev`.
+4. Add a gift, check out, and pay with test card `4242 4242 4242 4242` (any future
+   date, any CVC). You return to the receipt, which turns **paid** once the webhook
+   arrives. Other cards: `4000 0000 0000 9995` (declined), `4000 0025 0000 3155`
+   (3-D Secure). Closing the Stripe page via the back link cancels the checkout.
+5. In the dashboard (test mode) refund the payment fully or partly; the receipt
+   becomes **refunded** / **partially refunded** and the campaign total drops.
+6. Replay or resend any event from the CLI (`stripe events resend evt_…`): repeats
+   change nothing.
+
+Not done yet: email receipts from the website (Stripe can send its own), rate
 limiting and expiry of abandoned pending donations. Privacy and terms copy must be finalized before going live.
 
 English is the default and fallback locale. Header labels and accessible names use the typed `siteHeader` keys, while homepage content uses the `home` keys in `src/locales/en/common.json`, with matching German translations in `src/locales/de/common.json`. Translation key types are derived from the English resources. The app and Storybook both initialize the shared i18next setup.

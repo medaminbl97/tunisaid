@@ -4,6 +4,8 @@ import { donationPurposeLanguageSchema } from '#/api/collections/donation-purpos
 // PostgreSQL integer columns store amounts in cents.
 export const maxDonationCents = 2_147_483_647
 export const minDonationCents = 100
+// Stripe rejects a single EUR charge above 999,999.99.
+export const stripeMaxChargeCents = 99_999_999
 
 const slugSchema = z
   .string()

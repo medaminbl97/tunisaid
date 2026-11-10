@@ -5,6 +5,7 @@ import {
   donationStatusLookupSchema,
   mockPaymentCompletionSchema,
   mockPaymentLookupSchema,
+  stripeMaxChargeCents,
 } from './schemas'
 import type {
   CampaignRaised,
@@ -35,13 +36,18 @@ async function loadServer() {
 
 export const getDonationAvailability = createServerFn({
   method: 'GET',
-}).handler(async (): Promise<{ enabled: boolean; provider: 'mock' | null }> => {
-  const { readDonationConfig } = await loadServer()
-  const state = readDonationConfig()
-  return state.enabled
-    ? { enabled: true, provider: state.config.provider }
-    : { enabled: false, provider: null }
-})
+}).handler(
+  async (): Promise<{
+    enabled: boolean
+    provider: 'mock' | 'stripe' | null
+  }> => {
+    const { readDonationConfig } = await loadServer()
+    const state = readDonationConfig()
+    return state.enabled
+      ? { enabled: true, provider: state.config.provider }
+      : { enabled: false, provider: null }
+  },
+)
 
 export const createCheckout = createServerFn({ method: 'POST' })
   .validator(checkoutInputSchema)
@@ -52,11 +58,28 @@ export const createCheckout = createServerFn({ method: 'POST' })
     if (!state.enabled) return { ok: false, code: 'unavailable' }
     const { config } = state
     try {
-      const result = await createDonationService(config).createCheckout(
+      const service = createDonationService(config)
+      const stripeConfig = config.provider === 'stripe' ? config.stripe : null
+      const result = await service.createCheckout(
         data,
         config.provider,
+        stripeConfig ? stripeMaxChargeCents : undefined,
       )
       if (!result.ok) return result
+      if (stripeConfig) {
+        const { startStripeCheckout } =
+          await import('#/server/donations/stripe-checkout')
+        return {
+          ok: true,
+          reference: result.reference,
+          redirectUrl: await startStripeCheckout({
+            config: { ...config, stripe: stripeConfig },
+            service,
+            checkout: result,
+            language: data.language,
+          }),
+        }
+      }
       const params = new URLSearchParams({
         attempt: result.attemptId,
         token: signing.signValue(
