@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { randomUUID } from 'node:crypto'
+import { createHmac, randomUUID } from 'node:crypto'
 import { after, before, beforeEach, test } from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { createServer } from 'vite'
@@ -8,6 +8,9 @@ let server
 let service
 let signing
 let config
+let allocation
+let events
+let webhook
 let db
 
 const now = new Date('2026-03-01T12:00:00.000Z')
@@ -114,7 +117,11 @@ function matches(collection, row, filter) {
       return condition.every((part) => matches(collection, row, part))
     }
     const value = row[key]
-    if (!('_eq' in condition) && !('_in' in condition)) {
+    if (
+      !('_eq' in condition) &&
+      !('_in' in condition) &&
+      !('_starts_with' in condition)
+    ) {
       const target = references[collection][key]
       const linked = related(collection, key, value)
       return Boolean(linked) && matches(target, linked, condition)
@@ -122,12 +129,13 @@ function matches(collection, row, filter) {
     return Object.entries(condition).every(([operator, expected]) => {
       if (operator === '_eq') return value === expected
       if (operator === '_in') return expected.includes(value)
+      if (operator === '_starts_with') return String(value).startsWith(expected)
       throw new Error(`Unsupported operator ${operator}`)
     })
   })
 }
 
-function expand(collection, row) {
+function expand(collection, row, fields = '') {
   if (collection === 'campaign_projects') {
     return { ...row, campaign: related(collection, 'campaign', row.campaign) }
   }
@@ -143,7 +151,7 @@ function expand(collection, row) {
       },
     }
   }
-  if (collection === 'refunds') {
+  if (collection === 'refunds' && fields.includes('donation.campaign')) {
     const donation = related(collection, 'donation', row.donation)
     return { ...row, donation: { campaign: donation.campaign } }
   }
@@ -159,7 +167,10 @@ function json(data, status = 200) {
 
 async function fakeDirectus(input, init = {}) {
   const request = input instanceof Request ? input : new Request(input, init)
-  assert.equal(request.headers.get('authorization'), 'Bearer service-token')
+  assert.match(
+    request.headers.get('authorization') ?? '',
+    /^Bearer (service-token|x{32})$/,
+  )
   const url = new URL(request.url)
   const [, , collection, id] = url.pathname.split('/')
   const rows = db[collection]
@@ -188,7 +199,9 @@ async function fakeDirectus(input, init = {}) {
     return json({
       data: rows
         .filter((row) => matches(collection, row, filter))
-        .map((row) => expand(collection, row)),
+        .map((row) =>
+          expand(collection, row, url.searchParams.get('fields') ?? ''),
+        ),
     })
   }
   const body = JSON.parse(await request.text())
@@ -231,6 +244,13 @@ before(async () => {
   service = await server.ssrLoadModule('/src/server/donations/service.ts')
   signing = await server.ssrLoadModule('/src/server/donations/signing.ts')
   config = await server.ssrLoadModule('/src/server/donations/config.ts')
+  allocation = await server.ssrLoadModule(
+    '/src/server/donations/refund-allocation.ts',
+  )
+  events = await server.ssrLoadModule('/src/server/donations/stripe-events.ts')
+  webhook = await server.ssrLoadModule(
+    '/src/server/donations/stripe-webhook.ts',
+  )
 })
 
 after(async () => {
@@ -616,5 +636,412 @@ test('donation config requires credentials and blocks mock payments in productio
       ALLOW_MOCK_PAYMENTS: 'true',
     }).enabled,
     true,
+  )
+})
+
+const stripeEnv = {
+  DIRECTUS_SERVICE_TOKEN: 'x'.repeat(32),
+  DONATION_SIGNING_SECRET: 'y'.repeat(32),
+  PAYMENT_PROVIDER: 'stripe',
+  STRIPE_SECRET_KEY: 'sk_test_1234567890abcdef',
+  STRIPE_WEBHOOK_SECRET: 'whsec_1234567890abcdef',
+  SITE_URL: 'https://donate.example.org/',
+}
+
+test('stripe config needs its keys and site URL, and ignores the mock guard', () => {
+  const state = config.readDonationConfig({
+    ...stripeEnv,
+    NODE_ENV: 'production',
+  })
+  assert.equal(state.enabled, true)
+  assert.deepEqual(state.config.stripe, {
+    secretKey: stripeEnv.STRIPE_SECRET_KEY,
+    webhookSecret: stripeEnv.STRIPE_WEBHOOK_SECRET,
+    siteUrl: 'https://donate.example.org',
+  })
+  for (const missing of [
+    'STRIPE_SECRET_KEY',
+    'STRIPE_WEBHOOK_SECRET',
+    'SITE_URL',
+  ]) {
+    assert.deepEqual(
+      config.readDonationConfig({ ...stripeEnv, [missing]: '' }),
+      {
+        enabled: false,
+        reason: 'missing_stripe_configuration',
+      },
+    )
+  }
+  assert.deepEqual(
+    config.readDonationConfig({ ...stripeEnv, STRIPE_SECRET_KEY: 'not-a-key' }),
+    { enabled: false, reason: 'missing_stripe_configuration' },
+  )
+})
+
+test('refunds are split in proportion to what each share can still give back', () => {
+  const { allocateRefund } = allocation
+  const shares = [
+    { donationId: 'a', remainingCents: 6000 },
+    { donationId: 'b', remainingCents: 3000 },
+    { donationId: 'c', remainingCents: 1000 },
+  ]
+  assert.deepEqual(allocateRefund(5000, shares), [
+    { donationId: 'a', amountCents: 3000 },
+    { donationId: 'b', amountCents: 1500 },
+    { donationId: 'c', amountCents: 500 },
+  ])
+  const odd = allocateRefund(1, shares)
+  assert.equal(
+    odd.reduce((sum, share) => sum + share.amountCents, 0),
+    1,
+  )
+  const full = allocateRefund(10_000, shares)
+  assert.deepEqual(
+    full.map((share) => share.amountCents),
+    [6000, 3000, 1000],
+  )
+  assert.equal(allocateRefund(10_001, shares), null)
+  assert.equal(allocateRefund(0, shares), null)
+  assert.deepEqual(
+    allocateRefund(100, [
+      { donationId: 'a', remainingCents: 0 },
+      { donationId: 'b', remainingCents: 100 },
+    ]),
+    [{ donationId: 'b', amountCents: 100 }],
+  )
+  for (let amount = 1; amount <= 10_000; amount += 37) {
+    const result = allocateRefund(amount, shares)
+    assert.equal(
+      result.reduce((sum, share) => sum + share.amountCents, 0),
+      amount,
+    )
+    for (const share of result) {
+      const cap = shares.find((item) => item.donationId === share.donationId)
+      assert.ok(share.amountCents <= cap.remainingCents)
+    }
+  }
+})
+
+async function stripeAttempt() {
+  const api = donationService()
+  const result = await api.createCheckout(checkout(), 'stripe')
+  assert.equal(result.ok, true)
+  return { api, ...result }
+}
+
+const sessionEvent = (type, attemptId, overrides = {}) => ({
+  id: `evt_${type}_${attemptId}`,
+  type,
+  data: {
+    object: {
+      id: 'cs_test_1',
+      metadata: { attempt_id: attemptId },
+      payment_status: 'paid',
+      amount_total: 6000,
+      ...overrides,
+    },
+  },
+})
+
+test('stripe checkout returns the repriced lines for the hosted session', async () => {
+  const { lines, totalCents, donorEmail, idempotencyKey } =
+    await stripeAttempt()
+  assert.equal(totalCents, 6000)
+  assert.equal(donorEmail, null)
+  assert.match(idempotencyKey, /^checkout:/)
+  assert.deepEqual(lines, [
+    { title: 'Koffa', quantity: 2, unitCents: 2500 },
+    { title: 'Flexible support', quantity: 1, unitCents: 1000 },
+  ])
+  assert.equal(db.payment_attempts[0].provider, 'stripe')
+  const capped = await donationService().createCheckout(
+    checkout(),
+    'stripe',
+    5999,
+  )
+  assert.deepEqual(capped, { ok: false, code: 'invalid_amount' })
+})
+
+test('stripe session events move the attempt, once and only when the amount matches', async () => {
+  const { api, attemptId } = await stripeAttempt()
+  const context = { service: api, stripe: {} }
+
+  assert.deepEqual(
+    await events.handleStripeEvent(
+      sessionEvent('checkout.session.completed', attemptId, {
+        payment_status: 'unpaid',
+      }),
+      context,
+    ),
+    { handled: true, detail: 'awaiting_payment' },
+  )
+  assert.equal(db.checkouts[0].status, 'pending')
+
+  await events.handleStripeEvent(
+    sessionEvent('checkout.session.completed', attemptId, {
+      amount_total: 5999,
+    }),
+    context,
+  )
+  assert.equal(db.checkouts[0].status, 'pending')
+  assert.equal(db.payment_events[0].status, 'failed')
+  assert.equal(db.payment_events[0].error_code, 'amount_mismatch')
+
+  const paid = sessionEvent(
+    'checkout.session.async_payment_succeeded',
+    attemptId,
+  )
+  await events.handleStripeEvent(paid, context)
+  assert.equal(db.checkouts[0].status, 'paid')
+  assert.equal(db.payment_attempts[0].status, 'succeeded')
+  const eventCount = db.payment_events.length
+  await events.handleStripeEvent(paid, context)
+  assert.equal(db.payment_events.length, eventCount)
+})
+
+test('stripe failure and expiry end the checkout with a reason', async () => {
+  const first = await stripeAttempt()
+  await events.handleStripeEvent(
+    sessionEvent('checkout.session.async_payment_failed', first.attemptId),
+    { service: first.api, stripe: {} },
+  )
+  assert.equal(db.checkouts[0].status, 'failed')
+  assert.equal(db.payment_attempts[0].failure_code, 'payment_failed')
+
+  const second = await stripeAttempt()
+  await events.handleStripeEvent(
+    sessionEvent('checkout.session.expired', second.attemptId),
+    { service: second.api, stripe: {} },
+  )
+  assert.equal(db.checkouts[1].status, 'cancelled')
+  assert.equal(db.payment_attempts[1].failure_code, null)
+})
+
+test('stripe events for unknown or non-stripe attempts change nothing', async () => {
+  const api = donationService()
+  const mock = await api.createCheckout(checkout(), 'mock')
+  for (const attemptId of [mock.attemptId, randomUUID(), 'not-a-uuid']) {
+    const result = await events.handleStripeEvent(
+      sessionEvent('checkout.session.completed', attemptId),
+      { service: api, stripe: {} },
+    )
+    assert.deepEqual(result, { handled: false, detail: 'unknown_attempt' })
+  }
+  assert.equal(db.checkouts[0].status, 'pending')
+  assert.equal(db.payment_events.length, 0)
+  assert.deepEqual(
+    await events.handleStripeEvent(
+      { id: 'evt_x', type: 'charge.succeeded' },
+      {
+        service: api,
+        stripe: {},
+      },
+    ),
+    { handled: false },
+  )
+})
+
+function refundEvent(type, attemptId, overrides = {}) {
+  const intent = { metadata: { attempt_id: attemptId } }
+  return {
+    event: {
+      id: `evt_${type}_${overrides.id ?? 're_1'}`,
+      type,
+      data: {
+        object: {
+          id: 're_1',
+          status: 'succeeded',
+          amount: 2000,
+          currency: 'eur',
+          reason: 'requested_by_customer',
+          payment_intent: 'pi_1',
+          ...overrides,
+        },
+      },
+    },
+    stripe: { paymentIntents: { retrieve: async () => intent } },
+  }
+}
+
+async function paidStripeCheckout() {
+  const attempt = await stripeAttempt()
+  await events.handleStripeEvent(
+    sessionEvent('checkout.session.completed', attempt.attemptId),
+    { service: attempt.api, stripe: {} },
+  )
+  assert.equal(db.checkouts[0].status, 'paid')
+  return attempt
+}
+
+test('stripe refunds are recorded once, split across shares and updated in place', async () => {
+  const { api, attemptId } = await paidStripeCheckout()
+  const run = (input) =>
+    events.handleStripeEvent(input.event, {
+      service: api,
+      stripe: input.stripe,
+    })
+
+  await run(refundEvent('refund.created', attemptId, { status: 'pending' }))
+  assert.equal(db.refunds.length, 2)
+  assert.deepEqual(
+    db.refunds.map((row) => row.status),
+    ['pending', 'pending'],
+  )
+  assert.equal(
+    db.refunds.reduce((sum, row) => sum + row.amount_cents, 0),
+    2000,
+  )
+  assert.ok(db.refunds.every((row) => row.provider === 'stripe'))
+  assert.ok(
+    db.refunds.every((row) => row.provider_refund_id.startsWith('re_1:')),
+  )
+
+  await run(refundEvent('refund.updated', attemptId, { status: 'succeeded' }))
+  assert.equal(db.refunds.length, 2)
+  assert.deepEqual(
+    db.refunds.map((row) => row.status),
+    ['succeeded', 'succeeded'],
+  )
+  await run(refundEvent('refund.updated', attemptId, { status: 'succeeded' }))
+  assert.equal(db.refunds.length, 2)
+
+  const receipt = await api.getReceipt('TA-ABCDEFGHJKLM')
+  assert.equal(receipt.status, 'partially_refunded')
+})
+
+test('stripe refunds never exceed what was paid and failed ones record nothing', async () => {
+  const { api, attemptId } = await paidStripeCheckout()
+  const run = (input) =>
+    events.handleStripeEvent(input.event, {
+      service: api,
+      stripe: input.stripe,
+    })
+
+  await run(refundEvent('refund.failed', attemptId, { status: 'failed' }))
+  assert.equal(db.refunds.length, 0)
+
+  await run(
+    refundEvent('refund.created', attemptId, { id: 're_2', amount: 6000 }),
+  )
+  const refunded = () =>
+    db.refunds.reduce((sum, row) => sum + row.amount_cents, 0)
+  assert.equal(refunded(), 6000)
+  const result = await run(
+    refundEvent('refund.created', attemptId, { id: 're_3', amount: 1 }),
+  )
+  assert.deepEqual(result, { handled: false, detail: 'exceeds_paid_amount' })
+  assert.equal(refunded(), 6000)
+  assert.equal((await api.getReceipt('TA-ABCDEFGHJKLM')).status, 'refunded')
+})
+
+function signedWebhook(body, secret = stripeEnv.STRIPE_WEBHOOK_SECRET) {
+  const payload = JSON.stringify(body)
+  const timestamp = Math.floor(Date.now() / 1000)
+  const signature = createHmac('sha256', secret)
+    .update(`${timestamp}.${payload}`)
+    .digest('hex')
+  return new Request('https://donate.example.org/api/stripe/webhook', {
+    method: 'POST',
+    headers: { 'stripe-signature': `t=${timestamp},v1=${signature}` },
+    body: payload,
+  })
+}
+
+async function withEnv(values, run) {
+  const previous = {}
+  for (const [key, value] of Object.entries(values)) {
+    previous[key] = process.env[key]
+    if (value === undefined) delete process.env[key]
+    else process.env[key] = value
+  }
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = fakeDirectus
+  try {
+    return await run()
+  } finally {
+    globalThis.fetch = originalFetch
+    for (const [key, value] of Object.entries(previous)) {
+      if (value === undefined) delete process.env[key]
+      else process.env[key] = value
+    }
+  }
+}
+
+test('the webhook route verifies the signature before touching any data', async () => {
+  const { attemptId } = await stripeAttempt()
+  const completed = {
+    id: 'evt_signed',
+    object: 'event',
+    api_version: '2025-01-01',
+    type: 'checkout.session.completed',
+    data: sessionEvent('checkout.session.completed', attemptId).data,
+  }
+  await withEnv(
+    { ...stripeEnv, DIRECTUS_URL: 'http://directus.test' },
+    async () => {
+      const send = async (request) =>
+        (await webhook.handleStripeWebhook(request)).status
+
+      assert.equal(
+        await send(signedWebhook(completed, 'whsec_wrongsecret0000')),
+        400,
+      )
+      assert.equal(
+        await send(
+          new Request('https://donate.example.org/api/stripe/webhook', {
+            method: 'POST',
+            body: JSON.stringify(completed),
+          }),
+        ),
+        400,
+      )
+      assert.equal(db.checkouts[0].status, 'pending')
+
+      assert.equal(await send(signedWebhook(completed)), 200)
+      assert.equal(db.checkouts[0].status, 'paid')
+      assert.equal(await send(signedWebhook(completed)), 200)
+      assert.equal(db.payment_events.length, 1)
+    },
+  )
+  await withEnv({ ...stripeEnv, PAYMENT_PROVIDER: 'mock' }, async () => {
+    const response = await webhook.handleStripeWebhook(signedWebhook(completed))
+    assert.equal(response.status, 404)
+  })
+})
+
+test('returning from Stripe via the cancel link needs a valid token and lands on the receipt', async () => {
+  const { attemptId } = await stripeAttempt()
+  const link = (token) =>
+    new Request(
+      `https://donate.example.org/api/stripe/cancel?attempt=${attemptId}&token=${token}`,
+    )
+  await withEnv(
+    { ...stripeEnv, DIRECTUS_URL: 'http://directus.test' },
+    async () => {
+      assert.equal(
+        (await webhook.handleStripeCancel(link('bad-token'))).status,
+        400,
+      )
+
+      const token = signing.signValue(
+        stripeEnv.DONATION_SIGNING_SECRET,
+        'attempt',
+        attemptId,
+      )
+      const response = await webhook.handleStripeCancel(link(token))
+      assert.equal(response.status, 303)
+      const location = new URL(response.headers.get('location'))
+      assert.equal(location.origin, 'https://donate.example.org')
+      assert.equal(location.pathname, '/donate/thank-you')
+      assert.equal(location.searchParams.get('reference'), 'TA-ABCDEFGHJKLM')
+      assert.ok(
+        signing.verifyValue(
+          stripeEnv.DONATION_SIGNING_SECRET,
+          'donation',
+          'TA-ABCDEFGHJKLM',
+          location.searchParams.get('token'),
+        ),
+      )
+    },
   )
 })
