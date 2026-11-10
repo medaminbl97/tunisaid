@@ -4,7 +4,8 @@ import { DonationSummary } from '#/components/donation-summary'
 import { QuantityStepper } from '#/components/quantity-stepper'
 import { useDonationBasket } from '#/components/donation-provider'
 import { Button } from '#/components/ui/button'
-import { useDonationPurposes } from '#/hooks/use-donation-purposes'
+import { cn } from '#/lib/utils'
+import { useDonationBasketLines } from '#/hooks/use-donation-basket-lines'
 import { donationTotal, formatDonationAmount } from '#/lib/donation'
 
 type DonationBasketSummaryProps = {
@@ -17,41 +18,33 @@ type DonationBasketSummaryProps = {
 
 export function DonationBasketSummary(props: DonationBasketSummaryProps) {
   const { t, i18n } = useTranslation('donation')
-  const { basket, setQuantity, setFlexibleCents } = useDonationBasket()
-  const { data: purposes = [] } = useDonationPurposes()
+  const { basket, hydrated, setQuantity, setFlexibleCents } =
+    useDonationBasket()
+  const basketLines = useDonationBasketLines()
   const total = donationTotal(basket)
   const format = (cents: number) => formatDonationAmount(cents, i18n.language)
-  const order = new Map(purposes.map((purpose, index) => [purpose.slug, index]))
-  const lines = Object.entries(basket.items)
-    .flatMap(([slug, item]) => (item ? [{ slug, ...item }] : []))
-    .sort(
-      (a, b) =>
-        (order.get(a.slug) ?? order.size) - (order.get(b.slug) ?? order.size),
-    )
-    .map((item) => {
-      const title =
-        purposes.find((purpose) => purpose.slug === item.slug)?.basketTitle ??
-        item.slug
-      return {
-        id: item.slug,
-        title,
-        detail: t('shared.lineDetail', {
-          quantity: item.quantity,
-          amount: format(item.unitCents),
-        }),
-        amount: format(item.quantity * item.unitCents),
-        controls: props.editable ? (
-          <QuantityStepper
-            value={item.quantity}
-            label={t('shared.quantity', { title })}
-            decreaseLabel={t('shared.decrease', { title })}
-            increaseLabel={t('shared.increase', { title })}
-            canIncrease={Number.isSafeInteger(total + item.unitCents)}
-            onChange={(value) => setQuantity(item.slug, item.unitCents, value)}
-          />
-        ) : undefined,
-      }
-    })
+  const lines = basketLines.map((item) => {
+    const { title } = item
+    return {
+      id: item.slug,
+      title,
+      detail: t('shared.lineDetail', {
+        quantity: item.quantity,
+        amount: format(item.unitCents),
+      }),
+      amount: format(item.quantity * item.unitCents),
+      controls: props.editable ? (
+        <QuantityStepper
+          value={item.quantity}
+          label={t('shared.quantity', { title })}
+          decreaseLabel={t('shared.decrease', { title })}
+          increaseLabel={t('shared.increase', { title })}
+          canIncrease={Number.isSafeInteger(total + item.unitCents)}
+          onChange={(value) => setQuantity(item.slug, item.unitCents, value)}
+        />
+      ) : undefined,
+    }
+  })
   const flexible =
     basket.flexibleCents > 0
       ? [
@@ -75,18 +68,20 @@ export function DonationBasketSummary(props: DonationBasketSummaryProps) {
       : []
 
   return (
-    <DonationSummary
-      title={props.title}
-      eyebrow={t('shared.illustrative')}
-      tone={props.tone}
-      lines={[...lines, ...flexible]}
-      emptyMessage={t('shared.empty')}
-      totalLabel={t('shared.total')}
-      total={format(total)}
-      note={t('shared.supportDescription')}
-      action={props.action}
-    >
-      {props.children}
-    </DonationSummary>
+    <div className={cn(!hydrated && 'invisible')} aria-busy={!hydrated}>
+      <DonationSummary
+        title={props.title}
+        eyebrow={t('shared.illustrative')}
+        tone={props.tone}
+        lines={[...lines, ...flexible]}
+        emptyMessage={t('shared.empty')}
+        totalLabel={t('shared.total')}
+        total={format(total)}
+        note={t('shared.supportDescription')}
+        action={props.action}
+      >
+        {props.children}
+      </DonationSummary>
+    </div>
   )
 }
