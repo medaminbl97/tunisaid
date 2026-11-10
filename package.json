@@ -7,7 +7,7 @@
   },
   "scripts": {
     "api:generate": "openapi-ts && prettier --write src/api/generated",
-    "api:test": "node --test scripts/projects-api.test.mjs scripts/campaigns-api.test.mjs scripts/donation-purposes-api.test.mjs scripts/rich-text.test.mjs scripts/donations-api.test.mjs directus/scripts/schema.test.mjs",
+    "api:test": "node --test scripts/projects-api.test.mjs scripts/campaigns-api.test.mjs scripts/donation-purposes-api.test.mjs scripts/rich-text.test.mjs scripts/donations-api.test.mjs scripts/donation-basket-storage.test.mjs directus/scripts/schema.test.mjs",
     "dev": "vite dev --port 3000",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",

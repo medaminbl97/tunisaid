@@ -27,7 +27,7 @@ export function CheckoutForm() {
   const id = useId()
   const router = useRouter()
   const queryClient = useQueryClient()
-  const { basket, setQuantity } = useDonationBasket()
+  const { basket, hydrated, setQuantity } = useDonationBasket()
   const language = donationPurposeLanguageSchema
     .catch('en')
     .parse(i18n.resolvedLanguage)
@@ -244,7 +244,7 @@ export function CheckoutForm() {
           <p className="text-xs leading-relaxed text-brand-ink-soft">
             {t('checkout.policyHint')}
           </p>
-          {total === 0 && enabled && (
+          {total === 0 && enabled && hydrated && (
             <p className="text-sm text-brand-ink-soft">
               {t('checkout.emptyBasket')}
             </p>

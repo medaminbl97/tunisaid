@@ -422,6 +422,18 @@
       "open": "Open menu",
       "close": "Close menu"
     },
+    "basket": {
+      "title": "Your gifts",
+      "openEmpty": "Open your gifts basket (empty)",
+      "openWithCount": "Open your gifts basket: {{count}} selected, {{total}}",
+      "empty": "Nothing here yet. Choose a purpose or a flexible amount to start your gift.",
+      "lineDetail": "{{quantity}} × {{amount}}",
+      "flexible": "Flexible support",
+      "total": "Total",
+      "checkout": "Review and check out",
+      "addMore": "Add more gifts",
+      "choose": "Choose gifts"
+    },
     "navigation": {
       "home": "Home",
       "about": "About",

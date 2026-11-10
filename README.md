@@ -193,10 +193,15 @@ Shared donation UI lives in `src/components/`: `PurposeCard`, `FilterGroup`,
 `IconLabel`, and the compact `DonationLayout`. Each visual component has stories.
 The existing Button, GlassCard, IconChip, and SectionHeading remain the foundations.
 
-`DonationProvider` owns an initially empty, in-memory basket. Amounts use integer
-EUR cents and are formatted for the active language. Selection survives client-side
-navigation while the provider remains mounted, but resets on a full reload; no
-personal or payment information is stored. The `donation` translation namespace
+`DonationProvider` owns the gift basket. Amounts use integer EUR cents and are
+formatted for the active language. The basket is saved in the browser's
+`localStorage` (`tunisaid.donation-basket.v1`: gift slugs, quantities and amounts
+only, validated on load, dropped after 30 days or when payment succeeds), so it
+survives reloads, returning from the payment page and other tabs. `hydrated` tells
+pages when the saved basket has been read, so they do not flash an empty basket.
+No personal or payment information is stored. The site header's basket button
+(`DonationBasketButton`) shows a badge with the number of gifts and opens a
+preview with the lines, the total and a link to checkout. The `donation` translation namespace
 contains matching English/German copy. Catalog prices are illustrative, not
 validated procurement costs. Donors never choose a campaign: `/donate?campaign=<slug>`
 (the campaign page's donate link) only pre-filters purposes to that campaign's

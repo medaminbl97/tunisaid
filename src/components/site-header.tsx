@@ -3,6 +3,7 @@ import { Menu, X } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useEffect, useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { DonationBasketButton } from '#/components/donation-basket-button'
 import { SiteLogo } from '#/components/site-logo'
 import { Button } from '#/components/ui/button'
 import { cn } from '#/lib/utils'
@@ -170,18 +171,19 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <div className="flex shrink-0 items-center gap-2 sm:gap-4">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-4">
             <LanguageSwitch className="hidden sm:flex" />
             <Button
               asChild
               shape="pill"
               size="lg"
-              className="min-h-11 px-4 text-[15px] font-bold sm:px-7 xl:min-h-[45px]"
+              className="hidden min-h-11 px-3 text-[15px] font-bold min-[375px]:inline-flex sm:px-7 xl:min-h-[45px]"
             >
               <Link to="/donate" onClick={() => setMenuOpen(false)}>
                 {t('navigation.donate')}
               </Link>
             </Button>
+            <DonationBasketButton />
             <Button
               type="button"
               variant="ghost"
@@ -256,6 +258,16 @@ export function SiteHeader() {
                   ))}
                 </ul>
               </nav>
+              <Button
+                asChild
+                shape="pill"
+                size="lg"
+                className="min-h-12 w-full text-base font-bold min-[375px]:hidden"
+              >
+                <Link to="/donate" onClick={() => setMenuOpen(false)}>
+                  {t('navigation.donate')}
+                </Link>
+              </Button>
               <LanguageSwitch className="self-start sm:hidden" />
             </motion.div>
           </>

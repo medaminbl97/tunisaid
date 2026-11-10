@@ -422,6 +422,18 @@
       "open": "Menü öffnen",
       "close": "Menü schließen"
     },
+    "basket": {
+      "title": "Ihre Spenden",
+      "openEmpty": "Spendenkorb öffnen (leer)",
+      "openWithCount": "Spendenkorb öffnen: {{count}} ausgewählt, {{total}}",
+      "empty": "Noch nichts ausgewählt. Wählen Sie einen Zweck oder einen flexiblen Betrag, um Ihre Spende zu beginnen.",
+      "lineDetail": "{{quantity}} × {{amount}}",
+      "flexible": "Flexible Unterstützung",
+      "total": "Gesamt",
+      "checkout": "Prüfen und zur Kasse",
+      "addMore": "Weitere Spenden hinzufügen",
+      "choose": "Spenden auswählen"
+    },
     "navigation": {
       "home": "Startseite",
       "about": "Über uns",
