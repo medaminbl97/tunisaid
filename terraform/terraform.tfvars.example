@@ -1,0 +1,10 @@
+# Copy to terraform.tfvars. Keep the API key out of the file:
+#   export TF_VAR_dokploy_api_key='...'
+dokploy_endpoint     = "https://dokploy.example.com"
+server_ip            = "203.0.113.10"
+directus_admin_email = "admin@example.com"
+
+github_provider_name = "my-github-app" # Dokploy > Git > GitHub
+github_owner         = "medaminbl97"
+
+# payment_provider    = ""
