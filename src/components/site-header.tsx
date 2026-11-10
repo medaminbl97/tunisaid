@@ -112,32 +112,30 @@ export function SiteHeader() {
             to="/"
             aria-label={t('homeLabel')}
             onClick={() => setMenuOpen(false)}
-            className="group flex min-w-0 items-center gap-3 rounded-full text-brand-header-foreground no-underline outline-none hover:text-brand-header-foreground focus-visible:ring-2 focus-visible:ring-ring xl:shrink-0"
+            className="group flex min-w-0 items-center gap-2.5 rounded-full sm:gap-3 text-brand-header-foreground no-underline outline-none hover:text-brand-header-foreground focus-visible:ring-2 focus-visible:ring-ring xl:shrink-0"
           >
             <SiteLogo className="xl:hidden" />
-            <span className="hidden items-center gap-3 xl:flex">
-              <motion.span
-                initial={false}
-                animate={{
-                  width: expanded
-                    ? 'var(--brand-header-logo-expanded-size)'
-                    : 'var(--brand-header-logo-size)',
-                  height: expanded
-                    ? 'var(--brand-header-logo-expanded-size)'
-                    : 'var(--brand-header-logo-size)',
-                }}
-                transition={transition}
-                className="flex size-(--brand-header-logo-size) shrink-0"
-              >
-                <SiteLogo className="size-full" />
-              </motion.span>
-              <span className="flex min-w-0 flex-col">
-                <span className="font-display text-[26px] leading-[1.1] font-bold">
-                  TunisAid
-                </span>
-                <span className="text-[11px] leading-[1.3] font-semibold text-brand-header-muted">
-                  {t('tagline')}
-                </span>
+            <motion.span
+              initial={false}
+              animate={{
+                width: expanded
+                  ? 'var(--brand-header-logo-expanded-size)'
+                  : 'var(--brand-header-logo-size)',
+                height: expanded
+                  ? 'var(--brand-header-logo-expanded-size)'
+                  : 'var(--brand-header-logo-size)',
+              }}
+              transition={transition}
+              className="hidden size-(--brand-header-logo-size) shrink-0 xl:flex"
+            >
+              <SiteLogo className="size-full" />
+            </motion.span>
+            <span className="hidden min-w-0 flex-col min-[360px]:flex">
+              <span className="truncate font-display text-lg leading-[1.1] font-bold min-[400px]:text-xl sm:text-[26px]">
+                TunisAid
+              </span>
+              <span className="mt-0.5 hidden text-[10px] leading-[1.25] font-semibold text-brand-header-muted min-[480px]:line-clamp-2 sm:text-[11px] xl:line-clamp-none xl:leading-[1.3]">
+                {t('tagline')}
               </span>
             </span>
           </Link>
