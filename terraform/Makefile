@@ -20,7 +20,7 @@ TF_ARGS ?=
 BOOTSTRAP_TARGETS := -target=dokploy_project.main -target=dokploy_application.openbao \
 	-target=dokploy_mount.openbao_data -target=random_password.database
 
-.PHONY: help ssh-check init bootstrap vault-init unseal secrets deploy migrate up plan credentials fmt validate
+.PHONY: help ssh-check init bootstrap vault-init unseal secrets stripe-keys deploy migrate up plan credentials fmt validate
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*## "} /^[a-z-]+:.*## / {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -44,6 +44,9 @@ unseal: ## Unseal OpenBao again (needed after the server reboots)
 
 secrets: ## 3. Generate missing secrets and store them in OpenBao
 	scripts/seed-secrets.sh
+
+stripe-keys: unseal ## Store the Stripe secret key and webhook secret in OpenBao
+	scripts/stripe-keys.sh
 
 deploy: unseal ## 4. Deploy everything; services read secrets from OpenBao
 	@test -f $(SECRETS_DIR)/dokploy-token || { echo "Run make vault-init first."; exit 1; }

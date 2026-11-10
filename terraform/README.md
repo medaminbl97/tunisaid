@@ -75,6 +75,26 @@ Other targets: `make plan`, `make credentials` (prints all generated secrets),
 OpenBao starts sealed, and deployments that need secrets fail until it is
 unsealed. Run `make unseal` (`make deploy` and `make credentials` do it too).
 
+## Stripe payments
+
+Set `payment_provider = "stripe"` in `terraform.tfvars`, then:
+
+1. Run `make stripe-keys` and paste the Stripe **secret key** and, after step 3, the
+   **webhook signing secret**. They are stored in OpenBao (hidden prompt, never in
+   Terraform state) and read by the website through vault references. You can also
+   pass them as `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`.
+2. `make deploy` sets `PAYMENT_PROVIDER`, `SITE_URL` and the two vault references on
+   the website. `make migrate` applies Directus migration `002-stripe-refunds`.
+3. In the Stripe dashboard (Developers → Webhooks) add the endpoint from
+   `terraform output stripe_webhook_url` with the events
+   `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
+   `checkout.session.async_payment_failed`, `checkout.session.expired`,
+   `refund.created`, `refund.updated` and `refund.failed`, and copy its signing
+   secret into step 1.
+
+Use test-mode keys first. Going live means repeating the steps with live keys and a
+live-mode webhook endpoint.
+
 ## Directus migrations
 
 The Directus image only runs `bootstrap` and `start`. The project's migrations

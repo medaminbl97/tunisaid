@@ -7,4 +7,4 @@ directus_admin_email = "admin@example.com"
 github_provider_name = "my-github-app" # Dokploy > Git > GitHub
 github_owner         = "medaminbl97"
 
-# payment_provider    = ""
+# payment_provider    = "stripe" # then run: make stripe-keys

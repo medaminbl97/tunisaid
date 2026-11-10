@@ -29,6 +29,9 @@ resource "dokploy_application" "frontend" {
     "DIRECTUS_SERVICE_TOKEN=${local.vault_ref.donation_service_token}",
     "DONATION_SIGNING_SECRET=${local.vault_ref.donation_signing_secret}",
     var.payment_provider == "" ? "" : "PAYMENT_PROVIDER=${var.payment_provider}",
+    var.payment_provider == "stripe" ? "SITE_URL=${local.frontend_url}" : "",
+    var.payment_provider == "stripe" ? "STRIPE_SECRET_KEY=${local.vault_ref.stripe_secret_key}" : "",
+    var.payment_provider == "stripe" ? "STRIPE_WEBHOOK_SECRET=${local.vault_ref.stripe_webhook_secret}" : "",
     "ALLOW_MOCK_PAYMENTS=${var.allow_mock_payments}",
   ]))
 

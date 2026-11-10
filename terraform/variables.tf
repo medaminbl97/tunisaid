@@ -98,13 +98,13 @@ variable "directus_admin_email" {
 }
 
 variable "payment_provider" {
-  description = "Payment provider of the website. Only \"mock\" exists; leave empty to keep online checkout disabled."
+  description = "Payment provider of the website: \"stripe\" or \"mock\". Leave empty to keep online checkout disabled. Stripe keys are stored with `make stripe-keys`."
   type        = string
   default     = ""
 
   validation {
-    condition     = contains(["", "mock"], var.payment_provider)
-    error_message = "payment_provider must be empty or \"mock\"."
+    condition     = contains(["", "mock", "stripe"], var.payment_provider)
+    error_message = "payment_provider must be empty, \"mock\" or \"stripe\"."
   }
 }
 

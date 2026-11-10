@@ -17,3 +17,8 @@ output "openbao_url" {
   description = "Internal OpenBao address. It is not published; use `make credentials` to read secrets."
   value       = "http://${dokploy_application.openbao.app_name}:8200"
 }
+
+output "stripe_webhook_url" {
+  description = "Endpoint to register in the Stripe dashboard (Developers > Webhooks)."
+  value       = "${local.frontend_url}/api/stripe/webhook"
+}
