@@ -1,8 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { motion, useReducedMotion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
-import handshake from '#/assets/images/icon-heart-handshake.svg'
-import { IconChip } from '#/components/icon-chip'
+import { SiteLogo } from '#/components/site-logo'
 import { Button } from '#/components/ui/button'
 import { siteContact } from '#/lib/site-contact'
 
@@ -36,9 +35,7 @@ export function SiteFooter() {
                 aria-label={t('siteHeader.homeLabel')}
                 className="flex items-center gap-3 rounded-full text-brand-white no-underline outline-none hover:text-brand-sun focus-visible:ring-2 focus-visible:ring-brand-sun"
               >
-                <IconChip className="size-[52px] bg-brand-lagoon-blue">
-                  <img src={handshake} alt="" width={28} height={28} />
-                </IconChip>
+                <SiteLogo className="size-14" />
                 <span className="font-display text-[28px] leading-[1.1] font-bold">
                   TunisAid
                 </span>
