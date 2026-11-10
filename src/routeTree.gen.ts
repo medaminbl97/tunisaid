@@ -20,6 +20,8 @@ import { Route as DonateCheckoutRouteImport } from './routes/donate_.checkout'
 import { Route as DonateMockPaymentRouteImport } from './routes/donate_.mock-payment'
 import { Route as DonateThankYouRouteImport } from './routes/donate_.thank-you'
 import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
+import { Route as ApiStripeCancelRouteImport } from './routes/api.stripe.cancel'
+import { Route as ApiStripeWebhookRouteImport } from './routes/api.stripe.webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -76,6 +78,16 @@ const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
   path: '/projects/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiStripeCancelRoute = ApiStripeCancelRouteImport.update({
+  id: '/api/stripe/cancel',
+  path: '/api/stripe/cancel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiStripeWebhookRoute = ApiStripeWebhookRouteImport.update({
+  id: '/api/stripe/webhook',
+  path: '/api/stripe/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,6 +101,8 @@ export interface FileRoutesByFullPath {
   '/donate/mock-payment': typeof DonateMockPaymentRoute
   '/donate/thank-you': typeof DonateThankYouRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/api/stripe/cancel': typeof ApiStripeCancelRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -102,6 +116,8 @@ export interface FileRoutesByTo {
   '/donate/mock-payment': typeof DonateMockPaymentRoute
   '/donate/thank-you': typeof DonateThankYouRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/api/stripe/cancel': typeof ApiStripeCancelRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,6 +132,8 @@ export interface FileRoutesById {
   '/donate_/mock-payment': typeof DonateMockPaymentRoute
   '/donate_/thank-you': typeof DonateThankYouRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/api/stripe/cancel': typeof ApiStripeCancelRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,6 +149,8 @@ export interface FileRouteTypes {
     | '/donate/mock-payment'
     | '/donate/thank-you'
     | '/projects/$slug'
+    | '/api/stripe/cancel'
+    | '/api/stripe/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +164,8 @@ export interface FileRouteTypes {
     | '/donate/mock-payment'
     | '/donate/thank-you'
     | '/projects/$slug'
+    | '/api/stripe/cancel'
+    | '/api/stripe/webhook'
   id:
     | '__root__'
     | '/'
@@ -157,6 +179,8 @@ export interface FileRouteTypes {
     | '/donate_/mock-payment'
     | '/donate_/thank-you'
     | '/projects/$slug'
+    | '/api/stripe/cancel'
+    | '/api/stripe/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -171,6 +195,8 @@ export interface RootRouteChildren {
   DonateMockPaymentRoute: typeof DonateMockPaymentRoute
   DonateThankYouRoute: typeof DonateThankYouRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
+  ApiStripeCancelRoute: typeof ApiStripeCancelRoute
+  ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -252,6 +278,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/stripe/cancel': {
+      id: '/api/stripe/cancel'
+      path: '/api/stripe/cancel'
+      fullPath: '/api/stripe/cancel'
+      preLoaderRoute: typeof ApiStripeCancelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/stripe/webhook': {
+      id: '/api/stripe/webhook'
+      path: '/api/stripe/webhook'
+      fullPath: '/api/stripe/webhook'
+      preLoaderRoute: typeof ApiStripeWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -267,6 +307,8 @@ const rootRouteChildren: RootRouteChildren = {
   DonateMockPaymentRoute: DonateMockPaymentRoute,
   DonateThankYouRoute: DonateThankYouRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,
+  ApiStripeCancelRoute: ApiStripeCancelRoute,
+  ApiStripeWebhookRoute: ApiStripeWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
