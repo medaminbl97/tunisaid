@@ -13,7 +13,6 @@ dist-ssr
 .vinxi
 __unconfig*
 todos.json
-.agents
 *storybook.log
 storybook-static
 .claude
