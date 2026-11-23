@@ -1,0 +1,100 @@
+collection: donation_purposes_translations
+schema: {}
+meta:
+  icon: folder
+  accountability: all
+  hidden: true
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      is_nullable: false
+    meta:
+      interface: input
+      special:
+        - uuid
+      hidden: true
+  - field: parent
+    type: uuid
+    schema:
+      is_nullable: false
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+  - field: language
+    type: string
+    schema:
+      is_nullable: false
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+  - field: title
+    type: string
+    schema:
+      is_nullable: false
+    meta:
+      interface: input
+  - field: category_label
+    type: string
+    schema: {}
+    meta:
+      interface: input
+  - field: description
+    type: text
+    schema: {}
+    meta:
+      interface: input-rich-text-html
+      display: formatted-value
+      display_options:
+        format: true
+      width: full
+      options:
+        toolbar:
+          - undo
+          - redo
+          - bold
+          - italic
+          - underline
+          - bullist
+          - numlist
+          - customLink
+          - unlink
+          - removeformat
+  - field: impact
+    type: string
+    schema: {}
+    meta:
+      interface: input
+  - field: unit_label
+    type: string
+    schema: {}
+    meta:
+      interface: input
+  - field: basket_title
+    type: string
+    schema: {}
+    meta:
+      interface: input
+  - field: image_alt
+    type: string
+    schema: {}
+    meta:
+      interface: input
+relations:
+  - field: parent
+    related_collection: donation_purposes
+    schema:
+      on_delete: CASCADE
+    meta:
+      one_field: translations
+      junction_field: language
+  - field: language
+    related_collection: languages
+    schema:
+      on_delete: RESTRICT
+    meta:
+      one_field: null
+      junction_field: parent

@@ -1,0 +1,48 @@
+collection: campaign_projects
+schema: {}
+meta:
+  icon: folder
+  accountability: all
+  hidden: true
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      is_nullable: false
+    meta:
+      interface: input
+      special:
+        - uuid
+      hidden: true
+  - field: campaign
+    type: uuid
+    schema:
+      is_nullable: false
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+  - field: project
+    type: uuid
+    schema:
+      is_nullable: false
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+relations:
+  - field: campaign
+    related_collection: campaigns
+    schema:
+      on_delete: CASCADE
+    meta:
+      one_field: projects
+      junction_field: project
+  - field: project
+    related_collection: projects
+    schema:
+      on_delete: CASCADE
+    meta:
+      one_field: campaigns
+      junction_field: campaign

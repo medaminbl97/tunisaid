@@ -1,0 +1,145 @@
+collection: donation_purposes
+schema: {}
+meta:
+  icon: redeem
+  accountability: all
+  note: >-
+    Without a project, a purpose is a general purpose. A project link records donor intent; it does
+    not move money.
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      is_nullable: false
+    meta:
+      interface: input
+      special:
+        - uuid
+      hidden: true
+  - field: slug
+    type: string
+    schema:
+      is_nullable: false
+      is_unique: true
+    meta:
+      interface: input
+  - field: status
+    type: string
+    schema:
+      is_nullable: false
+      default_value: draft
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - text: draft
+            value: draft
+          - text: published
+            value: published
+          - text: archived
+            value: archived
+      validation:
+        status:
+          _in:
+            - draft
+            - published
+            - archived
+  - field: category
+    type: uuid
+    schema:
+      is_nullable: true
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+  - field: project
+    type: uuid
+    schema:
+      is_nullable: true
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+  - field: unit_amount_cents
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      validation:
+        unit_amount_cents:
+          _gte: 0
+  - field: currency
+    type: string
+    schema:
+      is_nullable: false
+      default_value: EUR
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - text: EUR
+            value: EUR
+      validation:
+        currency:
+          _in:
+            - EUR
+  - field: image
+    type: uuid
+    schema:
+      is_nullable: true
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+  - field: sort
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      validation:
+        sort:
+          _gte: 0
+  - field: is_illustrative
+    type: boolean
+    schema:
+      is_nullable: false
+      default_value: true
+    meta:
+      interface: boolean
+  - field: translations
+    type: alias
+    schema: null
+    meta:
+      special:
+        - translations
+      interface: translations
+      options:
+        languageField: name
+        defaultLanguage: en
+relations:
+  - field: category
+    related_collection: categories
+    schema:
+      on_delete: RESTRICT
+    meta:
+      one_field: null
+      junction_field: null
+  - field: project
+    related_collection: projects
+    schema:
+      on_delete: RESTRICT
+    meta:
+      one_field: purposes
+      junction_field: null
+  - field: image
+    related_collection: directus_files
+    schema:
+      on_delete: RESTRICT
+    meta:
+      one_field: null
+      junction_field: null

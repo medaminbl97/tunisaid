@@ -1,0 +1,62 @@
+collection: donors
+schema: {}
+meta:
+  icon: person
+  accountability: all
+  note: Private personal data. Apply retention and access policies before production.
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      is_nullable: false
+    meta:
+      interface: input
+      special:
+        - uuid
+      hidden: true
+  - field: display_name
+    type: string
+    schema: {}
+    meta:
+      interface: input
+  - field: email
+    type: string
+    schema: {}
+    meta:
+      interface: input
+  - field: country_code
+    type: string
+    schema: {}
+    meta:
+      interface: input
+  - field: preferred_language
+    type: string
+    schema:
+      is_nullable: false
+      default_value: en
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - text: en
+            value: en
+          - text: de
+            value: de
+      validation:
+        preferred_language:
+          _in:
+            - en
+            - de
+  - field: keep_name_private
+    type: boolean
+    schema:
+      is_nullable: false
+      default_value: true
+    meta:
+      interface: boolean
+  - field: created_at
+    type: timestamp
+    schema: {}
+    meta:
+      interface: datetime

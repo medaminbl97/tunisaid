@@ -1,0 +1,11 @@
+collection: campaign_projects
+items:
+  - id: 43b5a5eb-a072-5d5a-987f-f9dc583cb430
+    campaign: 5ec50ebc-5c89-5315-9bd6-3fabf46b3288
+    project: c9b7c88e-1f5f-5df8-918f-10f961691922
+  - id: 6d27e86c-4a07-5363-9f76-5c388f138ea1
+    campaign: 5ec50ebc-5c89-5315-9bd6-3fabf46b3288
+    project: 1e1dae91-d9cd-5a3a-a0b2-6e3c6c31d1be
+  - id: cd05c77f-5abd-56df-a4ca-a78305b483c4
+    campaign: fd7f7497-11a4-547e-a609-b966cc2b5af5
+    project: 16c63c86-4666-5ef0-a275-29135ab18309

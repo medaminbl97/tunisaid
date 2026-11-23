@@ -1,0 +1,88 @@
+collection: donation_purposes_translations
+items:
+  - id: fea8dbed-8d59-54d1-ac8c-a2d5cab64e33
+    parent: 79ae4be1-65fc-5e8e-b718-324b16db675f
+    language: en
+    title: Give a Koffa
+    category_label: Food & dignity
+    description: <p>A bag of everyday groceries, chosen for a family in Tunisia.</p>
+    impact: One family. Essential groceries.
+    unit_label: per Koffa
+    basket_title: Koffa groceries
+    image_alt: A Koffa bag filled with everyday groceries
+  - id: 27e89070-f80e-5cb1-9f4d-b4eb924fec1a
+    parent: 79ae4be1-65fc-5e8e-b718-324b16db675f
+    language: de
+    title: Verschenke eine Koffa
+    category_label: Lebensmittel & Würde
+    description: <p>Eine Tasche mit Lebensmitteln für den Alltag einer Familie in Tunesien.</p>
+    impact: Eine Familie. Wichtige Lebensmittel.
+    unit_label: pro Koffa
+    basket_title: Koffa-Lebensmittel
+    image_alt: Eine Koffa-Tasche mit Lebensmitteln für den Alltag
+  - id: 587430b7-6525-545e-b837-0f935ccf6dae
+    parent: 1d5ad148-704a-51a7-810f-21a97a054f8c
+    language: en
+    title: Share a wheelchair
+    category_label: Mobility & independence
+    description: >-
+      <p>Help fund an illustrative €180 wheelchair, one share at a time. Six shares make a whole
+      chair.</p>
+    impact: A step toward everyday freedom.
+    unit_label: per wheelchair share
+    basket_title: Wheelchair support
+    image_alt: A wheelchair ready for everyday use
+  - id: 37831096-2a20-5e19-b0df-fe95cbbe46b2
+    parent: 1d5ad148-704a-51a7-810f-21a97a054f8c
+    language: de
+    title: Trage zu einem Rollstuhl bei
+    category_label: Mobilität & Selbstständigkeit
+    description: >-
+      <p>Hilf anteilig bei einem Rollstuhl für beispielhaft 180 €. Sechs Anteile ergeben einen
+      ganzen Rollstuhl.</p>
+    impact: Ein Schritt zu mehr Freiheit im Alltag.
+    unit_label: pro Rollstuhlanteil
+    basket_title: Rollstuhl-Unterstützung
+    image_alt: Ein Rollstuhl, bereit für den Alltag
+  - id: 7c00cc79-448d-5dd9-a775-a4d8f3de9980
+    parent: d79f5d64-641a-5d02-a8bc-5e5543759ecc
+    language: en
+    title: Pack a school bag
+    category_label: Learning & possibility
+    description: <p>Help a child start school with a bag, notebooks and essential supplies.</p>
+    impact: The tools for a brighter start.
+    unit_label: per school kit
+    basket_title: School supplies
+    image_alt: A school bag with notebooks and supplies
+  - id: 530abfd7-2950-58fc-a0f9-7d301c4c2d59
+    parent: d79f5d64-641a-5d02-a8bc-5e5543759ecc
+    language: de
+    title: Packe eine Schultasche
+    category_label: Lernen & Möglichkeiten
+    description: >-
+      <p>Hilf einem Kind mit einer Tasche, Heften und wichtigen Schulmaterialien beim
+      Schulstart.</p>
+    impact: Das Werkzeug für einen guten Anfang.
+    unit_label: pro Schulset
+    basket_title: Schulmaterialien
+    image_alt: Eine Schultasche mit Heften und Schulmaterialien
+  - id: 810e793a-7333-5e2c-9020-f20070b0790c
+    parent: f2279b3b-4d09-50c5-974f-3acc813e21f5
+    language: en
+    title: Bring a little warmth
+    category_label: Care & comfort
+    description: <p>Contribute to warm blankets and seasonal essentials for a household.</p>
+    impact: Comfort when it is needed most.
+    unit_label: per warmth kit
+    basket_title: Warmth & comfort
+    image_alt: Warm blankets folded for a household
+  - id: 912c61da-deac-5752-b0b3-803d1f7a2994
+    parent: f2279b3b-4d09-50c5-974f-3acc813e21f5
+    language: de
+    title: Schenke ein wenig Wärme
+    category_label: Fürsorge & Geborgenheit
+    description: <p>Trage zu warmen Decken und saisonalen Grundbedarfsartikeln für einen Haushalt bei.</p>
+    impact: Geborgenheit, wenn sie gebraucht wird.
+    unit_label: pro Wärmeset
+    basket_title: Wärme & Geborgenheit
+    image_alt: Warme Decken, gefaltet für einen Haushalt

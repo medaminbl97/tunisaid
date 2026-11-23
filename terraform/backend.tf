@@ -2,8 +2,19 @@ resource "dokploy_application" "backend" {
   name           = "${var.project_name}-backend"
   environment_id = dokploy_project.main.production_environment_id
 
-  docker = {
-    image = var.directus_image
+  # Dokploy builds directus/Dockerfile on the server. The image holds the
+  # schemas, access policies and seeds, which it applies on every start.
+  github = {
+    github_id  = data.dokploy_github_provider.main.id
+    owner      = var.github_owner
+    repository = var.github_repository
+    branch     = var.github_branch
+  }
+
+  build = {
+    type         = "dockerfile"
+    dockerfile   = "directus/Dockerfile"
+    context_path = "directus"
   }
 
   network_ids = [dokploy_network.database.id]
@@ -27,6 +38,8 @@ resource "dokploy_application" "backend" {
     CORS_ORIGIN=${local.frontend_url}
     CORS_METHODS=GET
     CACHE_SCHEMA=false
+    CMS_ENV=prod
+    DONATION_SERVICE_TOKEN=${local.vault_ref.donation_service_token}
   EOT
 
   depends_on = [dokploy_vault_provider.openbao]

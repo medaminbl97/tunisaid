@@ -61,12 +61,6 @@ variable "github_branch" {
   default     = "main"
 }
 
-variable "directus_image" {
-  description = "Directus image. Keep it in line with directus/compose.yaml."
-  type        = string
-  default     = "directus/directus:11.17.4"
-}
-
 variable "postgres_image" {
   description = "PostgreSQL image. Keep it in line with directus/compose.yaml."
   type        = string

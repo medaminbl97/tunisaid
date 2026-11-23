@@ -1,0 +1,108 @@
+collection: donation_items
+schema: {}
+meta:
+  icon: folder
+  accountability: all
+  hidden: true
+  note: 'Historical snapshots: catalog edits must not rewrite financial records.'
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      is_nullable: false
+    meta:
+      interface: input
+      special:
+        - uuid
+      hidden: true
+  - field: donation
+    type: uuid
+    schema:
+      is_nullable: false
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+  - field: purpose
+    type: uuid
+    schema:
+      is_nullable: true
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+  - field: kind
+    type: string
+    schema:
+      is_nullable: false
+      default_value: purpose
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - text: purpose
+            value: purpose
+          - text: flexible
+            value: flexible
+      validation:
+        kind:
+          _in:
+            - purpose
+            - flexible
+  - field: title_snapshot
+    type: string
+    schema:
+      is_nullable: false
+    meta:
+      interface: input
+  - field: quantity
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 1
+    meta:
+      interface: input
+      validation:
+        quantity:
+          _gte: 0
+  - field: unit_amount_cents
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      validation:
+        unit_amount_cents:
+          _gte: 0
+  - field: total_cents
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      validation:
+        total_cents:
+          _gte: 0
+  - field: requested_purpose_snapshot
+    type: string
+    schema: {}
+    meta:
+      interface: input
+relations:
+  - field: donation
+    related_collection: donations
+    schema:
+      on_delete: RESTRICT
+    meta:
+      one_field: items
+      junction_field: null
+  - field: purpose
+    related_collection: donation_purposes
+    schema:
+      on_delete: RESTRICT
+    meta:
+      one_field: null
+      junction_field: null

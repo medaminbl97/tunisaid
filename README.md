@@ -98,11 +98,11 @@ options with `useQuery`, or use that client's `fetchQuery`/`ensureQueryData` for
 loading. Keys include all varying inputs. The temporary Directus serializer
 handles nested JSON filters; it is not a generic serializer for other backends.
 
-The Directus baseline migration (`directus/migrations/001-initial-schema.mjs`)
-grants anonymous read access to published projects, campaigns, categories and
+The Directus access definitions (`directus/access/`, applied when the backend
+starts) grant anonymous read access to published projects, campaigns, categories and
 donation purposes only, and CORS allows `GET` from the website origin (see
 `directus/README.md`). Project and campaign bodies and purpose descriptions are
-rich-text HTML, sanitized before rendering. Seeds stay drafts unless setup runs with
+rich-text HTML, sanitized before rendering. Example seeds stay drafts unless the backend starts with
 `SEED_PUBLISH_DEMO=true`. Directus files remain private; never use an
 administrator credential in a browser.
 
@@ -265,14 +265,13 @@ the Directus service token; the token and signing secret never reach the browser
   minus succeeded refunds. A receipt shows `partially_refunded`/`refunded`
   derived from linked succeeded refunds; the stored checkout status stays `paid`.
 
-Run `node directus/scripts/init-env.mjs` to create the root `.env` (keys are listed
+Run `node directus/tools/init-env.mjs` to create the root `.env` (keys are listed
 in `.env.example`). Checkout is disabled unless `DIRECTUS_SERVICE_TOKEN`,
 `DONATION_SIGNING_SECRET` and `PAYMENT_PROVIDER` are set, and the mock is refused
 when `NODE_ENV=production` unless `ALLOW_MOCK_PAYMENTS=true`. Stripe also needs
 `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and `SITE_URL`, otherwise checkout
 stays disabled. Staff can still record refunds by hand in Directus (see
-`directus/README.md`); Directus migration `002-stripe-refunds` lets the donation
-service user write them.
+`directus/README.md`); the donation service user is allowed to write them.
 
 #### Testing Stripe locally
 
@@ -291,7 +290,7 @@ service user write them.
 
 3. Put `PAYMENT_PROVIDER=stripe`, `SITE_URL=http://localhost:3000`,
    `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` in `.env`, make sure the Directus
-   backend ran `002-stripe-refunds`, and start `npm run dev`.
+   backend is running, and start `npm run dev`.
 4. Add a gift, check out, and pay with test card `4242 4242 4242 4242` (any future
    date, any CVC). You return to the receipt, which turns **paid** once the webhook
    arrives. Other cards: `4000 0000 0000 9995` (declined), `4000 0025 0000 3155`

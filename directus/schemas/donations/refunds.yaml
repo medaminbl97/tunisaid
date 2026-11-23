@@ -1,0 +1,125 @@
+collection: refunds
+schema: {}
+meta:
+  icon: undo
+  accountability: all
+  note: >-
+    Record refunds after they were issued at the payment provider, on the donation (campaign share)
+    they reduce. Succeeded refunds reduce campaign totals and the checkout's receipt status.
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      is_nullable: false
+    meta:
+      interface: input
+      special:
+        - uuid
+      hidden: true
+  - field: donation
+    type: uuid
+    schema:
+      is_nullable: false
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+  - field: payment_attempt
+    type: uuid
+    schema:
+      is_nullable: false
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+  - field: provider
+    type: string
+    schema:
+      is_nullable: false
+    meta:
+      interface: input
+  - field: provider_refund_id
+    type: string
+    schema:
+      is_unique: true
+    meta:
+      interface: input
+  - field: idempotency_key
+    type: string
+    schema:
+      is_nullable: false
+      is_unique: true
+    meta:
+      interface: input
+  - field: status
+    type: string
+    schema:
+      is_nullable: false
+      default_value: pending
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - text: pending
+            value: pending
+          - text: succeeded
+            value: succeeded
+          - text: failed
+            value: failed
+      validation:
+        status:
+          _in:
+            - pending
+            - succeeded
+            - failed
+  - field: amount_cents
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      validation:
+        amount_cents:
+          _gte: 0
+  - field: currency
+    type: string
+    schema:
+      is_nullable: false
+      default_value: EUR
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - text: EUR
+            value: EUR
+      validation:
+        currency:
+          _in:
+            - EUR
+  - field: reason_code
+    type: string
+    schema: {}
+    meta:
+      interface: input
+  - field: created_at
+    type: timestamp
+    schema: {}
+    meta:
+      interface: datetime
+relations:
+  - field: donation
+    related_collection: donations
+    schema:
+      on_delete: RESTRICT
+    meta:
+      one_field: refunds
+      junction_field: null
+  - field: payment_attempt
+    related_collection: payment_attempts
+    schema:
+      on_delete: RESTRICT
+    meta:
+      one_field: null
+      junction_field: null
