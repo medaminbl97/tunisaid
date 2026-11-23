@@ -20,7 +20,7 @@ TF_ARGS ?=
 BOOTSTRAP_TARGETS := -target=dokploy_project.main -target=dokploy_application.openbao \
 	-target=dokploy_mount.openbao_data -target=random_password.database
 
-.PHONY: help ssh-check init bootstrap vault-init unseal secrets stripe-keys deploy migrate up plan credentials fmt validate
+.PHONY: help ssh-check init bootstrap vault-init unseal secrets stripe-keys deploy up plan credentials fmt validate
 
 help: ## Show this help
 	@awk 'BEGIN {FS = ":.*## "} /^[a-z-]+:.*## / {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -52,10 +52,7 @@ deploy: unseal ## 4. Deploy everything; services read secrets from OpenBao
 	@test -f $(SECRETS_DIR)/dokploy-token || { echo "Run make vault-init first."; exit 1; }
 	TF_VAR_vault_token="$$(cat $(SECRETS_DIR)/dokploy-token)" terraform apply $(TF_ARGS)
 
-migrate: unseal ## 5. Run the Directus migrations and seeds
-	scripts/migrate.sh
-
-up: bootstrap vault-init secrets deploy migrate ## Run all five steps (safe to repeat)
+up: bootstrap vault-init secrets deploy ## Run all four steps (safe to repeat)
 
 plan: ## Show the pending changes
 	@test -f $(SECRETS_DIR)/dokploy-token || { echo "Run make vault-init first."; exit 1; }
