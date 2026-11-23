@@ -1,0 +1,14 @@
+collection: categories
+items:
+  - id: 03cee3d5-6d80-54ba-b9c0-e63ec4b94bec
+    slug: essentials
+    sort: 1
+    status: draft
+  - id: 44b0d226-957f-5ece-a3ed-819d8a70b8c8
+    slug: mobility
+    sort: 2
+    status: draft
+  - id: cd29b058-8566-5abc-9dc5-602469584a16
+    slug: education
+    sort: 3
+    status: draft

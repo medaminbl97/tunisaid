@@ -1,0 +1,64 @@
+collection: categories
+schema: {}
+meta:
+  icon: category
+  accountability: all
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      is_nullable: false
+    meta:
+      interface: input
+      special:
+        - uuid
+      hidden: true
+  - field: slug
+    type: string
+    schema:
+      is_nullable: false
+      is_unique: true
+    meta:
+      interface: input
+  - field: status
+    type: string
+    schema:
+      is_nullable: false
+      default_value: draft
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - text: draft
+            value: draft
+          - text: published
+            value: published
+          - text: archived
+            value: archived
+      validation:
+        status:
+          _in:
+            - draft
+            - published
+            - archived
+  - field: sort
+    type: integer
+    schema:
+      is_nullable: false
+      default_value: 0
+    meta:
+      interface: input
+      validation:
+        sort:
+          _gte: 0
+  - field: translations
+    type: alias
+    schema: null
+    meta:
+      special:
+        - translations
+      interface: translations
+      options:
+        languageField: name
+        defaultLanguage: en

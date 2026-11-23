@@ -1,20 +1,67 @@
 import assert from 'node:assert/strict'
 import { randomUUID } from 'node:crypto'
-import { authenticate } from './client.mjs'
+import { fileURLToPath } from 'node:url'
 import {
-  collections as definitions,
-  relations as expectedRelations,
-  translatedCollections,
-} from '../migrations/001-initial-schema.mjs'
-import { campaignSeeds } from '../seeds/campaigns.mjs'
-import { projectSeeds } from '../seeds/projects.mjs'
+  loadDefinitions,
+  loginAsAdmin,
+  waitForDirectus,
+} from '../scripts/apply-schemas.js'
+import { loadSeeds } from '../scripts/seed-data.js'
 
-const request = await authenticate()
+// Live check of a running, freshly synchronized backend. It reads the same
+// YAML the image bakes in, so the expectations cannot drift from the schemas.
+const baseUrl = (process.env.DIRECTUS_URL ??= 'http://127.0.0.1:8056')
+const dir = (name) => fileURLToPath(new URL(`../${name}/`, import.meta.url))
+
+const definitions = await loadDefinitions(dir('schemas'))
+const reference = await loadSeeds(dir('seeds'), 'reference', definitions)
+const examples = await loadSeeds(dir('seeds'), 'examples', definitions)
+const withExamples = process.env.CMS_ENV === 'dev'
+const seedStatus =
+  process.env.SEED_PUBLISH_DEMO === 'true' ? 'published' : 'draft'
+
+await waitForDirectus()
+const token = await loginAsAdmin()
+
+async function request(path, { method = 'GET', body } = {}) {
+  const response = await fetch(new URL(path, baseUrl), {
+    method,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
+    },
+    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+    signal: AbortSignal.timeout(30_000),
+  })
+  if (!response.ok) {
+    throw new Error(
+      `${method} ${path.split('?')[0]} failed: HTTP ${response.status}`,
+    )
+  }
+  if (response.status === 204) return undefined
+  return (await response.json()).data
+}
+
+function anonymous(path, method = 'GET') {
+  return fetch(new URL(path, baseUrl), {
+    method,
+    ...(method === 'POST'
+      ? { headers: { 'Content-Type': 'application/json' }, body: '{}' }
+      : {}),
+    signal: AbortSignal.timeout(10_000),
+  })
+}
+
 const existing = new Set(
   (await request('/collections')).map((item) => item.collection),
 )
-for (const definition of definitions)
+for (const definition of definitions) {
   assert.ok(existing.has(definition.collection), definition.collection)
+}
+assert.ok(
+  !existing.has('backend_migrations'),
+  'The API migration ledger no longer exists',
+)
 
 const relations = new Map(
   (await request('/relations')).map((item) => [
@@ -22,22 +69,43 @@ const relations = new Map(
     item,
   ]),
 )
-for (const expected of expectedRelations) {
-  const key = `${expected.collection}.${expected.field}`
-  const actual = relations.get(key)
-  assert.equal(actual?.related_collection, expected.related_collection, key)
-  assert.equal(actual.schema.on_delete, expected.schema.on_delete, key)
-  assert.equal(actual.meta.one_field, expected.meta.one_field, key)
+let relationCount = 0
+for (const definition of definitions) {
+  for (const expected of definition.relations ?? []) {
+    const key = `${definition.collection}.${expected.field}`
+    const actual = relations.get(key)
+    assert.equal(actual?.related_collection, expected.related_collection, key)
+    assert.equal(actual.schema.on_delete, expected.schema.on_delete, key)
+    assert.equal(actual.meta.one_field, expected.meta.one_field, key)
+    assert.equal(actual.meta.junction_field, expected.meta.junction_field, key)
+    relationCount++
+  }
 }
-for (const removed of [
-  'allocations',
-  'material_donations',
-  'material_donation_events',
-  'project_partners',
-  'project_updates',
-]) {
-  assert.ok(!existing.has(removed), `${removed} must not exist`)
+
+let richTextCount = 0
+for (const definition of definitions) {
+  for (const field of definition.fields) {
+    const live = await request(
+      `/fields/${definition.collection}/${field.field}`,
+    )
+    assert.equal(
+      live.type,
+      field.type,
+      `${definition.collection}.${field.field}`,
+    )
+    assert.equal(
+      live.meta?.interface,
+      field.meta?.interface,
+      `${definition.collection}.${field.field} interface`,
+    )
+    if (field.meta?.interface === 'input-rich-text-html') {
+      assert.equal(live.type, 'text')
+      assert.ok(live.meta.options.toolbar.includes('bold'))
+      richTextCount++
+    }
+  }
 }
+assert.ok(richTextCount >= 3, 'Rich-text fields are present')
 
 const publicReadable = new Set([
   'projects',
@@ -50,153 +118,50 @@ const publicReadable = new Set([
   'donation_purposes',
   'donation_purposes_translations',
 ])
-const seedStatus =
-  process.env.SEED_PUBLISH_DEMO === 'true' ? 'published' : 'draft'
-
-function anonymous(path, method = 'GET') {
-  return fetch(new URL(path, process.env.DIRECTUS_URL), {
-    method,
-    ...(method === 'POST'
-      ? { headers: { 'Content-Type': 'application/json' }, body: '{}' }
-      : {}),
-    signal: AbortSignal.timeout(10_000),
-  })
-}
-
-for (const name of [
-  ...definitions.map((item) => item.collection),
-  'backend_migrations',
-]) {
+for (const { collection } of definitions) {
   for (const method of ['GET', 'POST']) {
-    const response = await anonymous(`/items/${name}?limit=1`, method)
-    if (method === 'GET' && publicReadable.has(name)) {
-      assert.equal(response.status, 200, `Anonymous GET ${name}`)
+    const response = await anonymous(`/items/${collection}?limit=1`, method)
+    if (method === 'GET' && publicReadable.has(collection)) {
+      assert.equal(response.status, 200, `Anonymous GET ${collection}`)
       continue
     }
     assert.ok(
       [401, 403].includes(response.status),
-      `Anonymous ${method} ${name} returned ${response.status}`,
+      `Anonymous ${method} ${collection} returned ${response.status}`,
     )
   }
 }
 
-const categories = await request('/items/categories?limit=-1')
-for (const slug of ['essentials', 'mobility', 'education']) {
-  const matches = categories.filter((item) => item.slug === slug)
-  assert.equal(matches.length, 1)
-  assert.equal(matches[0].status, seedStatus)
-}
-const purposes = await request(
-  '/items/donation_purposes?fields=*,project.slug&limit=-1',
-)
-for (const [slug, cents, project] of [
-  ['koffa', 3500, 'ramadan-food-boxes'],
-  ['wheelchair', 3000, 'wheelchairs-for-students'],
-  ['school', 2500, 'school-supplies-support'],
-  ['warmth', 4500, null],
-]) {
-  const matches = purposes.filter((item) => item.slug === slug)
-  assert.equal(matches.length, 1)
-  assert.equal(matches[0].unit_amount_cents, cents)
-  assert.equal(matches[0].status, seedStatus)
-  assert.equal(matches[0].is_illustrative, true)
-  if (seedStatus === 'published') {
-    assert.equal(matches[0].project?.slug ?? null, project)
+// Every baked-in seed row exists with the YAML values. Only example rows
+// carry a status; they follow SEED_PUBLISH_DEMO.
+let seedCount = 0
+async function checkSeeds(seeds, expectedStatus) {
+  for (const { collection, key, items } of seeds) {
+    const rows = await request(`/items/${collection}?limit=-1&fields=*`)
+    for (const item of items) {
+      const row = rows.find((candidate) => candidate[key] === item[key])
+      assert.ok(row, `${collection} seed ${item[key]} is missing`)
+      for (const [name, value] of Object.entries(item)) {
+        const expected =
+          name === 'status' && value === 'draft' ? expectedStatus : value
+        const label = `${collection}.${name} of ${item[key]}`
+        // Directus returns timestamps in UTC; compare the instant.
+        if (/^\d{4}-\d\d-\d\dT/.test(String(expected))) {
+          assert.equal(
+            new Date(row[name]).getTime(),
+            new Date(expected).getTime(),
+            label,
+          )
+        } else {
+          assert.equal(row[name], expected, label)
+        }
+      }
+      seedCount++
+    }
   }
 }
-assert.equal(
-  (await request('/items/donation_purposes_translations?limit=-1')).length,
-  8,
-)
-assert.equal((await request('/items/backend_migrations?limit=-1')).length, 1)
-
-for (const [collection, name] of [
-  ['projects_translations', 'body'],
-  ['campaigns_translations', 'body'],
-  ['donation_purposes_translations', 'description'],
-]) {
-  const richField = await request(`/fields/${collection}/${name}`)
-  assert.equal(richField.type, 'text')
-  assert.equal(richField.meta.interface, 'input-rich-text-html')
-  assert.ok(richField.meta.options.toolbar.includes('bold'))
-}
-for (const row of await request(
-  '/items/donation_purposes_translations?fields=description&limit=-1',
-)) {
-  assert.match(row.description, /^<p>/)
-}
-
-const projects = await request('/items/projects?limit=-1')
-const projectTranslations = await request(
-  '/items/projects_translations?limit=-1',
-)
-for (const definition of projectSeeds) {
-  const matches = projects.filter((item) => item.slug === definition.slug)
-  assert.equal(matches.length, 1)
-  assert.equal(matches[0].status, seedStatus)
-  const copies = projectTranslations.filter(
-    (item) => item.parent === matches[0].id,
-  )
-  assert.equal(copies.length, 2)
-  for (const [language, expected] of Object.entries(definition.translations)) {
-    const copy = copies.find((item) => item.language === language)
-    assert.equal(copy?.title, expected.title)
-    assert.equal(copy?.summary, expected.summary)
-    assert.ok(copy?.body.includes('https://tunisaid.org/'))
-    assert.match(copy.body, /<p>/)
-  }
-}
-
-const campaigns = await request('/items/campaigns?limit=-1')
-const campaignTranslations = await request(
-  '/items/campaigns_translations?limit=-1',
-)
-const campaignProjects = await request(
-  '/items/campaign_projects?fields=campaign,project.slug&limit=-1',
-)
-for (const definition of campaignSeeds) {
-  const matches = campaigns.filter((item) => item.slug === definition.slug)
-  assert.equal(matches.length, 1)
-  assert.equal(matches[0].status, seedStatus)
-  assert.equal(matches[0].goal_cents, definition.goalCents)
-  const copies = campaignTranslations.filter(
-    (item) => item.parent === matches[0].id,
-  )
-  assert.deepEqual(copies.map((item) => item.language).sort(), ['de', 'en'])
-  for (const copy of copies) assert.match(copy.body, /<h2>/)
-  assert.deepEqual(
-    campaignProjects
-      .filter((item) => item.campaign === matches[0].id)
-      .map((item) => item.project.slug)
-      .sort(),
-    [...definition.projects].sort(),
-  )
-}
-
-for (const parent of Object.keys(translatedCollections)) {
-  const field = await request(`/fields/${parent}/translations`)
-  assert.equal(field.meta.interface, 'translations')
-  assert.equal(field.meta.options.languageField, 'name')
-  assert.equal(
-    relations.get(`${parent}_translations.parent`).meta.junction_field,
-    'language',
-  )
-  assert.equal(
-    relations.get(`${parent}_translations.language`).meta.junction_field,
-    'parent',
-  )
-}
-for (const [parent, alias, owner, target] of [
-  ['campaigns', 'projects', 'campaign', 'project'],
-  ['projects', 'campaigns', 'project', 'campaign'],
-]) {
-  const field = await request(`/fields/${parent}/${alias}`)
-  assert.equal(field.meta.interface, 'list-m2m')
-  assert.equal(
-    relations.get(`campaign_projects.${owner}`).meta.junction_field,
-    target,
-  )
-}
+await checkSeeds(reference, 'published')
+if (withExamples) await checkSeeds(examples, seedStatus)
 
 function asService(path, method = 'GET', body) {
   return fetch(new URL(path, process.env.DIRECTUS_URL), {
@@ -513,5 +478,8 @@ try {
 }
 
 console.log(
-  `Verified ${definitions.length} collections (public read limited to published projects, campaigns and donation purposes), all relations, seeded catalog, amount/status validation, event deduplication, deletion protection, derived refund state${serviceChecked ? ' and least-privilege service access' : ''}. Synthetic fixtures removed.`,
+  `Verified ${definitions.length} collections, ${relationCount} relations, ${richTextCount} rich-text fields, ${seedCount} seed rows, public read limited to published content, amount/status validation, event deduplication, deletion protection and derived refund state${serviceChecked ? ', plus least-privilege service access' : ''}. Synthetic fixtures removed.`,
 )
+
+// The SDK's token refresh timer would otherwise keep the process alive.
+process.exit(0)

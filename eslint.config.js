@@ -22,6 +22,11 @@ export default [
       '.output/**',
       'src/api/generated/**',
       'directus/extensions/**',
+      // Plain Node loader scripts, outside the app's TypeScript project.
+      'directus/scripts/**',
+      'directus/tools/**',
+      // Vendored agent skills (Git submodule).
+      '.agents/**',
       'eslint.config.js',
       'prettier.config.js',
     ],

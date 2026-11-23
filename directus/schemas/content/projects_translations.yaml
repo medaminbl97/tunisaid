@@ -1,0 +1,92 @@
+collection: projects_translations
+schema: {}
+meta:
+  icon: folder
+  accountability: all
+  hidden: true
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      is_nullable: false
+    meta:
+      interface: input
+      special:
+        - uuid
+      hidden: true
+  - field: parent
+    type: uuid
+    schema:
+      is_nullable: false
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+  - field: language
+    type: string
+    schema:
+      is_nullable: false
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+  - field: title
+    type: string
+    schema:
+      is_nullable: false
+    meta:
+      interface: input
+  - field: summary
+    type: text
+    schema: {}
+    meta:
+      interface: input-multiline
+  - field: body
+    type: text
+    schema: {}
+    meta:
+      interface: input-rich-text-html
+      display: formatted-value
+      display_options:
+        format: true
+      width: full
+      options:
+        toolbar:
+          - undo
+          - redo
+          - h2
+          - h3
+          - bold
+          - italic
+          - underline
+          - bullist
+          - numlist
+          - blockquote
+          - customLink
+          - unlink
+          - customImage
+          - table
+          - removeformat
+          - fullscreen
+          - code
+  - field: image_alt
+    type: string
+    schema: {}
+    meta:
+      interface: input
+relations:
+  - field: parent
+    related_collection: projects
+    schema:
+      on_delete: CASCADE
+    meta:
+      one_field: translations
+      junction_field: language
+  - field: language
+    related_collection: languages
+    schema:
+      on_delete: RESTRICT
+    meta:
+      one_field: null
+      junction_field: parent

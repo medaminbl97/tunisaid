@@ -1,0 +1,71 @@
+collection: partners
+schema: {}
+meta:
+  icon: handshake
+  accountability: all
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      is_nullable: false
+    meta:
+      interface: input
+      special:
+        - uuid
+      hidden: true
+  - field: slug
+    type: string
+    schema:
+      is_nullable: false
+      is_unique: true
+    meta:
+      interface: input
+  - field: name
+    type: string
+    schema:
+      is_nullable: false
+    meta:
+      interface: input
+  - field: status
+    type: string
+    schema:
+      is_nullable: false
+      default_value: draft
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - text: draft
+            value: draft
+          - text: published
+            value: published
+          - text: archived
+            value: archived
+      validation:
+        status:
+          _in:
+            - draft
+            - published
+            - archived
+  - field: website
+    type: string
+    schema: {}
+    meta:
+      interface: input
+  - field: logo
+    type: uuid
+    schema:
+      is_nullable: true
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+relations:
+  - field: logo
+    related_collection: directus_files
+    schema:
+      on_delete: RESTRICT
+    meta:
+      one_field: null
+      junction_field: null

@@ -1,0 +1,129 @@
+policy: public
+permissions:
+  - collection: projects
+    action: read
+    fields:
+      - id
+      - slug
+      - status
+      - cover_image
+      - starts_at
+      - ends_at
+      - translations
+    permissions:
+      status:
+        _eq: published
+  - collection: campaigns
+    action: read
+    fields:
+      - id
+      - slug
+      - status
+      - goal_cents
+      - currency
+      - starts_at
+      - ends_at
+      - cover_image
+      - translations
+      - projects
+    permissions:
+      status:
+        _eq: published
+  - collection: campaign_projects
+    action: read
+    fields:
+      - id
+      - campaign
+      - project
+    permissions:
+      _and:
+        - campaign:
+            status:
+              _eq: published
+        - project:
+            status:
+              _eq: published
+  - collection: categories
+    action: read
+    fields:
+      - id
+      - slug
+      - status
+      - sort
+      - translations
+    permissions:
+      status:
+        _eq: published
+  - collection: donation_purposes
+    action: read
+    fields:
+      - id
+      - slug
+      - status
+      - category
+      - project
+      - unit_amount_cents
+      - currency
+      - image
+      - sort
+      - is_illustrative
+      - translations
+    permissions:
+      status:
+        _eq: published
+  - collection: categories_translations
+    action: read
+    fields:
+      - id
+      - parent
+      - language
+      - title
+    permissions:
+      parent:
+        status:
+          _eq: published
+  - collection: projects_translations
+    action: read
+    fields:
+      - id
+      - parent
+      - language
+      - title
+      - summary
+      - body
+      - image_alt
+    permissions:
+      parent:
+        status:
+          _eq: published
+  - collection: campaigns_translations
+    action: read
+    fields:
+      - id
+      - parent
+      - language
+      - title
+      - summary
+      - body
+      - image_alt
+    permissions:
+      parent:
+        status:
+          _eq: published
+  - collection: donation_purposes_translations
+    action: read
+    fields:
+      - id
+      - parent
+      - language
+      - title
+      - category_label
+      - description
+      - impact
+      - unit_label
+      - basket_title
+      - image_alt
+    permissions:
+      parent:
+        status:
+          _eq: published
