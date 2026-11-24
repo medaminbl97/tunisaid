@@ -20,9 +20,13 @@ permissions:
       - id
       - slug
       - status
+      - category
       - project
       - unit_amount
       - currency
+      - image
+      - sort
+      - is_illustrative
       - translations
     permissions:
       status:
@@ -34,7 +38,12 @@ permissions:
       - parent
       - language
       - title
+      - category_label
+      - description
+      - impact
+      - unit_label
       - basket_title
+      - image_alt
     permissions:
       parent:
         status:
@@ -45,10 +54,13 @@ permissions:
       - id
       - slug
       - status
+      - goal_amount
+      - currency
       - starts_at
       - ends_at
-      - goal_amount
+      - cover_image
       - translations
+      - projects
     permissions:
       status:
         _eq: published
@@ -59,6 +71,9 @@ permissions:
       - parent
       - language
       - title
+      - summary
+      - body
+      - image_alt
     permissions:
       parent:
         status:
@@ -71,6 +86,61 @@ permissions:
       - project
     permissions:
       campaign:
+        status:
+          _eq: published
+  # Published content, same fields and filters as access/public.yaml (the OpenAPI
+  # export for the generated client runs with this user's token, and Directus only
+  # lists what the caller may read). scripts/apply-policies.test.js keeps the two
+  # files from drifting apart.
+  - collection: projects
+    action: read
+    fields:
+      - id
+      - slug
+      - status
+      - cover_image
+      - starts_at
+      - ends_at
+      - translations
+      - campaigns
+      - purposes
+    permissions:
+      status:
+        _eq: published
+  - collection: projects_translations
+    action: read
+    fields:
+      - id
+      - parent
+      - language
+      - title
+      - summary
+      - body
+      - image_alt
+    permissions:
+      parent:
+        status:
+          _eq: published
+  - collection: categories
+    action: read
+    fields:
+      - id
+      - slug
+      - status
+      - sort
+      - translations
+    permissions:
+      status:
+        _eq: published
+  - collection: categories_translations
+    action: read
+    fields:
+      - id
+      - parent
+      - language
+      - title
+    permissions:
+      parent:
         status:
           _eq: published
   - collection: donors
@@ -108,6 +178,7 @@ permissions:
       - total_amount
       - created_at
       - paid_at
+      - donor
   - collection: checkouts
     action: update
     fields:
@@ -160,6 +231,8 @@ permissions:
       - quantity
       - unit_amount
       - total_amount
+      - purpose
+      - requested_purpose_snapshot
   - collection: payment_attempts
     action: create
     fields:
@@ -188,6 +261,9 @@ permissions:
       - amount
       - currency
       - failure_code
+      - idempotency_key
+      - updated_at
+      - created_at
   - collection: payment_attempts
     action: update
     fields:
@@ -216,9 +292,14 @@ permissions:
     action: read
     fields:
       - id
+      - provider
       - provider_event_key
       - event_type
       - status
+      - processed_at
+      - payment_attempt
+      - received_at
+      - error_code
   - collection: payment_events
     action: update
     fields:
@@ -237,6 +318,11 @@ permissions:
       - provider_refund_id
       - status
       - amount
+      - created_at
+      - currency
+      - idempotency_key
+      - provider
+      - reason_code
   - collection: refunds
     action: create
     fields:
