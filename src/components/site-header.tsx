@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { Menu, X } from 'lucide-react'
+import { Heart, Menu, X } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useEffect, useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -176,8 +176,22 @@ export function SiteHeader() {
             <Button
               asChild
               shape="pill"
+              size="icon-lg"
+              className="size-11 sm:hidden"
+            >
+              <Link
+                to="/donate"
+                aria-label={t('navigation.donate')}
+                onClick={() => setMenuOpen(false)}
+              >
+                <Heart className="size-5 fill-current" aria-hidden="true" />
+              </Link>
+            </Button>
+            <Button
+              asChild
+              shape="pill"
               size="lg"
-              className="hidden min-h-11 px-3 text-[15px] font-bold min-[375px]:inline-flex sm:px-7 xl:min-h-[45px]"
+              className="hidden min-h-11 px-7 text-[15px] font-bold sm:inline-flex xl:min-h-[45px]"
             >
               <Link to="/donate" onClick={() => setMenuOpen(false)}>
                 {t('navigation.donate')}
@@ -192,7 +206,7 @@ export function SiteHeader() {
               aria-expanded={menuOpen}
               aria-controls={menuId}
               onClick={() => setMenuOpen((open) => !open)}
-              className="size-11 cursor-pointer border-[1.5px] border-brand-header-chip-border bg-brand-header-chip text-brand-header-foreground hover:bg-brand-header-active xl:hidden"
+              className="size-11 cursor-pointer border-[1.5px] border-brand-lagoon-blue/25 bg-brand-lagoon-tint text-brand-lagoon-deep hover:bg-brand-lagoon-blue/20 xl:hidden"
             >
               <AnimatePresence initial={false} mode="wait">
                 <motion.span
@@ -262,7 +276,7 @@ export function SiteHeader() {
                 asChild
                 shape="pill"
                 size="lg"
-                className="min-h-12 w-full text-base font-bold min-[375px]:hidden"
+                className="min-h-12 w-full text-base font-bold sm:hidden"
               >
                 <Link to="/donate" onClick={() => setMenuOpen(false)}>
                   {t('navigation.donate')}
