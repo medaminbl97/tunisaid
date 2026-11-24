@@ -43,7 +43,7 @@ const campaign = {
   id,
   slug: 'inclusive-school-year',
   status: 'published',
-  goal_cents: 650000,
+  goal_amount: '6500.00',
   currency: 'EUR',
   starts_at: '2026-10-31T23:00:00.000Z',
   ends_at: '2027-06-30T21:59:59.000Z',
@@ -99,7 +99,7 @@ test('active campaigns request published, not-ended campaigns', async () => {
   assert.equal(url.searchParams.get('limit'), '3')
   assert.ok(!url.searchParams.get('fields').includes('translations.body'))
   assert.equal(result[0].translation.title, translation.title)
-  assert.equal(result[0].goal_cents, 650000)
+  assert.equal(result[0].goalCents, 650000)
   assert.deepEqual(result[0].projects, [])
 })
 

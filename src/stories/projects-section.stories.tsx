@@ -42,7 +42,7 @@ const sampleCampaigns: LocalizedCampaign[] = [
     id: '00000000-0000-4000-8000-000000000101',
     slug: 'inclusive-school-year-2027',
     status: 'published',
-    goal_cents: 650000,
+    goalCents: 650000,
     currency: 'EUR',
     starts_at: '2026-11-01T00:00:00+01:00',
     ends_at: '2027-06-30T23:59:59+02:00',

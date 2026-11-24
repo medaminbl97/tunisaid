@@ -11,7 +11,7 @@ const fields = [
   'id',
   'slug',
   'status',
-  'unit_amount_cents',
+  'unit_amount',
   'currency',
   'sort',
   'is_illustrative',
@@ -63,7 +63,7 @@ function localize(purpose: DonationPurpose, language: DonationPurposeLanguage) {
     {
       id: purpose.id,
       slug: purpose.slug,
-      unitAmountCents: purpose.unit_amount_cents,
+      unitAmountCents: purpose.unit_amount,
       currency: purpose.currency,
       isIllustrative: purpose.is_illustrative,
       category:

@@ -9,9 +9,6 @@ import type {
 } from './client'
 import { client } from './client.gen'
 import type {
-  CreateItemsBackendMigrationsData,
-  CreateItemsBackendMigrationsErrors,
-  CreateItemsBackendMigrationsResponses,
   CreateItemsCampaignProjectsData,
   CreateItemsCampaignProjectsErrors,
   CreateItemsCampaignProjectsResponses,
@@ -66,9 +63,6 @@ import type {
   CreateItemsRefundsData,
   CreateItemsRefundsErrors,
   CreateItemsRefundsResponses,
-  DeleteItemsBackendMigrationsData,
-  DeleteItemsBackendMigrationsErrors,
-  DeleteItemsBackendMigrationsResponses,
   DeleteItemsCampaignProjectsData,
   DeleteItemsCampaignProjectsErrors,
   DeleteItemsCampaignProjectsResponses,
@@ -123,9 +117,6 @@ import type {
   DeleteItemsRefundsData,
   DeleteItemsRefundsErrors,
   DeleteItemsRefundsResponses,
-  DeleteSingleItemsBackendMigrationsData,
-  DeleteSingleItemsBackendMigrationsErrors,
-  DeleteSingleItemsBackendMigrationsResponses,
   DeleteSingleItemsCampaignProjectsData,
   DeleteSingleItemsCampaignProjectsErrors,
   DeleteSingleItemsCampaignProjectsResponses,
@@ -180,9 +171,6 @@ import type {
   DeleteSingleItemsRefundsData,
   DeleteSingleItemsRefundsErrors,
   DeleteSingleItemsRefundsResponses,
-  ReadItemsBackendMigrationsData,
-  ReadItemsBackendMigrationsErrors,
-  ReadItemsBackendMigrationsResponses,
   ReadItemsCampaignProjectsData,
   ReadItemsCampaignProjectsErrors,
   ReadItemsCampaignProjectsResponses,
@@ -237,9 +225,6 @@ import type {
   ReadItemsRefundsData,
   ReadItemsRefundsErrors,
   ReadItemsRefundsResponses,
-  ReadSingleItemsBackendMigrationsData,
-  ReadSingleItemsBackendMigrationsErrors,
-  ReadSingleItemsBackendMigrationsResponses,
   ReadSingleItemsCampaignProjectsData,
   ReadSingleItemsCampaignProjectsErrors,
   ReadSingleItemsCampaignProjectsResponses,
@@ -294,8 +279,6 @@ import type {
   ReadSingleItemsRefundsData,
   ReadSingleItemsRefundsErrors,
   ReadSingleItemsRefundsResponses,
-  UpdateItemsBackendMigrationsData,
-  UpdateItemsBackendMigrationsResponses,
   UpdateItemsCampaignProjectsData,
   UpdateItemsCampaignProjectsResponses,
   UpdateItemsCampaignsData,
@@ -332,9 +315,6 @@ import type {
   UpdateItemsProjectsTranslationsResponses,
   UpdateItemsRefundsData,
   UpdateItemsRefundsResponses,
-  UpdateSingleItemsBackendMigrationsData,
-  UpdateSingleItemsBackendMigrationsErrors,
-  UpdateSingleItemsBackendMigrationsResponses,
   UpdateSingleItemsCampaignProjectsData,
   UpdateSingleItemsCampaignProjectsErrors,
   UpdateSingleItemsCampaignProjectsResponses,
@@ -391,7 +371,6 @@ import type {
   UpdateSingleItemsRefundsResponses,
 } from './types.gen'
 import {
-  zCreateItemsBackendMigrationsResponse,
   zCreateItemsCampaignProjectsResponse,
   zCreateItemsCampaignsResponse,
   zCreateItemsCampaignsTranslationsResponse,
@@ -410,7 +389,6 @@ import {
   zCreateItemsProjectsResponse,
   zCreateItemsProjectsTranslationsResponse,
   zCreateItemsRefundsResponse,
-  zReadItemsBackendMigrationsResponse,
   zReadItemsCampaignProjectsResponse,
   zReadItemsCampaignsResponse,
   zReadItemsCampaignsTranslationsResponse,
@@ -429,7 +407,6 @@ import {
   zReadItemsProjectsResponse,
   zReadItemsProjectsTranslationsResponse,
   zReadItemsRefundsResponse,
-  zReadSingleItemsBackendMigrationsResponse,
   zReadSingleItemsCampaignProjectsResponse,
   zReadSingleItemsCampaignsResponse,
   zReadSingleItemsCampaignsTranslationsResponse,
@@ -448,7 +425,6 @@ import {
   zReadSingleItemsProjectsResponse,
   zReadSingleItemsProjectsTranslationsResponse,
   zReadSingleItemsRefundsResponse,
-  zUpdateItemsBackendMigrationsResponse,
   zUpdateItemsCampaignProjectsResponse,
   zUpdateItemsCampaignsResponse,
   zUpdateItemsCampaignsTranslationsResponse,
@@ -467,7 +443,6 @@ import {
   zUpdateItemsProjectsResponse,
   zUpdateItemsProjectsTranslationsResponse,
   zUpdateItemsRefundsResponse,
-  zUpdateSingleItemsBackendMigrationsResponse,
   zUpdateSingleItemsCampaignProjectsResponse,
   zUpdateSingleItemsCampaignsResponse,
   zUpdateSingleItemsCampaignsTranslationsResponse,
@@ -505,556 +480,6 @@ export type Options<
    */
   meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta
 }
-
-/**
- * Delete Multiple Items
- *
- * Delete multiple existing backend_migrations items.
- */
-export const deleteItemsBackendMigrations = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<DeleteItemsBackendMigrationsData, ThrowOnError>,
-): RequestResult<
-  DeleteItemsBackendMigrationsResponses,
-  DeleteItemsBackendMigrationsErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).delete<
-    DeleteItemsBackendMigrationsResponses,
-    DeleteItemsBackendMigrationsErrors,
-    ThrowOnError
-  >({ url: '/items/backend_migrations', ...options })
-
-/**
- * List Items
- *
- * List the backend_migrations items.
- */
-export const readItemsBackendMigrations = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<ReadItemsBackendMigrationsData, ThrowOnError>,
-): RequestResult<
-  ReadItemsBackendMigrationsResponses,
-  ReadItemsBackendMigrationsErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    ReadItemsBackendMigrationsResponses,
-    ReadItemsBackendMigrationsErrors,
-    ThrowOnError
-  >({
-    querySerializer: {
-      parameters: {
-        fields: { array: { explode: false } },
-        sort: { array: { explode: false } },
-        filter: { object: { style: 'form' } },
-      },
-    },
-    responseValidator: async (data) =>
-      await zReadItemsBackendMigrationsResponse.parseAsync(data),
-    security: [{ name: 'Authorization', type: 'apiKey' }],
-    url: '/items/backend_migrations',
-    ...options,
-  })
-
-/**
- * Update Multiple Items
- *
- * Update multiple backend_migrations items at the same time.
- */
-export const updateItemsBackendMigrations = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<UpdateItemsBackendMigrationsData, ThrowOnError>,
-): RequestResult<
-  UpdateItemsBackendMigrationsResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).patch<
-    UpdateItemsBackendMigrationsResponses,
-    unknown,
-    ThrowOnError
-  >({
-    querySerializer: {
-      parameters: {
-        fields: { array: { explode: false } },
-        sort: { array: { explode: false } },
-        filter: { object: { style: 'form' } },
-      },
-    },
-    responseValidator: async (data) =>
-      await zUpdateItemsBackendMigrationsResponse.parseAsync(data),
-    url: '/items/backend_migrations',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
-
-/**
- * Create an Item
- *
- * Create a new backend_migrations item.
- */
-export const createItemsBackendMigrations = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<CreateItemsBackendMigrationsData, ThrowOnError>,
-): RequestResult<
-  CreateItemsBackendMigrationsResponses,
-  CreateItemsBackendMigrationsErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    CreateItemsBackendMigrationsResponses,
-    CreateItemsBackendMigrationsErrors,
-    ThrowOnError
-  >({
-    responseValidator: async (data) =>
-      await zCreateItemsBackendMigrationsResponse.parseAsync(data),
-    url: '/items/backend_migrations',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
-
-/**
- * Delete an Item
- *
- * Delete an existing backend_migrations item.
- */
-export const deleteSingleItemsBackendMigrations = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<DeleteSingleItemsBackendMigrationsData, ThrowOnError>,
-): RequestResult<
-  DeleteSingleItemsBackendMigrationsResponses,
-  DeleteSingleItemsBackendMigrationsErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).delete<
-    DeleteSingleItemsBackendMigrationsResponses,
-    DeleteSingleItemsBackendMigrationsErrors,
-    ThrowOnError
-  >({ url: '/items/backend_migrations/{id}', ...options })
-
-/**
- * Retrieve an Item
- *
- * Retrieve a single backend_migrations item by unique identifier.
- */
-export const readSingleItemsBackendMigrations = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ReadSingleItemsBackendMigrationsData, ThrowOnError>,
-): RequestResult<
-  ReadSingleItemsBackendMigrationsResponses,
-  ReadSingleItemsBackendMigrationsErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    ReadSingleItemsBackendMigrationsResponses,
-    ReadSingleItemsBackendMigrationsErrors,
-    ThrowOnError
-  >({
-    querySerializer: { parameters: { fields: { array: { explode: false } } } },
-    responseValidator: async (data) =>
-      await zReadSingleItemsBackendMigrationsResponse.parseAsync(data),
-    url: '/items/backend_migrations/{id}',
-    ...options,
-  })
-
-/**
- * Update an Item
- *
- * Update an existing backend_migrations item.
- */
-export const updateSingleItemsBackendMigrations = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<UpdateSingleItemsBackendMigrationsData, ThrowOnError>,
-): RequestResult<
-  UpdateSingleItemsBackendMigrationsResponses,
-  UpdateSingleItemsBackendMigrationsErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).patch<
-    UpdateSingleItemsBackendMigrationsResponses,
-    UpdateSingleItemsBackendMigrationsErrors,
-    ThrowOnError
-  >({
-    querySerializer: { parameters: { fields: { array: { explode: false } } } },
-    responseValidator: async (data) =>
-      await zUpdateSingleItemsBackendMigrationsResponse.parseAsync(data),
-    url: '/items/backend_migrations/{id}',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  })
-
-/**
- * Delete Multiple Items
- *
- * Delete multiple existing languages items.
- */
-export const deleteItemsLanguages = <ThrowOnError extends boolean = false>(
-  options?: Options<DeleteItemsLanguagesData, ThrowOnError>,
-): RequestResult<
-  DeleteItemsLanguagesResponses,
-  DeleteItemsLanguagesErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).delete<
-    DeleteItemsLanguagesResponses,
-    DeleteItemsLanguagesErrors,
-    ThrowOnError
-  >({ url: '/items/languages', ...options })
-
-/**
- * List Items
- *
- * List the languages items.
- */
-export const readItemsLanguages = <ThrowOnError extends boolean = false>(
-  options?: Options<ReadItemsLanguagesData, ThrowOnError>,
-): RequestResult<
-  ReadItemsLanguagesResponses,
-  ReadItemsLanguagesErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    ReadItemsLanguagesResponses,
-    ReadItemsLanguagesErrors,
-    ThrowOnError
-  >({
-    querySerializer: {
-      parameters: {
-        fields: { array: { explode: false } },
-        sort: { array: { explode: false } },
-        filter: { object: { style: 'form' } },
-      },
-    },
-    responseValidator: async (data) =>
-      await zReadItemsLanguagesResponse.parseAsync(data),
-    security: [{ name: 'Authorization', type: 'apiKey' }],
-    url: '/items/languages',
-    ...options,
-  })
-
-/**
- * Update Multiple Items
- *
- * Update multiple languages items at the same time.
- */
-export const updateItemsLanguages = <ThrowOnError extends boolean = false>(
-  options?: Options<UpdateItemsLanguagesData, ThrowOnError>,
-): RequestResult<UpdateItemsLanguagesResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).patch<
-    UpdateItemsLanguagesResponses,
-    unknown,
-    ThrowOnError
-  >({
-    querySerializer: {
-      parameters: {
-        fields: { array: { explode: false } },
-        sort: { array: { explode: false } },
-        filter: { object: { style: 'form' } },
-      },
-    },
-    responseValidator: async (data) =>
-      await zUpdateItemsLanguagesResponse.parseAsync(data),
-    url: '/items/languages',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
-
-/**
- * Create an Item
- *
- * Create a new languages item.
- */
-export const createItemsLanguages = <ThrowOnError extends boolean = false>(
-  options?: Options<CreateItemsLanguagesData, ThrowOnError>,
-): RequestResult<
-  CreateItemsLanguagesResponses,
-  CreateItemsLanguagesErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    CreateItemsLanguagesResponses,
-    CreateItemsLanguagesErrors,
-    ThrowOnError
-  >({
-    responseValidator: async (data) =>
-      await zCreateItemsLanguagesResponse.parseAsync(data),
-    url: '/items/languages',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
-
-/**
- * Delete an Item
- *
- * Delete an existing languages item.
- */
-export const deleteSingleItemsLanguages = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<DeleteSingleItemsLanguagesData, ThrowOnError>,
-): RequestResult<
-  DeleteSingleItemsLanguagesResponses,
-  DeleteSingleItemsLanguagesErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).delete<
-    DeleteSingleItemsLanguagesResponses,
-    DeleteSingleItemsLanguagesErrors,
-    ThrowOnError
-  >({ url: '/items/languages/{id}', ...options })
-
-/**
- * Retrieve an Item
- *
- * Retrieve a single languages item by unique identifier.
- */
-export const readSingleItemsLanguages = <ThrowOnError extends boolean = false>(
-  options: Options<ReadSingleItemsLanguagesData, ThrowOnError>,
-): RequestResult<
-  ReadSingleItemsLanguagesResponses,
-  ReadSingleItemsLanguagesErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    ReadSingleItemsLanguagesResponses,
-    ReadSingleItemsLanguagesErrors,
-    ThrowOnError
-  >({
-    querySerializer: { parameters: { fields: { array: { explode: false } } } },
-    responseValidator: async (data) =>
-      await zReadSingleItemsLanguagesResponse.parseAsync(data),
-    url: '/items/languages/{id}',
-    ...options,
-  })
-
-/**
- * Update an Item
- *
- * Update an existing languages item.
- */
-export const updateSingleItemsLanguages = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<UpdateSingleItemsLanguagesData, ThrowOnError>,
-): RequestResult<
-  UpdateSingleItemsLanguagesResponses,
-  UpdateSingleItemsLanguagesErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).patch<
-    UpdateSingleItemsLanguagesResponses,
-    UpdateSingleItemsLanguagesErrors,
-    ThrowOnError
-  >({
-    querySerializer: { parameters: { fields: { array: { explode: false } } } },
-    responseValidator: async (data) =>
-      await zUpdateSingleItemsLanguagesResponse.parseAsync(data),
-    url: '/items/languages/{id}',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  })
-
-/**
- * Delete Multiple Items
- *
- * Delete multiple existing projects items.
- */
-export const deleteItemsProjects = <ThrowOnError extends boolean = false>(
-  options?: Options<DeleteItemsProjectsData, ThrowOnError>,
-): RequestResult<
-  DeleteItemsProjectsResponses,
-  DeleteItemsProjectsErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).delete<
-    DeleteItemsProjectsResponses,
-    DeleteItemsProjectsErrors,
-    ThrowOnError
-  >({ url: '/items/projects', ...options })
-
-/**
- * List Items
- *
- * List the projects items.
- */
-export const readItemsProjects = <ThrowOnError extends boolean = false>(
-  options?: Options<ReadItemsProjectsData, ThrowOnError>,
-): RequestResult<
-  ReadItemsProjectsResponses,
-  ReadItemsProjectsErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    ReadItemsProjectsResponses,
-    ReadItemsProjectsErrors,
-    ThrowOnError
-  >({
-    querySerializer: {
-      parameters: {
-        fields: { array: { explode: false } },
-        sort: { array: { explode: false } },
-        filter: { object: { style: 'form' } },
-      },
-    },
-    responseValidator: async (data) =>
-      await zReadItemsProjectsResponse.parseAsync(data),
-    security: [{ name: 'Authorization', type: 'apiKey' }],
-    url: '/items/projects',
-    ...options,
-  })
-
-/**
- * Update Multiple Items
- *
- * Update multiple projects items at the same time.
- */
-export const updateItemsProjects = <ThrowOnError extends boolean = false>(
-  options?: Options<UpdateItemsProjectsData, ThrowOnError>,
-): RequestResult<UpdateItemsProjectsResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).patch<
-    UpdateItemsProjectsResponses,
-    unknown,
-    ThrowOnError
-  >({
-    querySerializer: {
-      parameters: {
-        fields: { array: { explode: false } },
-        sort: { array: { explode: false } },
-        filter: { object: { style: 'form' } },
-      },
-    },
-    responseValidator: async (data) =>
-      await zUpdateItemsProjectsResponse.parseAsync(data),
-    url: '/items/projects',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
-
-/**
- * Create an Item
- *
- * Create a new projects item.
- */
-export const createItemsProjects = <ThrowOnError extends boolean = false>(
-  options?: Options<CreateItemsProjectsData, ThrowOnError>,
-): RequestResult<
-  CreateItemsProjectsResponses,
-  CreateItemsProjectsErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    CreateItemsProjectsResponses,
-    CreateItemsProjectsErrors,
-    ThrowOnError
-  >({
-    responseValidator: async (data) =>
-      await zCreateItemsProjectsResponse.parseAsync(data),
-    url: '/items/projects',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
-
-/**
- * Delete an Item
- *
- * Delete an existing projects item.
- */
-export const deleteSingleItemsProjects = <ThrowOnError extends boolean = false>(
-  options: Options<DeleteSingleItemsProjectsData, ThrowOnError>,
-): RequestResult<
-  DeleteSingleItemsProjectsResponses,
-  DeleteSingleItemsProjectsErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).delete<
-    DeleteSingleItemsProjectsResponses,
-    DeleteSingleItemsProjectsErrors,
-    ThrowOnError
-  >({ url: '/items/projects/{id}', ...options })
-
-/**
- * Retrieve an Item
- *
- * Retrieve a single projects item by unique identifier.
- */
-export const readSingleItemsProjects = <ThrowOnError extends boolean = false>(
-  options: Options<ReadSingleItemsProjectsData, ThrowOnError>,
-): RequestResult<
-  ReadSingleItemsProjectsResponses,
-  ReadSingleItemsProjectsErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    ReadSingleItemsProjectsResponses,
-    ReadSingleItemsProjectsErrors,
-    ThrowOnError
-  >({
-    querySerializer: { parameters: { fields: { array: { explode: false } } } },
-    responseValidator: async (data) =>
-      await zReadSingleItemsProjectsResponse.parseAsync(data),
-    url: '/items/projects/{id}',
-    ...options,
-  })
-
-/**
- * Update an Item
- *
- * Update an existing projects item.
- */
-export const updateSingleItemsProjects = <ThrowOnError extends boolean = false>(
-  options: Options<UpdateSingleItemsProjectsData, ThrowOnError>,
-): RequestResult<
-  UpdateSingleItemsProjectsResponses,
-  UpdateSingleItemsProjectsErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).patch<
-    UpdateSingleItemsProjectsResponses,
-    UpdateSingleItemsProjectsErrors,
-    ThrowOnError
-  >({
-    querySerializer: { parameters: { fields: { array: { explode: false } } } },
-    responseValidator: async (data) =>
-      await zUpdateSingleItemsProjectsResponse.parseAsync(data),
-    url: '/items/projects/{id}',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  })
 
 /**
  * Delete Multiple Items
@@ -1427,36 +852,36 @@ export const updateSingleItemsCampaignProjects = <
 /**
  * Delete Multiple Items
  *
- * Delete multiple existing partners items.
+ * Delete multiple existing projects items.
  */
-export const deleteItemsPartners = <ThrowOnError extends boolean = false>(
-  options?: Options<DeleteItemsPartnersData, ThrowOnError>,
+export const deleteItemsProjects = <ThrowOnError extends boolean = false>(
+  options?: Options<DeleteItemsProjectsData, ThrowOnError>,
 ): RequestResult<
-  DeleteItemsPartnersResponses,
-  DeleteItemsPartnersErrors,
+  DeleteItemsProjectsResponses,
+  DeleteItemsProjectsErrors,
   ThrowOnError
 > =>
   (options?.client ?? client).delete<
-    DeleteItemsPartnersResponses,
-    DeleteItemsPartnersErrors,
+    DeleteItemsProjectsResponses,
+    DeleteItemsProjectsErrors,
     ThrowOnError
-  >({ url: '/items/partners', ...options })
+  >({ url: '/items/projects', ...options })
 
 /**
  * List Items
  *
- * List the partners items.
+ * List the projects items.
  */
-export const readItemsPartners = <ThrowOnError extends boolean = false>(
-  options?: Options<ReadItemsPartnersData, ThrowOnError>,
+export const readItemsProjects = <ThrowOnError extends boolean = false>(
+  options?: Options<ReadItemsProjectsData, ThrowOnError>,
 ): RequestResult<
-  ReadItemsPartnersResponses,
-  ReadItemsPartnersErrors,
+  ReadItemsProjectsResponses,
+  ReadItemsProjectsErrors,
   ThrowOnError
 > =>
   (options?.client ?? client).get<
-    ReadItemsPartnersResponses,
-    ReadItemsPartnersErrors,
+    ReadItemsProjectsResponses,
+    ReadItemsProjectsErrors,
     ThrowOnError
   >({
     querySerializer: {
@@ -1467,22 +892,22 @@ export const readItemsPartners = <ThrowOnError extends boolean = false>(
       },
     },
     responseValidator: async (data) =>
-      await zReadItemsPartnersResponse.parseAsync(data),
+      await zReadItemsProjectsResponse.parseAsync(data),
     security: [{ name: 'Authorization', type: 'apiKey' }],
-    url: '/items/partners',
+    url: '/items/projects',
     ...options,
   })
 
 /**
  * Update Multiple Items
  *
- * Update multiple partners items at the same time.
+ * Update multiple projects items at the same time.
  */
-export const updateItemsPartners = <ThrowOnError extends boolean = false>(
-  options?: Options<UpdateItemsPartnersData, ThrowOnError>,
-): RequestResult<UpdateItemsPartnersResponses, unknown, ThrowOnError> =>
+export const updateItemsProjects = <ThrowOnError extends boolean = false>(
+  options?: Options<UpdateItemsProjectsData, ThrowOnError>,
+): RequestResult<UpdateItemsProjectsResponses, unknown, ThrowOnError> =>
   (options?.client ?? client).patch<
-    UpdateItemsPartnersResponses,
+    UpdateItemsProjectsResponses,
     unknown,
     ThrowOnError
   >({
@@ -1494,8 +919,8 @@ export const updateItemsPartners = <ThrowOnError extends boolean = false>(
       },
     },
     responseValidator: async (data) =>
-      await zUpdateItemsPartnersResponse.parseAsync(data),
-    url: '/items/partners',
+      await zUpdateItemsProjectsResponse.parseAsync(data),
+    url: '/items/projects',
     ...options,
     headers: {
       'Content-Type': 'application/json',
@@ -1506,23 +931,23 @@ export const updateItemsPartners = <ThrowOnError extends boolean = false>(
 /**
  * Create an Item
  *
- * Create a new partners item.
+ * Create a new projects item.
  */
-export const createItemsPartners = <ThrowOnError extends boolean = false>(
-  options?: Options<CreateItemsPartnersData, ThrowOnError>,
+export const createItemsProjects = <ThrowOnError extends boolean = false>(
+  options?: Options<CreateItemsProjectsData, ThrowOnError>,
 ): RequestResult<
-  CreateItemsPartnersResponses,
-  CreateItemsPartnersErrors,
+  CreateItemsProjectsResponses,
+  CreateItemsProjectsErrors,
   ThrowOnError
 > =>
   (options?.client ?? client).post<
-    CreateItemsPartnersResponses,
-    CreateItemsPartnersErrors,
+    CreateItemsProjectsResponses,
+    CreateItemsProjectsErrors,
     ThrowOnError
   >({
     responseValidator: async (data) =>
-      await zCreateItemsPartnersResponse.parseAsync(data),
-    url: '/items/partners',
+      await zCreateItemsProjectsResponse.parseAsync(data),
+    url: '/items/projects',
     ...options,
     headers: {
       'Content-Type': 'application/json',
@@ -1533,246 +958,66 @@ export const createItemsPartners = <ThrowOnError extends boolean = false>(
 /**
  * Delete an Item
  *
- * Delete an existing partners item.
+ * Delete an existing projects item.
  */
-export const deleteSingleItemsPartners = <ThrowOnError extends boolean = false>(
-  options: Options<DeleteSingleItemsPartnersData, ThrowOnError>,
+export const deleteSingleItemsProjects = <ThrowOnError extends boolean = false>(
+  options: Options<DeleteSingleItemsProjectsData, ThrowOnError>,
 ): RequestResult<
-  DeleteSingleItemsPartnersResponses,
-  DeleteSingleItemsPartnersErrors,
+  DeleteSingleItemsProjectsResponses,
+  DeleteSingleItemsProjectsErrors,
   ThrowOnError
 > =>
   (options.client ?? client).delete<
-    DeleteSingleItemsPartnersResponses,
-    DeleteSingleItemsPartnersErrors,
+    DeleteSingleItemsProjectsResponses,
+    DeleteSingleItemsProjectsErrors,
     ThrowOnError
-  >({ url: '/items/partners/{id}', ...options })
+  >({ url: '/items/projects/{id}', ...options })
 
 /**
  * Retrieve an Item
  *
- * Retrieve a single partners item by unique identifier.
+ * Retrieve a single projects item by unique identifier.
  */
-export const readSingleItemsPartners = <ThrowOnError extends boolean = false>(
-  options: Options<ReadSingleItemsPartnersData, ThrowOnError>,
+export const readSingleItemsProjects = <ThrowOnError extends boolean = false>(
+  options: Options<ReadSingleItemsProjectsData, ThrowOnError>,
 ): RequestResult<
-  ReadSingleItemsPartnersResponses,
-  ReadSingleItemsPartnersErrors,
+  ReadSingleItemsProjectsResponses,
+  ReadSingleItemsProjectsErrors,
   ThrowOnError
 > =>
   (options.client ?? client).get<
-    ReadSingleItemsPartnersResponses,
-    ReadSingleItemsPartnersErrors,
+    ReadSingleItemsProjectsResponses,
+    ReadSingleItemsProjectsErrors,
     ThrowOnError
   >({
     querySerializer: { parameters: { fields: { array: { explode: false } } } },
     responseValidator: async (data) =>
-      await zReadSingleItemsPartnersResponse.parseAsync(data),
-    url: '/items/partners/{id}',
+      await zReadSingleItemsProjectsResponse.parseAsync(data),
+    url: '/items/projects/{id}',
     ...options,
   })
 
 /**
  * Update an Item
  *
- * Update an existing partners item.
+ * Update an existing projects item.
  */
-export const updateSingleItemsPartners = <ThrowOnError extends boolean = false>(
-  options: Options<UpdateSingleItemsPartnersData, ThrowOnError>,
+export const updateSingleItemsProjects = <ThrowOnError extends boolean = false>(
+  options: Options<UpdateSingleItemsProjectsData, ThrowOnError>,
 ): RequestResult<
-  UpdateSingleItemsPartnersResponses,
-  UpdateSingleItemsPartnersErrors,
+  UpdateSingleItemsProjectsResponses,
+  UpdateSingleItemsProjectsErrors,
   ThrowOnError
 > =>
   (options.client ?? client).patch<
-    UpdateSingleItemsPartnersResponses,
-    UpdateSingleItemsPartnersErrors,
+    UpdateSingleItemsProjectsResponses,
+    UpdateSingleItemsProjectsErrors,
     ThrowOnError
   >({
     querySerializer: { parameters: { fields: { array: { explode: false } } } },
     responseValidator: async (data) =>
-      await zUpdateSingleItemsPartnersResponse.parseAsync(data),
-    url: '/items/partners/{id}',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  })
-
-/**
- * Delete Multiple Items
- *
- * Delete multiple existing categories items.
- */
-export const deleteItemsCategories = <ThrowOnError extends boolean = false>(
-  options?: Options<DeleteItemsCategoriesData, ThrowOnError>,
-): RequestResult<
-  DeleteItemsCategoriesResponses,
-  DeleteItemsCategoriesErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).delete<
-    DeleteItemsCategoriesResponses,
-    DeleteItemsCategoriesErrors,
-    ThrowOnError
-  >({ url: '/items/categories', ...options })
-
-/**
- * List Items
- *
- * List the categories items.
- */
-export const readItemsCategories = <ThrowOnError extends boolean = false>(
-  options?: Options<ReadItemsCategoriesData, ThrowOnError>,
-): RequestResult<
-  ReadItemsCategoriesResponses,
-  ReadItemsCategoriesErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    ReadItemsCategoriesResponses,
-    ReadItemsCategoriesErrors,
-    ThrowOnError
-  >({
-    querySerializer: {
-      parameters: {
-        fields: { array: { explode: false } },
-        sort: { array: { explode: false } },
-        filter: { object: { style: 'form' } },
-      },
-    },
-    responseValidator: async (data) =>
-      await zReadItemsCategoriesResponse.parseAsync(data),
-    security: [{ name: 'Authorization', type: 'apiKey' }],
-    url: '/items/categories',
-    ...options,
-  })
-
-/**
- * Update Multiple Items
- *
- * Update multiple categories items at the same time.
- */
-export const updateItemsCategories = <ThrowOnError extends boolean = false>(
-  options?: Options<UpdateItemsCategoriesData, ThrowOnError>,
-): RequestResult<UpdateItemsCategoriesResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).patch<
-    UpdateItemsCategoriesResponses,
-    unknown,
-    ThrowOnError
-  >({
-    querySerializer: {
-      parameters: {
-        fields: { array: { explode: false } },
-        sort: { array: { explode: false } },
-        filter: { object: { style: 'form' } },
-      },
-    },
-    responseValidator: async (data) =>
-      await zUpdateItemsCategoriesResponse.parseAsync(data),
-    url: '/items/categories',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
-
-/**
- * Create an Item
- *
- * Create a new categories item.
- */
-export const createItemsCategories = <ThrowOnError extends boolean = false>(
-  options?: Options<CreateItemsCategoriesData, ThrowOnError>,
-): RequestResult<
-  CreateItemsCategoriesResponses,
-  CreateItemsCategoriesErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    CreateItemsCategoriesResponses,
-    CreateItemsCategoriesErrors,
-    ThrowOnError
-  >({
-    responseValidator: async (data) =>
-      await zCreateItemsCategoriesResponse.parseAsync(data),
-    url: '/items/categories',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
-
-/**
- * Delete an Item
- *
- * Delete an existing categories item.
- */
-export const deleteSingleItemsCategories = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<DeleteSingleItemsCategoriesData, ThrowOnError>,
-): RequestResult<
-  DeleteSingleItemsCategoriesResponses,
-  DeleteSingleItemsCategoriesErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).delete<
-    DeleteSingleItemsCategoriesResponses,
-    DeleteSingleItemsCategoriesErrors,
-    ThrowOnError
-  >({ url: '/items/categories/{id}', ...options })
-
-/**
- * Retrieve an Item
- *
- * Retrieve a single categories item by unique identifier.
- */
-export const readSingleItemsCategories = <ThrowOnError extends boolean = false>(
-  options: Options<ReadSingleItemsCategoriesData, ThrowOnError>,
-): RequestResult<
-  ReadSingleItemsCategoriesResponses,
-  ReadSingleItemsCategoriesErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    ReadSingleItemsCategoriesResponses,
-    ReadSingleItemsCategoriesErrors,
-    ThrowOnError
-  >({
-    querySerializer: { parameters: { fields: { array: { explode: false } } } },
-    responseValidator: async (data) =>
-      await zReadSingleItemsCategoriesResponse.parseAsync(data),
-    url: '/items/categories/{id}',
-    ...options,
-  })
-
-/**
- * Update an Item
- *
- * Update an existing categories item.
- */
-export const updateSingleItemsCategories = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<UpdateSingleItemsCategoriesData, ThrowOnError>,
-): RequestResult<
-  UpdateSingleItemsCategoriesResponses,
-  UpdateSingleItemsCategoriesErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).patch<
-    UpdateSingleItemsCategoriesResponses,
-    UpdateSingleItemsCategoriesErrors,
-    ThrowOnError
-  >({
-    querySerializer: { parameters: { fields: { array: { explode: false } } } },
-    responseValidator: async (data) =>
-      await zUpdateSingleItemsCategoriesResponse.parseAsync(data),
-    url: '/items/categories/{id}',
+      await zUpdateSingleItemsProjectsResponse.parseAsync(data),
+    url: '/items/projects/{id}',
     ...options,
     headers: {
       'Content-Type': 'application/json',
@@ -1967,6 +1212,748 @@ export const updateSingleItemsCampaignsTranslations = <
     responseValidator: async (data) =>
       await zUpdateSingleItemsCampaignsTranslationsResponse.parseAsync(data),
     url: '/items/campaigns_translations/{id}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  })
+
+/**
+ * Delete Multiple Items
+ *
+ * Delete multiple existing languages items.
+ */
+export const deleteItemsLanguages = <ThrowOnError extends boolean = false>(
+  options?: Options<DeleteItemsLanguagesData, ThrowOnError>,
+): RequestResult<
+  DeleteItemsLanguagesResponses,
+  DeleteItemsLanguagesErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).delete<
+    DeleteItemsLanguagesResponses,
+    DeleteItemsLanguagesErrors,
+    ThrowOnError
+  >({ url: '/items/languages', ...options })
+
+/**
+ * List Items
+ *
+ * List the languages items.
+ */
+export const readItemsLanguages = <ThrowOnError extends boolean = false>(
+  options?: Options<ReadItemsLanguagesData, ThrowOnError>,
+): RequestResult<
+  ReadItemsLanguagesResponses,
+  ReadItemsLanguagesErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ReadItemsLanguagesResponses,
+    ReadItemsLanguagesErrors,
+    ThrowOnError
+  >({
+    querySerializer: {
+      parameters: {
+        fields: { array: { explode: false } },
+        sort: { array: { explode: false } },
+        filter: { object: { style: 'form' } },
+      },
+    },
+    responseValidator: async (data) =>
+      await zReadItemsLanguagesResponse.parseAsync(data),
+    security: [{ name: 'Authorization', type: 'apiKey' }],
+    url: '/items/languages',
+    ...options,
+  })
+
+/**
+ * Update Multiple Items
+ *
+ * Update multiple languages items at the same time.
+ */
+export const updateItemsLanguages = <ThrowOnError extends boolean = false>(
+  options?: Options<UpdateItemsLanguagesData, ThrowOnError>,
+): RequestResult<UpdateItemsLanguagesResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).patch<
+    UpdateItemsLanguagesResponses,
+    unknown,
+    ThrowOnError
+  >({
+    querySerializer: {
+      parameters: {
+        fields: { array: { explode: false } },
+        sort: { array: { explode: false } },
+        filter: { object: { style: 'form' } },
+      },
+    },
+    responseValidator: async (data) =>
+      await zUpdateItemsLanguagesResponse.parseAsync(data),
+    url: '/items/languages',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  })
+
+/**
+ * Create an Item
+ *
+ * Create a new languages item.
+ */
+export const createItemsLanguages = <ThrowOnError extends boolean = false>(
+  options?: Options<CreateItemsLanguagesData, ThrowOnError>,
+): RequestResult<
+  CreateItemsLanguagesResponses,
+  CreateItemsLanguagesErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).post<
+    CreateItemsLanguagesResponses,
+    CreateItemsLanguagesErrors,
+    ThrowOnError
+  >({
+    responseValidator: async (data) =>
+      await zCreateItemsLanguagesResponse.parseAsync(data),
+    url: '/items/languages',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  })
+
+/**
+ * Delete an Item
+ *
+ * Delete an existing languages item.
+ */
+export const deleteSingleItemsLanguages = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<DeleteSingleItemsLanguagesData, ThrowOnError>,
+): RequestResult<
+  DeleteSingleItemsLanguagesResponses,
+  DeleteSingleItemsLanguagesErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).delete<
+    DeleteSingleItemsLanguagesResponses,
+    DeleteSingleItemsLanguagesErrors,
+    ThrowOnError
+  >({ url: '/items/languages/{id}', ...options })
+
+/**
+ * Retrieve an Item
+ *
+ * Retrieve a single languages item by unique identifier.
+ */
+export const readSingleItemsLanguages = <ThrowOnError extends boolean = false>(
+  options: Options<ReadSingleItemsLanguagesData, ThrowOnError>,
+): RequestResult<
+  ReadSingleItemsLanguagesResponses,
+  ReadSingleItemsLanguagesErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ReadSingleItemsLanguagesResponses,
+    ReadSingleItemsLanguagesErrors,
+    ThrowOnError
+  >({
+    querySerializer: { parameters: { fields: { array: { explode: false } } } },
+    responseValidator: async (data) =>
+      await zReadSingleItemsLanguagesResponse.parseAsync(data),
+    url: '/items/languages/{id}',
+    ...options,
+  })
+
+/**
+ * Update an Item
+ *
+ * Update an existing languages item.
+ */
+export const updateSingleItemsLanguages = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<UpdateSingleItemsLanguagesData, ThrowOnError>,
+): RequestResult<
+  UpdateSingleItemsLanguagesResponses,
+  UpdateSingleItemsLanguagesErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    UpdateSingleItemsLanguagesResponses,
+    UpdateSingleItemsLanguagesErrors,
+    ThrowOnError
+  >({
+    querySerializer: { parameters: { fields: { array: { explode: false } } } },
+    responseValidator: async (data) =>
+      await zUpdateSingleItemsLanguagesResponse.parseAsync(data),
+    url: '/items/languages/{id}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  })
+
+/**
+ * Delete Multiple Items
+ *
+ * Delete multiple existing categories items.
+ */
+export const deleteItemsCategories = <ThrowOnError extends boolean = false>(
+  options?: Options<DeleteItemsCategoriesData, ThrowOnError>,
+): RequestResult<
+  DeleteItemsCategoriesResponses,
+  DeleteItemsCategoriesErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).delete<
+    DeleteItemsCategoriesResponses,
+    DeleteItemsCategoriesErrors,
+    ThrowOnError
+  >({ url: '/items/categories', ...options })
+
+/**
+ * List Items
+ *
+ * List the categories items.
+ */
+export const readItemsCategories = <ThrowOnError extends boolean = false>(
+  options?: Options<ReadItemsCategoriesData, ThrowOnError>,
+): RequestResult<
+  ReadItemsCategoriesResponses,
+  ReadItemsCategoriesErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ReadItemsCategoriesResponses,
+    ReadItemsCategoriesErrors,
+    ThrowOnError
+  >({
+    querySerializer: {
+      parameters: {
+        fields: { array: { explode: false } },
+        sort: { array: { explode: false } },
+        filter: { object: { style: 'form' } },
+      },
+    },
+    responseValidator: async (data) =>
+      await zReadItemsCategoriesResponse.parseAsync(data),
+    security: [{ name: 'Authorization', type: 'apiKey' }],
+    url: '/items/categories',
+    ...options,
+  })
+
+/**
+ * Update Multiple Items
+ *
+ * Update multiple categories items at the same time.
+ */
+export const updateItemsCategories = <ThrowOnError extends boolean = false>(
+  options?: Options<UpdateItemsCategoriesData, ThrowOnError>,
+): RequestResult<UpdateItemsCategoriesResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).patch<
+    UpdateItemsCategoriesResponses,
+    unknown,
+    ThrowOnError
+  >({
+    querySerializer: {
+      parameters: {
+        fields: { array: { explode: false } },
+        sort: { array: { explode: false } },
+        filter: { object: { style: 'form' } },
+      },
+    },
+    responseValidator: async (data) =>
+      await zUpdateItemsCategoriesResponse.parseAsync(data),
+    url: '/items/categories',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  })
+
+/**
+ * Create an Item
+ *
+ * Create a new categories item.
+ */
+export const createItemsCategories = <ThrowOnError extends boolean = false>(
+  options?: Options<CreateItemsCategoriesData, ThrowOnError>,
+): RequestResult<
+  CreateItemsCategoriesResponses,
+  CreateItemsCategoriesErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).post<
+    CreateItemsCategoriesResponses,
+    CreateItemsCategoriesErrors,
+    ThrowOnError
+  >({
+    responseValidator: async (data) =>
+      await zCreateItemsCategoriesResponse.parseAsync(data),
+    url: '/items/categories',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  })
+
+/**
+ * Delete an Item
+ *
+ * Delete an existing categories item.
+ */
+export const deleteSingleItemsCategories = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<DeleteSingleItemsCategoriesData, ThrowOnError>,
+): RequestResult<
+  DeleteSingleItemsCategoriesResponses,
+  DeleteSingleItemsCategoriesErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).delete<
+    DeleteSingleItemsCategoriesResponses,
+    DeleteSingleItemsCategoriesErrors,
+    ThrowOnError
+  >({ url: '/items/categories/{id}', ...options })
+
+/**
+ * Retrieve an Item
+ *
+ * Retrieve a single categories item by unique identifier.
+ */
+export const readSingleItemsCategories = <ThrowOnError extends boolean = false>(
+  options: Options<ReadSingleItemsCategoriesData, ThrowOnError>,
+): RequestResult<
+  ReadSingleItemsCategoriesResponses,
+  ReadSingleItemsCategoriesErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ReadSingleItemsCategoriesResponses,
+    ReadSingleItemsCategoriesErrors,
+    ThrowOnError
+  >({
+    querySerializer: { parameters: { fields: { array: { explode: false } } } },
+    responseValidator: async (data) =>
+      await zReadSingleItemsCategoriesResponse.parseAsync(data),
+    url: '/items/categories/{id}',
+    ...options,
+  })
+
+/**
+ * Update an Item
+ *
+ * Update an existing categories item.
+ */
+export const updateSingleItemsCategories = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<UpdateSingleItemsCategoriesData, ThrowOnError>,
+): RequestResult<
+  UpdateSingleItemsCategoriesResponses,
+  UpdateSingleItemsCategoriesErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    UpdateSingleItemsCategoriesResponses,
+    UpdateSingleItemsCategoriesErrors,
+    ThrowOnError
+  >({
+    querySerializer: { parameters: { fields: { array: { explode: false } } } },
+    responseValidator: async (data) =>
+      await zUpdateSingleItemsCategoriesResponse.parseAsync(data),
+    url: '/items/categories/{id}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  })
+
+/**
+ * Delete Multiple Items
+ *
+ * Delete multiple existing categories_translations items.
+ */
+export const deleteItemsCategoriesTranslations = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<DeleteItemsCategoriesTranslationsData, ThrowOnError>,
+): RequestResult<
+  DeleteItemsCategoriesTranslationsResponses,
+  DeleteItemsCategoriesTranslationsErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).delete<
+    DeleteItemsCategoriesTranslationsResponses,
+    DeleteItemsCategoriesTranslationsErrors,
+    ThrowOnError
+  >({ url: '/items/categories_translations', ...options })
+
+/**
+ * List Items
+ *
+ * List the categories_translations items.
+ */
+export const readItemsCategoriesTranslations = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<ReadItemsCategoriesTranslationsData, ThrowOnError>,
+): RequestResult<
+  ReadItemsCategoriesTranslationsResponses,
+  ReadItemsCategoriesTranslationsErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ReadItemsCategoriesTranslationsResponses,
+    ReadItemsCategoriesTranslationsErrors,
+    ThrowOnError
+  >({
+    querySerializer: {
+      parameters: {
+        fields: { array: { explode: false } },
+        sort: { array: { explode: false } },
+        filter: { object: { style: 'form' } },
+      },
+    },
+    responseValidator: async (data) =>
+      await zReadItemsCategoriesTranslationsResponse.parseAsync(data),
+    security: [{ name: 'Authorization', type: 'apiKey' }],
+    url: '/items/categories_translations',
+    ...options,
+  })
+
+/**
+ * Update Multiple Items
+ *
+ * Update multiple categories_translations items at the same time.
+ */
+export const updateItemsCategoriesTranslations = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<UpdateItemsCategoriesTranslationsData, ThrowOnError>,
+): RequestResult<
+  UpdateItemsCategoriesTranslationsResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options?.client ?? client).patch<
+    UpdateItemsCategoriesTranslationsResponses,
+    unknown,
+    ThrowOnError
+  >({
+    querySerializer: {
+      parameters: {
+        fields: { array: { explode: false } },
+        sort: { array: { explode: false } },
+        filter: { object: { style: 'form' } },
+      },
+    },
+    responseValidator: async (data) =>
+      await zUpdateItemsCategoriesTranslationsResponse.parseAsync(data),
+    url: '/items/categories_translations',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  })
+
+/**
+ * Create an Item
+ *
+ * Create a new categories_translations item.
+ */
+export const createItemsCategoriesTranslations = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<CreateItemsCategoriesTranslationsData, ThrowOnError>,
+): RequestResult<
+  CreateItemsCategoriesTranslationsResponses,
+  CreateItemsCategoriesTranslationsErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).post<
+    CreateItemsCategoriesTranslationsResponses,
+    CreateItemsCategoriesTranslationsErrors,
+    ThrowOnError
+  >({
+    responseValidator: async (data) =>
+      await zCreateItemsCategoriesTranslationsResponse.parseAsync(data),
+    url: '/items/categories_translations',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  })
+
+/**
+ * Delete an Item
+ *
+ * Delete an existing categories_translations item.
+ */
+export const deleteSingleItemsCategoriesTranslations = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<DeleteSingleItemsCategoriesTranslationsData, ThrowOnError>,
+): RequestResult<
+  DeleteSingleItemsCategoriesTranslationsResponses,
+  DeleteSingleItemsCategoriesTranslationsErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).delete<
+    DeleteSingleItemsCategoriesTranslationsResponses,
+    DeleteSingleItemsCategoriesTranslationsErrors,
+    ThrowOnError
+  >({ url: '/items/categories_translations/{id}', ...options })
+
+/**
+ * Retrieve an Item
+ *
+ * Retrieve a single categories_translations item by unique identifier.
+ */
+export const readSingleItemsCategoriesTranslations = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ReadSingleItemsCategoriesTranslationsData, ThrowOnError>,
+): RequestResult<
+  ReadSingleItemsCategoriesTranslationsResponses,
+  ReadSingleItemsCategoriesTranslationsErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ReadSingleItemsCategoriesTranslationsResponses,
+    ReadSingleItemsCategoriesTranslationsErrors,
+    ThrowOnError
+  >({
+    querySerializer: { parameters: { fields: { array: { explode: false } } } },
+    responseValidator: async (data) =>
+      await zReadSingleItemsCategoriesTranslationsResponse.parseAsync(data),
+    url: '/items/categories_translations/{id}',
+    ...options,
+  })
+
+/**
+ * Update an Item
+ *
+ * Update an existing categories_translations item.
+ */
+export const updateSingleItemsCategoriesTranslations = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<UpdateSingleItemsCategoriesTranslationsData, ThrowOnError>,
+): RequestResult<
+  UpdateSingleItemsCategoriesTranslationsResponses,
+  UpdateSingleItemsCategoriesTranslationsErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    UpdateSingleItemsCategoriesTranslationsResponses,
+    UpdateSingleItemsCategoriesTranslationsErrors,
+    ThrowOnError
+  >({
+    querySerializer: { parameters: { fields: { array: { explode: false } } } },
+    responseValidator: async (data) =>
+      await zUpdateSingleItemsCategoriesTranslationsResponse.parseAsync(data),
+    url: '/items/categories_translations/{id}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  })
+
+/**
+ * Delete Multiple Items
+ *
+ * Delete multiple existing donation_purposes items.
+ */
+export const deleteItemsDonationPurposes = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<DeleteItemsDonationPurposesData, ThrowOnError>,
+): RequestResult<
+  DeleteItemsDonationPurposesResponses,
+  DeleteItemsDonationPurposesErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).delete<
+    DeleteItemsDonationPurposesResponses,
+    DeleteItemsDonationPurposesErrors,
+    ThrowOnError
+  >({ url: '/items/donation_purposes', ...options })
+
+/**
+ * List Items
+ *
+ * List the donation_purposes items.
+ */
+export const readItemsDonationPurposes = <ThrowOnError extends boolean = false>(
+  options?: Options<ReadItemsDonationPurposesData, ThrowOnError>,
+): RequestResult<
+  ReadItemsDonationPurposesResponses,
+  ReadItemsDonationPurposesErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ReadItemsDonationPurposesResponses,
+    ReadItemsDonationPurposesErrors,
+    ThrowOnError
+  >({
+    querySerializer: {
+      parameters: {
+        fields: { array: { explode: false } },
+        sort: { array: { explode: false } },
+        filter: { object: { style: 'form' } },
+      },
+    },
+    responseValidator: async (data) =>
+      await zReadItemsDonationPurposesResponse.parseAsync(data),
+    security: [{ name: 'Authorization', type: 'apiKey' }],
+    url: '/items/donation_purposes',
+    ...options,
+  })
+
+/**
+ * Update Multiple Items
+ *
+ * Update multiple donation_purposes items at the same time.
+ */
+export const updateItemsDonationPurposes = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<UpdateItemsDonationPurposesData, ThrowOnError>,
+): RequestResult<UpdateItemsDonationPurposesResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).patch<
+    UpdateItemsDonationPurposesResponses,
+    unknown,
+    ThrowOnError
+  >({
+    querySerializer: {
+      parameters: {
+        fields: { array: { explode: false } },
+        sort: { array: { explode: false } },
+        filter: { object: { style: 'form' } },
+      },
+    },
+    responseValidator: async (data) =>
+      await zUpdateItemsDonationPurposesResponse.parseAsync(data),
+    url: '/items/donation_purposes',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  })
+
+/**
+ * Create an Item
+ *
+ * Create a new donation_purposes item.
+ */
+export const createItemsDonationPurposes = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<CreateItemsDonationPurposesData, ThrowOnError>,
+): RequestResult<
+  CreateItemsDonationPurposesResponses,
+  CreateItemsDonationPurposesErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).post<
+    CreateItemsDonationPurposesResponses,
+    CreateItemsDonationPurposesErrors,
+    ThrowOnError
+  >({
+    responseValidator: async (data) =>
+      await zCreateItemsDonationPurposesResponse.parseAsync(data),
+    url: '/items/donation_purposes',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  })
+
+/**
+ * Delete an Item
+ *
+ * Delete an existing donation_purposes item.
+ */
+export const deleteSingleItemsDonationPurposes = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<DeleteSingleItemsDonationPurposesData, ThrowOnError>,
+): RequestResult<
+  DeleteSingleItemsDonationPurposesResponses,
+  DeleteSingleItemsDonationPurposesErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).delete<
+    DeleteSingleItemsDonationPurposesResponses,
+    DeleteSingleItemsDonationPurposesErrors,
+    ThrowOnError
+  >({ url: '/items/donation_purposes/{id}', ...options })
+
+/**
+ * Retrieve an Item
+ *
+ * Retrieve a single donation_purposes item by unique identifier.
+ */
+export const readSingleItemsDonationPurposes = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ReadSingleItemsDonationPurposesData, ThrowOnError>,
+): RequestResult<
+  ReadSingleItemsDonationPurposesResponses,
+  ReadSingleItemsDonationPurposesErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ReadSingleItemsDonationPurposesResponses,
+    ReadSingleItemsDonationPurposesErrors,
+    ThrowOnError
+  >({
+    querySerializer: { parameters: { fields: { array: { explode: false } } } },
+    responseValidator: async (data) =>
+      await zReadSingleItemsDonationPurposesResponse.parseAsync(data),
+    url: '/items/donation_purposes/{id}',
+    ...options,
+  })
+
+/**
+ * Update an Item
+ *
+ * Update an existing donation_purposes item.
+ */
+export const updateSingleItemsDonationPurposes = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<UpdateSingleItemsDonationPurposesData, ThrowOnError>,
+): RequestResult<
+  UpdateSingleItemsDonationPurposesResponses,
+  UpdateSingleItemsDonationPurposesErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    UpdateSingleItemsDonationPurposesResponses,
+    UpdateSingleItemsDonationPurposesErrors,
+    ThrowOnError
+  >({
+    querySerializer: { parameters: { fields: { array: { explode: false } } } },
+    responseValidator: async (data) =>
+      await zUpdateSingleItemsDonationPurposesResponse.parseAsync(data),
+    url: '/items/donation_purposes/{id}',
     ...options,
     headers: {
       'Content-Type': 'application/json',
@@ -2184,6 +2171,376 @@ export const updateSingleItemsDonationPurposesTranslations = <
 /**
  * Delete Multiple Items
  *
+ * Delete multiple existing partners items.
+ */
+export const deleteItemsPartners = <ThrowOnError extends boolean = false>(
+  options?: Options<DeleteItemsPartnersData, ThrowOnError>,
+): RequestResult<
+  DeleteItemsPartnersResponses,
+  DeleteItemsPartnersErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).delete<
+    DeleteItemsPartnersResponses,
+    DeleteItemsPartnersErrors,
+    ThrowOnError
+  >({ url: '/items/partners', ...options })
+
+/**
+ * List Items
+ *
+ * List the partners items.
+ */
+export const readItemsPartners = <ThrowOnError extends boolean = false>(
+  options?: Options<ReadItemsPartnersData, ThrowOnError>,
+): RequestResult<
+  ReadItemsPartnersResponses,
+  ReadItemsPartnersErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ReadItemsPartnersResponses,
+    ReadItemsPartnersErrors,
+    ThrowOnError
+  >({
+    querySerializer: {
+      parameters: {
+        fields: { array: { explode: false } },
+        sort: { array: { explode: false } },
+        filter: { object: { style: 'form' } },
+      },
+    },
+    responseValidator: async (data) =>
+      await zReadItemsPartnersResponse.parseAsync(data),
+    security: [{ name: 'Authorization', type: 'apiKey' }],
+    url: '/items/partners',
+    ...options,
+  })
+
+/**
+ * Update Multiple Items
+ *
+ * Update multiple partners items at the same time.
+ */
+export const updateItemsPartners = <ThrowOnError extends boolean = false>(
+  options?: Options<UpdateItemsPartnersData, ThrowOnError>,
+): RequestResult<UpdateItemsPartnersResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).patch<
+    UpdateItemsPartnersResponses,
+    unknown,
+    ThrowOnError
+  >({
+    querySerializer: {
+      parameters: {
+        fields: { array: { explode: false } },
+        sort: { array: { explode: false } },
+        filter: { object: { style: 'form' } },
+      },
+    },
+    responseValidator: async (data) =>
+      await zUpdateItemsPartnersResponse.parseAsync(data),
+    url: '/items/partners',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  })
+
+/**
+ * Create an Item
+ *
+ * Create a new partners item.
+ */
+export const createItemsPartners = <ThrowOnError extends boolean = false>(
+  options?: Options<CreateItemsPartnersData, ThrowOnError>,
+): RequestResult<
+  CreateItemsPartnersResponses,
+  CreateItemsPartnersErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).post<
+    CreateItemsPartnersResponses,
+    CreateItemsPartnersErrors,
+    ThrowOnError
+  >({
+    responseValidator: async (data) =>
+      await zCreateItemsPartnersResponse.parseAsync(data),
+    url: '/items/partners',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  })
+
+/**
+ * Delete an Item
+ *
+ * Delete an existing partners item.
+ */
+export const deleteSingleItemsPartners = <ThrowOnError extends boolean = false>(
+  options: Options<DeleteSingleItemsPartnersData, ThrowOnError>,
+): RequestResult<
+  DeleteSingleItemsPartnersResponses,
+  DeleteSingleItemsPartnersErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).delete<
+    DeleteSingleItemsPartnersResponses,
+    DeleteSingleItemsPartnersErrors,
+    ThrowOnError
+  >({ url: '/items/partners/{id}', ...options })
+
+/**
+ * Retrieve an Item
+ *
+ * Retrieve a single partners item by unique identifier.
+ */
+export const readSingleItemsPartners = <ThrowOnError extends boolean = false>(
+  options: Options<ReadSingleItemsPartnersData, ThrowOnError>,
+): RequestResult<
+  ReadSingleItemsPartnersResponses,
+  ReadSingleItemsPartnersErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ReadSingleItemsPartnersResponses,
+    ReadSingleItemsPartnersErrors,
+    ThrowOnError
+  >({
+    querySerializer: { parameters: { fields: { array: { explode: false } } } },
+    responseValidator: async (data) =>
+      await zReadSingleItemsPartnersResponse.parseAsync(data),
+    url: '/items/partners/{id}',
+    ...options,
+  })
+
+/**
+ * Update an Item
+ *
+ * Update an existing partners item.
+ */
+export const updateSingleItemsPartners = <ThrowOnError extends boolean = false>(
+  options: Options<UpdateSingleItemsPartnersData, ThrowOnError>,
+): RequestResult<
+  UpdateSingleItemsPartnersResponses,
+  UpdateSingleItemsPartnersErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    UpdateSingleItemsPartnersResponses,
+    UpdateSingleItemsPartnersErrors,
+    ThrowOnError
+  >({
+    querySerializer: { parameters: { fields: { array: { explode: false } } } },
+    responseValidator: async (data) =>
+      await zUpdateSingleItemsPartnersResponse.parseAsync(data),
+    url: '/items/partners/{id}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  })
+
+/**
+ * Delete Multiple Items
+ *
+ * Delete multiple existing projects_translations items.
+ */
+export const deleteItemsProjectsTranslations = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<DeleteItemsProjectsTranslationsData, ThrowOnError>,
+): RequestResult<
+  DeleteItemsProjectsTranslationsResponses,
+  DeleteItemsProjectsTranslationsErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).delete<
+    DeleteItemsProjectsTranslationsResponses,
+    DeleteItemsProjectsTranslationsErrors,
+    ThrowOnError
+  >({ url: '/items/projects_translations', ...options })
+
+/**
+ * List Items
+ *
+ * List the projects_translations items.
+ */
+export const readItemsProjectsTranslations = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<ReadItemsProjectsTranslationsData, ThrowOnError>,
+): RequestResult<
+  ReadItemsProjectsTranslationsResponses,
+  ReadItemsProjectsTranslationsErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ReadItemsProjectsTranslationsResponses,
+    ReadItemsProjectsTranslationsErrors,
+    ThrowOnError
+  >({
+    querySerializer: {
+      parameters: {
+        fields: { array: { explode: false } },
+        sort: { array: { explode: false } },
+        filter: { object: { style: 'form' } },
+      },
+    },
+    responseValidator: async (data) =>
+      await zReadItemsProjectsTranslationsResponse.parseAsync(data),
+    security: [{ name: 'Authorization', type: 'apiKey' }],
+    url: '/items/projects_translations',
+    ...options,
+  })
+
+/**
+ * Update Multiple Items
+ *
+ * Update multiple projects_translations items at the same time.
+ */
+export const updateItemsProjectsTranslations = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<UpdateItemsProjectsTranslationsData, ThrowOnError>,
+): RequestResult<
+  UpdateItemsProjectsTranslationsResponses,
+  unknown,
+  ThrowOnError
+> =>
+  (options?.client ?? client).patch<
+    UpdateItemsProjectsTranslationsResponses,
+    unknown,
+    ThrowOnError
+  >({
+    querySerializer: {
+      parameters: {
+        fields: { array: { explode: false } },
+        sort: { array: { explode: false } },
+        filter: { object: { style: 'form' } },
+      },
+    },
+    responseValidator: async (data) =>
+      await zUpdateItemsProjectsTranslationsResponse.parseAsync(data),
+    url: '/items/projects_translations',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  })
+
+/**
+ * Create an Item
+ *
+ * Create a new projects_translations item.
+ */
+export const createItemsProjectsTranslations = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<CreateItemsProjectsTranslationsData, ThrowOnError>,
+): RequestResult<
+  CreateItemsProjectsTranslationsResponses,
+  CreateItemsProjectsTranslationsErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).post<
+    CreateItemsProjectsTranslationsResponses,
+    CreateItemsProjectsTranslationsErrors,
+    ThrowOnError
+  >({
+    responseValidator: async (data) =>
+      await zCreateItemsProjectsTranslationsResponse.parseAsync(data),
+    url: '/items/projects_translations',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  })
+
+/**
+ * Delete an Item
+ *
+ * Delete an existing projects_translations item.
+ */
+export const deleteSingleItemsProjectsTranslations = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<DeleteSingleItemsProjectsTranslationsData, ThrowOnError>,
+): RequestResult<
+  DeleteSingleItemsProjectsTranslationsResponses,
+  DeleteSingleItemsProjectsTranslationsErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).delete<
+    DeleteSingleItemsProjectsTranslationsResponses,
+    DeleteSingleItemsProjectsTranslationsErrors,
+    ThrowOnError
+  >({ url: '/items/projects_translations/{id}', ...options })
+
+/**
+ * Retrieve an Item
+ *
+ * Retrieve a single projects_translations item by unique identifier.
+ */
+export const readSingleItemsProjectsTranslations = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<ReadSingleItemsProjectsTranslationsData, ThrowOnError>,
+): RequestResult<
+  ReadSingleItemsProjectsTranslationsResponses,
+  ReadSingleItemsProjectsTranslationsErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ReadSingleItemsProjectsTranslationsResponses,
+    ReadSingleItemsProjectsTranslationsErrors,
+    ThrowOnError
+  >({
+    querySerializer: { parameters: { fields: { array: { explode: false } } } },
+    responseValidator: async (data) =>
+      await zReadSingleItemsProjectsTranslationsResponse.parseAsync(data),
+    url: '/items/projects_translations/{id}',
+    ...options,
+  })
+
+/**
+ * Update an Item
+ *
+ * Update an existing projects_translations item.
+ */
+export const updateSingleItemsProjectsTranslations = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<UpdateSingleItemsProjectsTranslationsData, ThrowOnError>,
+): RequestResult<
+  UpdateSingleItemsProjectsTranslationsResponses,
+  UpdateSingleItemsProjectsTranslationsErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    UpdateSingleItemsProjectsTranslationsResponses,
+    UpdateSingleItemsProjectsTranslationsErrors,
+    ThrowOnError
+  >({
+    querySerializer: { parameters: { fields: { array: { explode: false } } } },
+    responseValidator: async (data) =>
+      await zUpdateSingleItemsProjectsTranslationsResponse.parseAsync(data),
+    url: '/items/projects_translations/{id}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  })
+
+/**
+ * Delete Multiple Items
+ *
  * Delete multiple existing donors items.
  */
 export const deleteItemsDonors = <ThrowOnError extends boolean = false>(
@@ -2350,6 +2707,186 @@ export const updateSingleItemsDonors = <ThrowOnError extends boolean = false>(
     responseValidator: async (data) =>
       await zUpdateSingleItemsDonorsResponse.parseAsync(data),
     url: '/items/donors/{id}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  })
+
+/**
+ * Delete Multiple Items
+ *
+ * Delete multiple existing checkouts items.
+ */
+export const deleteItemsCheckouts = <ThrowOnError extends boolean = false>(
+  options?: Options<DeleteItemsCheckoutsData, ThrowOnError>,
+): RequestResult<
+  DeleteItemsCheckoutsResponses,
+  DeleteItemsCheckoutsErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).delete<
+    DeleteItemsCheckoutsResponses,
+    DeleteItemsCheckoutsErrors,
+    ThrowOnError
+  >({ url: '/items/checkouts', ...options })
+
+/**
+ * List Items
+ *
+ * List the checkouts items.
+ */
+export const readItemsCheckouts = <ThrowOnError extends boolean = false>(
+  options?: Options<ReadItemsCheckoutsData, ThrowOnError>,
+): RequestResult<
+  ReadItemsCheckoutsResponses,
+  ReadItemsCheckoutsErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).get<
+    ReadItemsCheckoutsResponses,
+    ReadItemsCheckoutsErrors,
+    ThrowOnError
+  >({
+    querySerializer: {
+      parameters: {
+        fields: { array: { explode: false } },
+        sort: { array: { explode: false } },
+        filter: { object: { style: 'form' } },
+      },
+    },
+    responseValidator: async (data) =>
+      await zReadItemsCheckoutsResponse.parseAsync(data),
+    security: [{ name: 'Authorization', type: 'apiKey' }],
+    url: '/items/checkouts',
+    ...options,
+  })
+
+/**
+ * Update Multiple Items
+ *
+ * Update multiple checkouts items at the same time.
+ */
+export const updateItemsCheckouts = <ThrowOnError extends boolean = false>(
+  options?: Options<UpdateItemsCheckoutsData, ThrowOnError>,
+): RequestResult<UpdateItemsCheckoutsResponses, unknown, ThrowOnError> =>
+  (options?.client ?? client).patch<
+    UpdateItemsCheckoutsResponses,
+    unknown,
+    ThrowOnError
+  >({
+    querySerializer: {
+      parameters: {
+        fields: { array: { explode: false } },
+        sort: { array: { explode: false } },
+        filter: { object: { style: 'form' } },
+      },
+    },
+    responseValidator: async (data) =>
+      await zUpdateItemsCheckoutsResponse.parseAsync(data),
+    url: '/items/checkouts',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  })
+
+/**
+ * Create an Item
+ *
+ * Create a new checkouts item.
+ */
+export const createItemsCheckouts = <ThrowOnError extends boolean = false>(
+  options?: Options<CreateItemsCheckoutsData, ThrowOnError>,
+): RequestResult<
+  CreateItemsCheckoutsResponses,
+  CreateItemsCheckoutsErrors,
+  ThrowOnError
+> =>
+  (options?.client ?? client).post<
+    CreateItemsCheckoutsResponses,
+    CreateItemsCheckoutsErrors,
+    ThrowOnError
+  >({
+    responseValidator: async (data) =>
+      await zCreateItemsCheckoutsResponse.parseAsync(data),
+    url: '/items/checkouts',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  })
+
+/**
+ * Delete an Item
+ *
+ * Delete an existing checkouts item.
+ */
+export const deleteSingleItemsCheckouts = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<DeleteSingleItemsCheckoutsData, ThrowOnError>,
+): RequestResult<
+  DeleteSingleItemsCheckoutsResponses,
+  DeleteSingleItemsCheckoutsErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).delete<
+    DeleteSingleItemsCheckoutsResponses,
+    DeleteSingleItemsCheckoutsErrors,
+    ThrowOnError
+  >({ url: '/items/checkouts/{id}', ...options })
+
+/**
+ * Retrieve an Item
+ *
+ * Retrieve a single checkouts item by unique identifier.
+ */
+export const readSingleItemsCheckouts = <ThrowOnError extends boolean = false>(
+  options: Options<ReadSingleItemsCheckoutsData, ThrowOnError>,
+): RequestResult<
+  ReadSingleItemsCheckoutsResponses,
+  ReadSingleItemsCheckoutsErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).get<
+    ReadSingleItemsCheckoutsResponses,
+    ReadSingleItemsCheckoutsErrors,
+    ThrowOnError
+  >({
+    querySerializer: { parameters: { fields: { array: { explode: false } } } },
+    responseValidator: async (data) =>
+      await zReadSingleItemsCheckoutsResponse.parseAsync(data),
+    url: '/items/checkouts/{id}',
+    ...options,
+  })
+
+/**
+ * Update an Item
+ *
+ * Update an existing checkouts item.
+ */
+export const updateSingleItemsCheckouts = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<UpdateSingleItemsCheckoutsData, ThrowOnError>,
+): RequestResult<
+  UpdateSingleItemsCheckoutsResponses,
+  UpdateSingleItemsCheckoutsErrors,
+  ThrowOnError
+> =>
+  (options.client ?? client).patch<
+    UpdateSingleItemsCheckoutsResponses,
+    UpdateSingleItemsCheckoutsErrors,
+    ThrowOnError
+  >({
+    querySerializer: { parameters: { fields: { array: { explode: false } } } },
+    responseValidator: async (data) =>
+      await zUpdateSingleItemsCheckoutsResponse.parseAsync(data),
+    url: '/items/checkouts/{id}',
     ...options,
     headers: {
       'Content-Type': 'application/json',
@@ -3258,762 +3795,6 @@ export const updateSingleItemsRefunds = <ThrowOnError extends boolean = false>(
     responseValidator: async (data) =>
       await zUpdateSingleItemsRefundsResponse.parseAsync(data),
     url: '/items/refunds/{id}',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  })
-
-/**
- * Delete Multiple Items
- *
- * Delete multiple existing categories_translations items.
- */
-export const deleteItemsCategoriesTranslations = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<DeleteItemsCategoriesTranslationsData, ThrowOnError>,
-): RequestResult<
-  DeleteItemsCategoriesTranslationsResponses,
-  DeleteItemsCategoriesTranslationsErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).delete<
-    DeleteItemsCategoriesTranslationsResponses,
-    DeleteItemsCategoriesTranslationsErrors,
-    ThrowOnError
-  >({ url: '/items/categories_translations', ...options })
-
-/**
- * List Items
- *
- * List the categories_translations items.
- */
-export const readItemsCategoriesTranslations = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<ReadItemsCategoriesTranslationsData, ThrowOnError>,
-): RequestResult<
-  ReadItemsCategoriesTranslationsResponses,
-  ReadItemsCategoriesTranslationsErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    ReadItemsCategoriesTranslationsResponses,
-    ReadItemsCategoriesTranslationsErrors,
-    ThrowOnError
-  >({
-    querySerializer: {
-      parameters: {
-        fields: { array: { explode: false } },
-        sort: { array: { explode: false } },
-        filter: { object: { style: 'form' } },
-      },
-    },
-    responseValidator: async (data) =>
-      await zReadItemsCategoriesTranslationsResponse.parseAsync(data),
-    security: [{ name: 'Authorization', type: 'apiKey' }],
-    url: '/items/categories_translations',
-    ...options,
-  })
-
-/**
- * Update Multiple Items
- *
- * Update multiple categories_translations items at the same time.
- */
-export const updateItemsCategoriesTranslations = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<UpdateItemsCategoriesTranslationsData, ThrowOnError>,
-): RequestResult<
-  UpdateItemsCategoriesTranslationsResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).patch<
-    UpdateItemsCategoriesTranslationsResponses,
-    unknown,
-    ThrowOnError
-  >({
-    querySerializer: {
-      parameters: {
-        fields: { array: { explode: false } },
-        sort: { array: { explode: false } },
-        filter: { object: { style: 'form' } },
-      },
-    },
-    responseValidator: async (data) =>
-      await zUpdateItemsCategoriesTranslationsResponse.parseAsync(data),
-    url: '/items/categories_translations',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
-
-/**
- * Create an Item
- *
- * Create a new categories_translations item.
- */
-export const createItemsCategoriesTranslations = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<CreateItemsCategoriesTranslationsData, ThrowOnError>,
-): RequestResult<
-  CreateItemsCategoriesTranslationsResponses,
-  CreateItemsCategoriesTranslationsErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    CreateItemsCategoriesTranslationsResponses,
-    CreateItemsCategoriesTranslationsErrors,
-    ThrowOnError
-  >({
-    responseValidator: async (data) =>
-      await zCreateItemsCategoriesTranslationsResponse.parseAsync(data),
-    url: '/items/categories_translations',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
-
-/**
- * Delete an Item
- *
- * Delete an existing categories_translations item.
- */
-export const deleteSingleItemsCategoriesTranslations = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<DeleteSingleItemsCategoriesTranslationsData, ThrowOnError>,
-): RequestResult<
-  DeleteSingleItemsCategoriesTranslationsResponses,
-  DeleteSingleItemsCategoriesTranslationsErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).delete<
-    DeleteSingleItemsCategoriesTranslationsResponses,
-    DeleteSingleItemsCategoriesTranslationsErrors,
-    ThrowOnError
-  >({ url: '/items/categories_translations/{id}', ...options })
-
-/**
- * Retrieve an Item
- *
- * Retrieve a single categories_translations item by unique identifier.
- */
-export const readSingleItemsCategoriesTranslations = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ReadSingleItemsCategoriesTranslationsData, ThrowOnError>,
-): RequestResult<
-  ReadSingleItemsCategoriesTranslationsResponses,
-  ReadSingleItemsCategoriesTranslationsErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    ReadSingleItemsCategoriesTranslationsResponses,
-    ReadSingleItemsCategoriesTranslationsErrors,
-    ThrowOnError
-  >({
-    querySerializer: { parameters: { fields: { array: { explode: false } } } },
-    responseValidator: async (data) =>
-      await zReadSingleItemsCategoriesTranslationsResponse.parseAsync(data),
-    url: '/items/categories_translations/{id}',
-    ...options,
-  })
-
-/**
- * Update an Item
- *
- * Update an existing categories_translations item.
- */
-export const updateSingleItemsCategoriesTranslations = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<UpdateSingleItemsCategoriesTranslationsData, ThrowOnError>,
-): RequestResult<
-  UpdateSingleItemsCategoriesTranslationsResponses,
-  UpdateSingleItemsCategoriesTranslationsErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).patch<
-    UpdateSingleItemsCategoriesTranslationsResponses,
-    UpdateSingleItemsCategoriesTranslationsErrors,
-    ThrowOnError
-  >({
-    querySerializer: { parameters: { fields: { array: { explode: false } } } },
-    responseValidator: async (data) =>
-      await zUpdateSingleItemsCategoriesTranslationsResponse.parseAsync(data),
-    url: '/items/categories_translations/{id}',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  })
-
-/**
- * Delete Multiple Items
- *
- * Delete multiple existing projects_translations items.
- */
-export const deleteItemsProjectsTranslations = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<DeleteItemsProjectsTranslationsData, ThrowOnError>,
-): RequestResult<
-  DeleteItemsProjectsTranslationsResponses,
-  DeleteItemsProjectsTranslationsErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).delete<
-    DeleteItemsProjectsTranslationsResponses,
-    DeleteItemsProjectsTranslationsErrors,
-    ThrowOnError
-  >({ url: '/items/projects_translations', ...options })
-
-/**
- * List Items
- *
- * List the projects_translations items.
- */
-export const readItemsProjectsTranslations = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<ReadItemsProjectsTranslationsData, ThrowOnError>,
-): RequestResult<
-  ReadItemsProjectsTranslationsResponses,
-  ReadItemsProjectsTranslationsErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    ReadItemsProjectsTranslationsResponses,
-    ReadItemsProjectsTranslationsErrors,
-    ThrowOnError
-  >({
-    querySerializer: {
-      parameters: {
-        fields: { array: { explode: false } },
-        sort: { array: { explode: false } },
-        filter: { object: { style: 'form' } },
-      },
-    },
-    responseValidator: async (data) =>
-      await zReadItemsProjectsTranslationsResponse.parseAsync(data),
-    security: [{ name: 'Authorization', type: 'apiKey' }],
-    url: '/items/projects_translations',
-    ...options,
-  })
-
-/**
- * Update Multiple Items
- *
- * Update multiple projects_translations items at the same time.
- */
-export const updateItemsProjectsTranslations = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<UpdateItemsProjectsTranslationsData, ThrowOnError>,
-): RequestResult<
-  UpdateItemsProjectsTranslationsResponses,
-  unknown,
-  ThrowOnError
-> =>
-  (options?.client ?? client).patch<
-    UpdateItemsProjectsTranslationsResponses,
-    unknown,
-    ThrowOnError
-  >({
-    querySerializer: {
-      parameters: {
-        fields: { array: { explode: false } },
-        sort: { array: { explode: false } },
-        filter: { object: { style: 'form' } },
-      },
-    },
-    responseValidator: async (data) =>
-      await zUpdateItemsProjectsTranslationsResponse.parseAsync(data),
-    url: '/items/projects_translations',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
-
-/**
- * Create an Item
- *
- * Create a new projects_translations item.
- */
-export const createItemsProjectsTranslations = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<CreateItemsProjectsTranslationsData, ThrowOnError>,
-): RequestResult<
-  CreateItemsProjectsTranslationsResponses,
-  CreateItemsProjectsTranslationsErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    CreateItemsProjectsTranslationsResponses,
-    CreateItemsProjectsTranslationsErrors,
-    ThrowOnError
-  >({
-    responseValidator: async (data) =>
-      await zCreateItemsProjectsTranslationsResponse.parseAsync(data),
-    url: '/items/projects_translations',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
-
-/**
- * Delete an Item
- *
- * Delete an existing projects_translations item.
- */
-export const deleteSingleItemsProjectsTranslations = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<DeleteSingleItemsProjectsTranslationsData, ThrowOnError>,
-): RequestResult<
-  DeleteSingleItemsProjectsTranslationsResponses,
-  DeleteSingleItemsProjectsTranslationsErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).delete<
-    DeleteSingleItemsProjectsTranslationsResponses,
-    DeleteSingleItemsProjectsTranslationsErrors,
-    ThrowOnError
-  >({ url: '/items/projects_translations/{id}', ...options })
-
-/**
- * Retrieve an Item
- *
- * Retrieve a single projects_translations item by unique identifier.
- */
-export const readSingleItemsProjectsTranslations = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ReadSingleItemsProjectsTranslationsData, ThrowOnError>,
-): RequestResult<
-  ReadSingleItemsProjectsTranslationsResponses,
-  ReadSingleItemsProjectsTranslationsErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    ReadSingleItemsProjectsTranslationsResponses,
-    ReadSingleItemsProjectsTranslationsErrors,
-    ThrowOnError
-  >({
-    querySerializer: { parameters: { fields: { array: { explode: false } } } },
-    responseValidator: async (data) =>
-      await zReadSingleItemsProjectsTranslationsResponse.parseAsync(data),
-    url: '/items/projects_translations/{id}',
-    ...options,
-  })
-
-/**
- * Update an Item
- *
- * Update an existing projects_translations item.
- */
-export const updateSingleItemsProjectsTranslations = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<UpdateSingleItemsProjectsTranslationsData, ThrowOnError>,
-): RequestResult<
-  UpdateSingleItemsProjectsTranslationsResponses,
-  UpdateSingleItemsProjectsTranslationsErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).patch<
-    UpdateSingleItemsProjectsTranslationsResponses,
-    UpdateSingleItemsProjectsTranslationsErrors,
-    ThrowOnError
-  >({
-    querySerializer: { parameters: { fields: { array: { explode: false } } } },
-    responseValidator: async (data) =>
-      await zUpdateSingleItemsProjectsTranslationsResponse.parseAsync(data),
-    url: '/items/projects_translations/{id}',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  })
-
-/**
- * Delete Multiple Items
- *
- * Delete multiple existing donation_purposes items.
- */
-export const deleteItemsDonationPurposes = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<DeleteItemsDonationPurposesData, ThrowOnError>,
-): RequestResult<
-  DeleteItemsDonationPurposesResponses,
-  DeleteItemsDonationPurposesErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).delete<
-    DeleteItemsDonationPurposesResponses,
-    DeleteItemsDonationPurposesErrors,
-    ThrowOnError
-  >({ url: '/items/donation_purposes', ...options })
-
-/**
- * List Items
- *
- * List the donation_purposes items.
- */
-export const readItemsDonationPurposes = <ThrowOnError extends boolean = false>(
-  options?: Options<ReadItemsDonationPurposesData, ThrowOnError>,
-): RequestResult<
-  ReadItemsDonationPurposesResponses,
-  ReadItemsDonationPurposesErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    ReadItemsDonationPurposesResponses,
-    ReadItemsDonationPurposesErrors,
-    ThrowOnError
-  >({
-    querySerializer: {
-      parameters: {
-        fields: { array: { explode: false } },
-        sort: { array: { explode: false } },
-        filter: { object: { style: 'form' } },
-      },
-    },
-    responseValidator: async (data) =>
-      await zReadItemsDonationPurposesResponse.parseAsync(data),
-    security: [{ name: 'Authorization', type: 'apiKey' }],
-    url: '/items/donation_purposes',
-    ...options,
-  })
-
-/**
- * Update Multiple Items
- *
- * Update multiple donation_purposes items at the same time.
- */
-export const updateItemsDonationPurposes = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<UpdateItemsDonationPurposesData, ThrowOnError>,
-): RequestResult<UpdateItemsDonationPurposesResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).patch<
-    UpdateItemsDonationPurposesResponses,
-    unknown,
-    ThrowOnError
-  >({
-    querySerializer: {
-      parameters: {
-        fields: { array: { explode: false } },
-        sort: { array: { explode: false } },
-        filter: { object: { style: 'form' } },
-      },
-    },
-    responseValidator: async (data) =>
-      await zUpdateItemsDonationPurposesResponse.parseAsync(data),
-    url: '/items/donation_purposes',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
-
-/**
- * Create an Item
- *
- * Create a new donation_purposes item.
- */
-export const createItemsDonationPurposes = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<CreateItemsDonationPurposesData, ThrowOnError>,
-): RequestResult<
-  CreateItemsDonationPurposesResponses,
-  CreateItemsDonationPurposesErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    CreateItemsDonationPurposesResponses,
-    CreateItemsDonationPurposesErrors,
-    ThrowOnError
-  >({
-    responseValidator: async (data) =>
-      await zCreateItemsDonationPurposesResponse.parseAsync(data),
-    url: '/items/donation_purposes',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
-
-/**
- * Delete an Item
- *
- * Delete an existing donation_purposes item.
- */
-export const deleteSingleItemsDonationPurposes = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<DeleteSingleItemsDonationPurposesData, ThrowOnError>,
-): RequestResult<
-  DeleteSingleItemsDonationPurposesResponses,
-  DeleteSingleItemsDonationPurposesErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).delete<
-    DeleteSingleItemsDonationPurposesResponses,
-    DeleteSingleItemsDonationPurposesErrors,
-    ThrowOnError
-  >({ url: '/items/donation_purposes/{id}', ...options })
-
-/**
- * Retrieve an Item
- *
- * Retrieve a single donation_purposes item by unique identifier.
- */
-export const readSingleItemsDonationPurposes = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<ReadSingleItemsDonationPurposesData, ThrowOnError>,
-): RequestResult<
-  ReadSingleItemsDonationPurposesResponses,
-  ReadSingleItemsDonationPurposesErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    ReadSingleItemsDonationPurposesResponses,
-    ReadSingleItemsDonationPurposesErrors,
-    ThrowOnError
-  >({
-    querySerializer: { parameters: { fields: { array: { explode: false } } } },
-    responseValidator: async (data) =>
-      await zReadSingleItemsDonationPurposesResponse.parseAsync(data),
-    url: '/items/donation_purposes/{id}',
-    ...options,
-  })
-
-/**
- * Update an Item
- *
- * Update an existing donation_purposes item.
- */
-export const updateSingleItemsDonationPurposes = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<UpdateSingleItemsDonationPurposesData, ThrowOnError>,
-): RequestResult<
-  UpdateSingleItemsDonationPurposesResponses,
-  UpdateSingleItemsDonationPurposesErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).patch<
-    UpdateSingleItemsDonationPurposesResponses,
-    UpdateSingleItemsDonationPurposesErrors,
-    ThrowOnError
-  >({
-    querySerializer: { parameters: { fields: { array: { explode: false } } } },
-    responseValidator: async (data) =>
-      await zUpdateSingleItemsDonationPurposesResponse.parseAsync(data),
-    url: '/items/donation_purposes/{id}',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  })
-
-/**
- * Delete Multiple Items
- *
- * Delete multiple existing checkouts items.
- */
-export const deleteItemsCheckouts = <ThrowOnError extends boolean = false>(
-  options?: Options<DeleteItemsCheckoutsData, ThrowOnError>,
-): RequestResult<
-  DeleteItemsCheckoutsResponses,
-  DeleteItemsCheckoutsErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).delete<
-    DeleteItemsCheckoutsResponses,
-    DeleteItemsCheckoutsErrors,
-    ThrowOnError
-  >({ url: '/items/checkouts', ...options })
-
-/**
- * List Items
- *
- * List the checkouts items.
- */
-export const readItemsCheckouts = <ThrowOnError extends boolean = false>(
-  options?: Options<ReadItemsCheckoutsData, ThrowOnError>,
-): RequestResult<
-  ReadItemsCheckoutsResponses,
-  ReadItemsCheckoutsErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).get<
-    ReadItemsCheckoutsResponses,
-    ReadItemsCheckoutsErrors,
-    ThrowOnError
-  >({
-    querySerializer: {
-      parameters: {
-        fields: { array: { explode: false } },
-        sort: { array: { explode: false } },
-        filter: { object: { style: 'form' } },
-      },
-    },
-    responseValidator: async (data) =>
-      await zReadItemsCheckoutsResponse.parseAsync(data),
-    security: [{ name: 'Authorization', type: 'apiKey' }],
-    url: '/items/checkouts',
-    ...options,
-  })
-
-/**
- * Update Multiple Items
- *
- * Update multiple checkouts items at the same time.
- */
-export const updateItemsCheckouts = <ThrowOnError extends boolean = false>(
-  options?: Options<UpdateItemsCheckoutsData, ThrowOnError>,
-): RequestResult<UpdateItemsCheckoutsResponses, unknown, ThrowOnError> =>
-  (options?.client ?? client).patch<
-    UpdateItemsCheckoutsResponses,
-    unknown,
-    ThrowOnError
-  >({
-    querySerializer: {
-      parameters: {
-        fields: { array: { explode: false } },
-        sort: { array: { explode: false } },
-        filter: { object: { style: 'form' } },
-      },
-    },
-    responseValidator: async (data) =>
-      await zUpdateItemsCheckoutsResponse.parseAsync(data),
-    url: '/items/checkouts',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
-
-/**
- * Create an Item
- *
- * Create a new checkouts item.
- */
-export const createItemsCheckouts = <ThrowOnError extends boolean = false>(
-  options?: Options<CreateItemsCheckoutsData, ThrowOnError>,
-): RequestResult<
-  CreateItemsCheckoutsResponses,
-  CreateItemsCheckoutsErrors,
-  ThrowOnError
-> =>
-  (options?.client ?? client).post<
-    CreateItemsCheckoutsResponses,
-    CreateItemsCheckoutsErrors,
-    ThrowOnError
-  >({
-    responseValidator: async (data) =>
-      await zCreateItemsCheckoutsResponse.parseAsync(data),
-    url: '/items/checkouts',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  })
-
-/**
- * Delete an Item
- *
- * Delete an existing checkouts item.
- */
-export const deleteSingleItemsCheckouts = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<DeleteSingleItemsCheckoutsData, ThrowOnError>,
-): RequestResult<
-  DeleteSingleItemsCheckoutsResponses,
-  DeleteSingleItemsCheckoutsErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).delete<
-    DeleteSingleItemsCheckoutsResponses,
-    DeleteSingleItemsCheckoutsErrors,
-    ThrowOnError
-  >({ url: '/items/checkouts/{id}', ...options })
-
-/**
- * Retrieve an Item
- *
- * Retrieve a single checkouts item by unique identifier.
- */
-export const readSingleItemsCheckouts = <ThrowOnError extends boolean = false>(
-  options: Options<ReadSingleItemsCheckoutsData, ThrowOnError>,
-): RequestResult<
-  ReadSingleItemsCheckoutsResponses,
-  ReadSingleItemsCheckoutsErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).get<
-    ReadSingleItemsCheckoutsResponses,
-    ReadSingleItemsCheckoutsErrors,
-    ThrowOnError
-  >({
-    querySerializer: { parameters: { fields: { array: { explode: false } } } },
-    responseValidator: async (data) =>
-      await zReadSingleItemsCheckoutsResponse.parseAsync(data),
-    url: '/items/checkouts/{id}',
-    ...options,
-  })
-
-/**
- * Update an Item
- *
- * Update an existing checkouts item.
- */
-export const updateSingleItemsCheckouts = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<UpdateSingleItemsCheckoutsData, ThrowOnError>,
-): RequestResult<
-  UpdateSingleItemsCheckoutsResponses,
-  UpdateSingleItemsCheckoutsErrors,
-  ThrowOnError
-> =>
-  (options.client ?? client).patch<
-    UpdateSingleItemsCheckoutsResponses,
-    UpdateSingleItemsCheckoutsErrors,
-    ThrowOnError
-  >({
-    querySerializer: { parameters: { fields: { array: { explode: false } } } },
-    responseValidator: async (data) =>
-      await zUpdateSingleItemsCheckoutsResponse.parseAsync(data),
-    url: '/items/checkouts/{id}',
     ...options,
     headers: {
       'Content-Type': 'application/json',

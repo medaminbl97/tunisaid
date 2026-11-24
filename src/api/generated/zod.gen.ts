@@ -13,13 +13,6 @@ export const zXMetadata = z.object({
   filter_count: z.int().optional(),
 })
 
-export const zItemsBackendMigrations = z.object({
-  id: z.string(),
-  name: z.string(),
-  checksum: z.string(),
-  applied_at: z.string().nullish(),
-})
-
 export const zItemsLanguages = z.object({
   id: z.string(),
   name: z.string(),
@@ -108,29 +101,14 @@ export const zUsers = z.object({
   policies: z.unknown().optional(),
 })
 
-export const zItemsProjects = z.object({
-  id: z.uuid(),
-  slug: z.string(),
-  status: z.string().optional(),
-  cover_image: z.union([z.uuid(), zFiles]).nullish(),
-  starts_at: z.string().nullish(),
-  ends_at: z.string().nullish(),
-  translations: z
-    .array(z.union([z.uuid(), z.lazy((): any => zItemsProjectsTranslations)]))
-    .nullish(),
-  campaigns: z
-    .array(z.union([z.uuid(), z.lazy((): any => zItemsCampaignProjects)]))
-    .nullish(),
-  purposes: z
-    .array(z.union([z.uuid(), z.lazy((): any => zItemsDonationPurposes)]))
-    .nullish(),
-})
-
 export const zItemsCampaigns = z.object({
   id: z.uuid(),
   slug: z.string(),
   status: z.string().optional(),
-  goal_cents: z.int().optional(),
+  goal_amount: z
+    .string()
+    .regex(/^-?\d+(\.\d+)?$/)
+    .optional(),
   currency: z.string().optional(),
   starts_at: z.string().nullish(),
   ends_at: z.string().nullish(),
@@ -146,25 +124,22 @@ export const zItemsCampaigns = z.object({
 export const zItemsCampaignProjects = z.object({
   id: z.uuid(),
   campaign: z.union([z.uuid(), zItemsCampaigns]),
-  project: z.union([z.uuid(), zItemsProjects]),
+  project: z.union([z.uuid(), z.lazy((): any => zItemsProjects)]),
 })
 
-export const zItemsPartners = z.object({
-  id: z.uuid(),
-  slug: z.string(),
-  name: z.string(),
-  status: z.string().optional(),
-  website: z.string().nullish(),
-  logo: z.union([z.uuid(), zFiles]).nullish(),
-})
-
-export const zItemsCategories = z.object({
+export const zItemsProjects = z.object({
   id: z.uuid(),
   slug: z.string(),
   status: z.string().optional(),
-  sort: z.int().optional(),
+  cover_image: z.union([z.uuid(), zFiles]).nullish(),
+  starts_at: z.string().nullish(),
+  ends_at: z.string().nullish(),
   translations: z
-    .array(z.union([z.uuid(), z.lazy((): any => zItemsCategoriesTranslations)]))
+    .array(z.union([z.uuid(), z.lazy((): any => zItemsProjectsTranslations)]))
+    .nullish(),
+  campaigns: z.array(z.union([z.uuid(), zItemsCampaignProjects])).nullish(),
+  purposes: z
+    .array(z.union([z.uuid(), z.lazy((): any => zItemsDonationPurposes)]))
     .nullish(),
 })
 
@@ -178,9 +153,50 @@ export const zItemsCampaignsTranslations = z.object({
   image_alt: z.string().nullish(),
 })
 
+export const zItemsCategories = z.object({
+  id: z.uuid(),
+  slug: z.string(),
+  status: z.string().optional(),
+  sort: z.int().optional(),
+  translations: z
+    .array(z.union([z.uuid(), z.lazy((): any => zItemsCategoriesTranslations)]))
+    .nullish(),
+})
+
+export const zItemsCategoriesTranslations = z.object({
+  id: z.uuid(),
+  parent: z.union([z.uuid(), zItemsCategories]),
+  language: z.union([z.string(), zItemsLanguages]),
+  title: z.string(),
+})
+
+export const zItemsDonationPurposes = z.object({
+  id: z.uuid(),
+  slug: z.string(),
+  status: z.string().optional(),
+  category: z.union([z.uuid(), zItemsCategories]).nullish(),
+  project: z.union([z.uuid(), zItemsProjects]).nullish(),
+  unit_amount: z
+    .string()
+    .regex(/^-?\d+(\.\d+)?$/)
+    .optional(),
+  currency: z.string().optional(),
+  image: z.union([z.uuid(), zFiles]).nullish(),
+  sort: z.int().optional(),
+  is_illustrative: z.boolean().optional(),
+  translations: z
+    .array(
+      z.union([
+        z.uuid(),
+        z.lazy((): any => zItemsDonationPurposesTranslations),
+      ]),
+    )
+    .nullish(),
+})
+
 export const zItemsDonationPurposesTranslations = z.object({
   id: z.uuid(),
-  parent: z.union([z.uuid(), z.lazy((): any => zItemsDonationPurposes)]),
+  parent: z.union([z.uuid(), zItemsDonationPurposes]),
   language: z.union([z.string(), zItemsLanguages]),
   title: z.string(),
   category_label: z.string().nullish(),
@@ -191,12 +207,54 @@ export const zItemsDonationPurposesTranslations = z.object({
   image_alt: z.string().nullish(),
 })
 
+export const zItemsPartners = z.object({
+  id: z.uuid(),
+  slug: z.string(),
+  name: z.string(),
+  status: z.string().optional(),
+  website: z.string().nullish(),
+  logo: z.union([z.uuid(), zFiles]).nullish(),
+})
+
+export const zItemsProjectsTranslations = z.object({
+  id: z.uuid(),
+  parent: z.union([z.uuid(), zItemsProjects]),
+  language: z.union([z.string(), zItemsLanguages]),
+  title: z.string(),
+  summary: z.string().nullish(),
+  body: z.string().nullish(),
+  image_alt: z.string().nullish(),
+})
+
+export const zItemsCheckouts = z.object({
+  id: z.uuid(),
+  reference: z.string(),
+  donor: z.union([z.uuid(), zItemsDonors]).nullish(),
+  status: z.string().optional(),
+  currency: z.string().optional(),
+  total_amount: z
+    .string()
+    .regex(/^-?\d+(\.\d+)?$/)
+    .optional(),
+  created_at: z.string().nullish(),
+  paid_at: z.string().nullish(),
+  donations: z
+    .array(z.union([z.uuid(), z.lazy((): any => zItemsDonations)]))
+    .nullish(),
+  payment_attempts: z
+    .array(z.union([z.uuid(), z.lazy((): any => zItemsPaymentAttempts)]))
+    .nullish(),
+})
+
 export const zItemsDonations = z.object({
   id: z.uuid(),
-  checkout: z.union([z.uuid(), z.lazy((): any => zItemsCheckouts)]),
+  checkout: z.union([z.uuid(), zItemsCheckouts]),
   campaign: z.union([z.uuid(), zItemsCampaigns]).nullish(),
   currency: z.string().optional(),
-  total_cents: z.int().optional(),
+  total_amount: z
+    .string()
+    .regex(/^-?\d+(\.\d+)?$/)
+    .optional(),
   items: z
     .array(z.union([z.uuid(), z.lazy((): any => zItemsDonationItems)]))
     .nullish(),
@@ -208,25 +266,32 @@ export const zItemsDonations = z.object({
 export const zItemsDonationItems = z.object({
   id: z.uuid(),
   donation: z.union([z.uuid(), zItemsDonations]),
-  purpose: z
-    .union([z.uuid(), z.lazy((): any => zItemsDonationPurposes)])
-    .nullish(),
+  purpose: z.union([z.uuid(), zItemsDonationPurposes]).nullish(),
   kind: z.string().optional(),
   title_snapshot: z.string(),
   quantity: z.int().optional(),
-  unit_amount_cents: z.int().optional(),
-  total_cents: z.int().optional(),
+  unit_amount: z
+    .string()
+    .regex(/^-?\d+(\.\d+)?$/)
+    .optional(),
+  total_amount: z
+    .string()
+    .regex(/^-?\d+(\.\d+)?$/)
+    .optional(),
   requested_purpose_snapshot: z.string().nullish(),
 })
 
 export const zItemsPaymentAttempts = z.object({
   id: z.uuid(),
-  checkout: z.union([z.uuid(), z.lazy((): any => zItemsCheckouts)]),
+  checkout: z.union([z.uuid(), zItemsCheckouts]),
   provider: z.string(),
   provider_payment_id: z.string().nullish(),
   idempotency_key: z.string(),
   status: z.string().optional(),
-  amount_cents: z.int().optional(),
+  amount: z
+    .string()
+    .regex(/^-?\d+(\.\d+)?$/)
+    .optional(),
   currency: z.string().optional(),
   failure_code: z.string().nullish(),
   created_at: z.string().nullish(),
@@ -253,58 +318,13 @@ export const zItemsRefunds = z.object({
   provider_refund_id: z.string().nullish(),
   idempotency_key: z.string(),
   status: z.string().optional(),
-  amount_cents: z.int().optional(),
+  amount: z
+    .string()
+    .regex(/^-?\d+(\.\d+)?$/)
+    .optional(),
   currency: z.string().optional(),
   reason_code: z.string().nullish(),
   created_at: z.string().nullish(),
-})
-
-export const zItemsCategoriesTranslations = z.object({
-  id: z.uuid(),
-  parent: z.union([z.uuid(), zItemsCategories]),
-  language: z.union([z.string(), zItemsLanguages]),
-  title: z.string(),
-})
-
-export const zItemsProjectsTranslations = z.object({
-  id: z.uuid(),
-  parent: z.union([z.uuid(), zItemsProjects]),
-  language: z.union([z.string(), zItemsLanguages]),
-  title: z.string(),
-  summary: z.string().nullish(),
-  body: z.string().nullish(),
-  image_alt: z.string().nullish(),
-})
-
-export const zItemsDonationPurposes = z.object({
-  id: z.uuid(),
-  slug: z.string(),
-  status: z.string().optional(),
-  category: z.union([z.uuid(), zItemsCategories]).nullish(),
-  project: z.union([z.uuid(), zItemsProjects]).nullish(),
-  unit_amount_cents: z.int().optional(),
-  currency: z.string().optional(),
-  image: z.union([z.uuid(), zFiles]).nullish(),
-  sort: z.int().optional(),
-  is_illustrative: z.boolean().optional(),
-  translations: z
-    .array(z.union([z.uuid(), zItemsDonationPurposesTranslations]))
-    .nullish(),
-})
-
-export const zItemsCheckouts = z.object({
-  id: z.uuid(),
-  reference: z.string(),
-  donor: z.union([z.uuid(), zItemsDonors]).nullish(),
-  status: z.string().optional(),
-  currency: z.string().optional(),
-  total_cents: z.int().optional(),
-  created_at: z.string().nullish(),
-  paid_at: z.string().nullish(),
-  donations: z.array(z.union([z.uuid(), zItemsDonations])).nullish(),
-  payment_attempts: z
-    .array(z.union([z.uuid(), zItemsPaymentAttempts]))
-    .nullish(),
 })
 
 /**
@@ -349,99 +369,20 @@ export const zFields = z.array(z.string())
  */
 export const zVersion = z.string()
 
-export const zReadItemsBackendMigrationsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  limit: z.int().optional(),
-  meta: z.string().optional(),
-  offset: z.int().optional(),
-  sort: z.array(z.string()).optional(),
-  filter: z.record(z.string(), z.unknown()).optional(),
-  search: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zReadItemsBackendMigrationsResponse = z.object({
-  data: z.array(zItemsBackendMigrations).optional(),
-  meta: zXMetadata.optional(),
-})
-
-export const zUpdateItemsBackendMigrationsBody = z.union([
-  z.array(zItemsBackendMigrations),
-  zItemsBackendMigrations,
-])
-
-export const zUpdateItemsBackendMigrationsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  limit: z.int().optional(),
-  meta: z.string().optional(),
-  offset: z.int().optional(),
-  sort: z.array(z.string()).optional(),
-  filter: z.record(z.string(), z.unknown()).optional(),
-  search: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zUpdateItemsBackendMigrationsResponse = z.object({
-  data: z.array(zItemsBackendMigrations).optional(),
-})
-
-export const zCreateItemsBackendMigrationsBody = z.union([
-  z.array(zItemsBackendMigrations),
-  zItemsBackendMigrations,
-])
-
-export const zCreateItemsBackendMigrationsQuery = z.object({
-  meta: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zCreateItemsBackendMigrationsResponse = z.object({
-  data: z.array(zItemsBackendMigrations).optional(),
-})
-
-export const zDeleteSingleItemsBackendMigrationsPath = z.object({
+export const zDeleteSingleItemsCampaignsPath = z.object({
   id: z.union([z.int(), z.string()]),
 })
 
-export const zReadSingleItemsBackendMigrationsPath = z.object({
+export const zDeleteSingleItemsCampaignProjectsPath = z.object({
   id: z.union([z.int(), z.string()]),
 })
 
-export const zReadSingleItemsBackendMigrationsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  meta: z.string().optional(),
-  version: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zReadSingleItemsBackendMigrationsResponse = z.object({
-  data: zItemsBackendMigrations.optional(),
-})
-
-export const zUpdateSingleItemsBackendMigrationsBody = zItemsBackendMigrations
-
-export const zUpdateSingleItemsBackendMigrationsPath = z.object({
+export const zDeleteSingleItemsProjectsPath = z.object({
   id: z.union([z.int(), z.string()]),
 })
 
-export const zUpdateSingleItemsBackendMigrationsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  meta: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zUpdateSingleItemsBackendMigrationsResponse = z.object({
-  data: zItemsBackendMigrations.optional(),
+export const zDeleteSingleItemsCampaignsTranslationsPath = z.object({
+  id: z.union([z.int(), z.string()]),
 })
 
 export const zReadItemsLanguagesQuery = z.object({
@@ -539,15 +480,19 @@ export const zUpdateSingleItemsLanguagesResponse = z.object({
   data: zItemsLanguages.optional(),
 })
 
-export const zDeleteSingleItemsProjectsPath = z.object({
+export const zDeleteSingleItemsCategoriesPath = z.object({
   id: z.union([z.int(), z.string()]),
 })
 
-export const zDeleteSingleItemsCampaignsPath = z.object({
+export const zDeleteSingleItemsCategoriesTranslationsPath = z.object({
   id: z.union([z.int(), z.string()]),
 })
 
-export const zDeleteSingleItemsCampaignProjectsPath = z.object({
+export const zDeleteSingleItemsDonationPurposesPath = z.object({
+  id: z.union([z.int(), z.string()]),
+})
+
+export const zDeleteSingleItemsDonationPurposesTranslationsPath = z.object({
   id: z.union([z.int(), z.string()]),
 })
 
@@ -555,15 +500,7 @@ export const zDeleteSingleItemsPartnersPath = z.object({
   id: z.union([z.int(), z.string()]),
 })
 
-export const zDeleteSingleItemsCategoriesPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zDeleteSingleItemsCampaignsTranslationsPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zDeleteSingleItemsDonationPurposesTranslationsPath = z.object({
+export const zDeleteSingleItemsProjectsTranslationsPath = z.object({
   id: z.union([z.int(), z.string()]),
 })
 
@@ -662,6 +599,10 @@ export const zUpdateSingleItemsDonorsResponse = z.object({
   data: zItemsDonors.optional(),
 })
 
+export const zDeleteSingleItemsCheckoutsPath = z.object({
+  id: z.union([z.int(), z.string()]),
+})
+
 export const zDeleteSingleItemsDonationsPath = z.object({
   id: z.union([z.int(), z.string()]),
 })
@@ -680,113 +621,6 @@ export const zDeleteSingleItemsPaymentEventsPath = z.object({
 
 export const zDeleteSingleItemsRefundsPath = z.object({
   id: z.union([z.int(), z.string()]),
-})
-
-export const zDeleteSingleItemsCategoriesTranslationsPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zDeleteSingleItemsProjectsTranslationsPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zDeleteSingleItemsDonationPurposesPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zDeleteSingleItemsCheckoutsPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zReadItemsProjectsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  limit: z.int().optional(),
-  meta: z.string().optional(),
-  offset: z.int().optional(),
-  sort: z.array(z.string()).optional(),
-  filter: z.record(z.string(), z.unknown()).optional(),
-  search: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zReadItemsProjectsResponse = z.object({
-  data: z.array(zItemsProjects).optional(),
-  meta: zXMetadata.optional(),
-})
-
-export const zUpdateItemsProjectsBody = z.union([
-  z.array(zItemsProjects),
-  zItemsProjects,
-])
-
-export const zUpdateItemsProjectsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  limit: z.int().optional(),
-  meta: z.string().optional(),
-  offset: z.int().optional(),
-  sort: z.array(z.string()).optional(),
-  filter: z.record(z.string(), z.unknown()).optional(),
-  search: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zUpdateItemsProjectsResponse = z.object({
-  data: z.array(zItemsProjects).optional(),
-})
-
-export const zCreateItemsProjectsBody = z.union([
-  z.array(zItemsProjects),
-  zItemsProjects,
-])
-
-export const zCreateItemsProjectsQuery = z.object({
-  meta: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zCreateItemsProjectsResponse = z.object({
-  data: z.array(zItemsProjects).optional(),
-})
-
-export const zReadSingleItemsProjectsPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zReadSingleItemsProjectsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  meta: z.string().optional(),
-  version: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zReadSingleItemsProjectsResponse = z.object({
-  data: zItemsProjects.optional(),
-})
-
-export const zUpdateSingleItemsProjectsBody = zItemsProjects
-
-export const zUpdateSingleItemsProjectsPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zUpdateSingleItemsProjectsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  meta: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zUpdateSingleItemsProjectsResponse = z.object({
-  data: zItemsProjects.optional(),
 })
 
 export const zReadItemsCampaignsQuery = z.object({
@@ -971,7 +805,7 @@ export const zUpdateSingleItemsCampaignProjectsResponse = z.object({
   data: zItemsCampaignProjects.optional(),
 })
 
-export const zReadItemsPartnersQuery = z.object({
+export const zReadItemsProjectsQuery = z.object({
   fields: z.array(z.string()).optional(),
   limit: z.int().optional(),
   meta: z.string().optional(),
@@ -984,17 +818,17 @@ export const zReadItemsPartnersQuery = z.object({
 /**
  * Successful request
  */
-export const zReadItemsPartnersResponse = z.object({
-  data: z.array(zItemsPartners).optional(),
+export const zReadItemsProjectsResponse = z.object({
+  data: z.array(zItemsProjects).optional(),
   meta: zXMetadata.optional(),
 })
 
-export const zUpdateItemsPartnersBody = z.union([
-  z.array(zItemsPartners),
-  zItemsPartners,
+export const zUpdateItemsProjectsBody = z.union([
+  z.array(zItemsProjects),
+  zItemsProjects,
 ])
 
-export const zUpdateItemsPartnersQuery = z.object({
+export const zUpdateItemsProjectsQuery = z.object({
   fields: z.array(z.string()).optional(),
   limit: z.int().optional(),
   meta: z.string().optional(),
@@ -1007,31 +841,31 @@ export const zUpdateItemsPartnersQuery = z.object({
 /**
  * Successful request
  */
-export const zUpdateItemsPartnersResponse = z.object({
-  data: z.array(zItemsPartners).optional(),
+export const zUpdateItemsProjectsResponse = z.object({
+  data: z.array(zItemsProjects).optional(),
 })
 
-export const zCreateItemsPartnersBody = z.union([
-  z.array(zItemsPartners),
-  zItemsPartners,
+export const zCreateItemsProjectsBody = z.union([
+  z.array(zItemsProjects),
+  zItemsProjects,
 ])
 
-export const zCreateItemsPartnersQuery = z.object({
+export const zCreateItemsProjectsQuery = z.object({
   meta: z.string().optional(),
 })
 
 /**
  * Successful request
  */
-export const zCreateItemsPartnersResponse = z.object({
-  data: z.array(zItemsPartners).optional(),
+export const zCreateItemsProjectsResponse = z.object({
+  data: z.array(zItemsProjects).optional(),
 })
 
-export const zReadSingleItemsPartnersPath = z.object({
+export const zReadSingleItemsProjectsPath = z.object({
   id: z.union([z.int(), z.string()]),
 })
 
-export const zReadSingleItemsPartnersQuery = z.object({
+export const zReadSingleItemsProjectsQuery = z.object({
   fields: z.array(z.string()).optional(),
   meta: z.string().optional(),
   version: z.string().optional(),
@@ -1040,17 +874,17 @@ export const zReadSingleItemsPartnersQuery = z.object({
 /**
  * Successful request
  */
-export const zReadSingleItemsPartnersResponse = z.object({
-  data: zItemsPartners.optional(),
+export const zReadSingleItemsProjectsResponse = z.object({
+  data: zItemsProjects.optional(),
 })
 
-export const zUpdateSingleItemsPartnersBody = zItemsPartners
+export const zUpdateSingleItemsProjectsBody = zItemsProjects
 
-export const zUpdateSingleItemsPartnersPath = z.object({
+export const zUpdateSingleItemsProjectsPath = z.object({
   id: z.union([z.int(), z.string()]),
 })
 
-export const zUpdateSingleItemsPartnersQuery = z.object({
+export const zUpdateSingleItemsProjectsQuery = z.object({
   fields: z.array(z.string()).optional(),
   meta: z.string().optional(),
 })
@@ -1058,99 +892,8 @@ export const zUpdateSingleItemsPartnersQuery = z.object({
 /**
  * Successful request
  */
-export const zUpdateSingleItemsPartnersResponse = z.object({
-  data: zItemsPartners.optional(),
-})
-
-export const zReadItemsCategoriesQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  limit: z.int().optional(),
-  meta: z.string().optional(),
-  offset: z.int().optional(),
-  sort: z.array(z.string()).optional(),
-  filter: z.record(z.string(), z.unknown()).optional(),
-  search: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zReadItemsCategoriesResponse = z.object({
-  data: z.array(zItemsCategories).optional(),
-  meta: zXMetadata.optional(),
-})
-
-export const zUpdateItemsCategoriesBody = z.union([
-  z.array(zItemsCategories),
-  zItemsCategories,
-])
-
-export const zUpdateItemsCategoriesQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  limit: z.int().optional(),
-  meta: z.string().optional(),
-  offset: z.int().optional(),
-  sort: z.array(z.string()).optional(),
-  filter: z.record(z.string(), z.unknown()).optional(),
-  search: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zUpdateItemsCategoriesResponse = z.object({
-  data: z.array(zItemsCategories).optional(),
-})
-
-export const zCreateItemsCategoriesBody = z.union([
-  z.array(zItemsCategories),
-  zItemsCategories,
-])
-
-export const zCreateItemsCategoriesQuery = z.object({
-  meta: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zCreateItemsCategoriesResponse = z.object({
-  data: z.array(zItemsCategories).optional(),
-})
-
-export const zReadSingleItemsCategoriesPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zReadSingleItemsCategoriesQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  meta: z.string().optional(),
-  version: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zReadSingleItemsCategoriesResponse = z.object({
-  data: zItemsCategories.optional(),
-})
-
-export const zUpdateSingleItemsCategoriesBody = zItemsCategories
-
-export const zUpdateSingleItemsCategoriesPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zUpdateSingleItemsCategoriesQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  meta: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zUpdateSingleItemsCategoriesResponse = z.object({
-  data: zItemsCategories.optional(),
+export const zUpdateSingleItemsProjectsResponse = z.object({
+  data: zItemsProjects.optional(),
 })
 
 export const zReadItemsCampaignsTranslationsQuery = z.object({
@@ -1245,6 +988,280 @@ export const zUpdateSingleItemsCampaignsTranslationsResponse = z.object({
   data: zItemsCampaignsTranslations.optional(),
 })
 
+export const zReadItemsCategoriesQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  limit: z.int().optional(),
+  meta: z.string().optional(),
+  offset: z.int().optional(),
+  sort: z.array(z.string()).optional(),
+  filter: z.record(z.string(), z.unknown()).optional(),
+  search: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zReadItemsCategoriesResponse = z.object({
+  data: z.array(zItemsCategories).optional(),
+  meta: zXMetadata.optional(),
+})
+
+export const zUpdateItemsCategoriesBody = z.union([
+  z.array(zItemsCategories),
+  zItemsCategories,
+])
+
+export const zUpdateItemsCategoriesQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  limit: z.int().optional(),
+  meta: z.string().optional(),
+  offset: z.int().optional(),
+  sort: z.array(z.string()).optional(),
+  filter: z.record(z.string(), z.unknown()).optional(),
+  search: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zUpdateItemsCategoriesResponse = z.object({
+  data: z.array(zItemsCategories).optional(),
+})
+
+export const zCreateItemsCategoriesBody = z.union([
+  z.array(zItemsCategories),
+  zItemsCategories,
+])
+
+export const zCreateItemsCategoriesQuery = z.object({
+  meta: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zCreateItemsCategoriesResponse = z.object({
+  data: z.array(zItemsCategories).optional(),
+})
+
+export const zReadSingleItemsCategoriesPath = z.object({
+  id: z.union([z.int(), z.string()]),
+})
+
+export const zReadSingleItemsCategoriesQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  meta: z.string().optional(),
+  version: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zReadSingleItemsCategoriesResponse = z.object({
+  data: zItemsCategories.optional(),
+})
+
+export const zUpdateSingleItemsCategoriesBody = zItemsCategories
+
+export const zUpdateSingleItemsCategoriesPath = z.object({
+  id: z.union([z.int(), z.string()]),
+})
+
+export const zUpdateSingleItemsCategoriesQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  meta: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zUpdateSingleItemsCategoriesResponse = z.object({
+  data: zItemsCategories.optional(),
+})
+
+export const zReadItemsCategoriesTranslationsQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  limit: z.int().optional(),
+  meta: z.string().optional(),
+  offset: z.int().optional(),
+  sort: z.array(z.string()).optional(),
+  filter: z.record(z.string(), z.unknown()).optional(),
+  search: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zReadItemsCategoriesTranslationsResponse = z.object({
+  data: z.array(zItemsCategoriesTranslations).optional(),
+  meta: zXMetadata.optional(),
+})
+
+export const zUpdateItemsCategoriesTranslationsBody = z.union([
+  z.array(zItemsCategoriesTranslations),
+  zItemsCategoriesTranslations,
+])
+
+export const zUpdateItemsCategoriesTranslationsQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  limit: z.int().optional(),
+  meta: z.string().optional(),
+  offset: z.int().optional(),
+  sort: z.array(z.string()).optional(),
+  filter: z.record(z.string(), z.unknown()).optional(),
+  search: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zUpdateItemsCategoriesTranslationsResponse = z.object({
+  data: z.array(zItemsCategoriesTranslations).optional(),
+})
+
+export const zCreateItemsCategoriesTranslationsBody = z.union([
+  z.array(zItemsCategoriesTranslations),
+  zItemsCategoriesTranslations,
+])
+
+export const zCreateItemsCategoriesTranslationsQuery = z.object({
+  meta: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zCreateItemsCategoriesTranslationsResponse = z.object({
+  data: z.array(zItemsCategoriesTranslations).optional(),
+})
+
+export const zReadSingleItemsCategoriesTranslationsPath = z.object({
+  id: z.union([z.int(), z.string()]),
+})
+
+export const zReadSingleItemsCategoriesTranslationsQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  meta: z.string().optional(),
+  version: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zReadSingleItemsCategoriesTranslationsResponse = z.object({
+  data: zItemsCategoriesTranslations.optional(),
+})
+
+export const zUpdateSingleItemsCategoriesTranslationsBody =
+  zItemsCategoriesTranslations
+
+export const zUpdateSingleItemsCategoriesTranslationsPath = z.object({
+  id: z.union([z.int(), z.string()]),
+})
+
+export const zUpdateSingleItemsCategoriesTranslationsQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  meta: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zUpdateSingleItemsCategoriesTranslationsResponse = z.object({
+  data: zItemsCategoriesTranslations.optional(),
+})
+
+export const zReadItemsDonationPurposesQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  limit: z.int().optional(),
+  meta: z.string().optional(),
+  offset: z.int().optional(),
+  sort: z.array(z.string()).optional(),
+  filter: z.record(z.string(), z.unknown()).optional(),
+  search: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zReadItemsDonationPurposesResponse = z.object({
+  data: z.array(zItemsDonationPurposes).optional(),
+  meta: zXMetadata.optional(),
+})
+
+export const zUpdateItemsDonationPurposesBody = z.union([
+  z.array(zItemsDonationPurposes),
+  zItemsDonationPurposes,
+])
+
+export const zUpdateItemsDonationPurposesQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  limit: z.int().optional(),
+  meta: z.string().optional(),
+  offset: z.int().optional(),
+  sort: z.array(z.string()).optional(),
+  filter: z.record(z.string(), z.unknown()).optional(),
+  search: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zUpdateItemsDonationPurposesResponse = z.object({
+  data: z.array(zItemsDonationPurposes).optional(),
+})
+
+export const zCreateItemsDonationPurposesBody = z.union([
+  z.array(zItemsDonationPurposes),
+  zItemsDonationPurposes,
+])
+
+export const zCreateItemsDonationPurposesQuery = z.object({
+  meta: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zCreateItemsDonationPurposesResponse = z.object({
+  data: z.array(zItemsDonationPurposes).optional(),
+})
+
+export const zReadSingleItemsDonationPurposesPath = z.object({
+  id: z.union([z.int(), z.string()]),
+})
+
+export const zReadSingleItemsDonationPurposesQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  meta: z.string().optional(),
+  version: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zReadSingleItemsDonationPurposesResponse = z.object({
+  data: zItemsDonationPurposes.optional(),
+})
+
+export const zUpdateSingleItemsDonationPurposesBody = zItemsDonationPurposes
+
+export const zUpdateSingleItemsDonationPurposesPath = z.object({
+  id: z.union([z.int(), z.string()]),
+})
+
+export const zUpdateSingleItemsDonationPurposesQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  meta: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zUpdateSingleItemsDonationPurposesResponse = z.object({
+  data: zItemsDonationPurposes.optional(),
+})
+
 export const zReadItemsDonationPurposesTranslationsQuery = z.object({
   fields: z.array(z.string()).optional(),
   limit: z.int().optional(),
@@ -1335,6 +1352,280 @@ export const zUpdateSingleItemsDonationPurposesTranslationsQuery = z.object({
  */
 export const zUpdateSingleItemsDonationPurposesTranslationsResponse = z.object({
   data: zItemsDonationPurposesTranslations.optional(),
+})
+
+export const zReadItemsPartnersQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  limit: z.int().optional(),
+  meta: z.string().optional(),
+  offset: z.int().optional(),
+  sort: z.array(z.string()).optional(),
+  filter: z.record(z.string(), z.unknown()).optional(),
+  search: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zReadItemsPartnersResponse = z.object({
+  data: z.array(zItemsPartners).optional(),
+  meta: zXMetadata.optional(),
+})
+
+export const zUpdateItemsPartnersBody = z.union([
+  z.array(zItemsPartners),
+  zItemsPartners,
+])
+
+export const zUpdateItemsPartnersQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  limit: z.int().optional(),
+  meta: z.string().optional(),
+  offset: z.int().optional(),
+  sort: z.array(z.string()).optional(),
+  filter: z.record(z.string(), z.unknown()).optional(),
+  search: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zUpdateItemsPartnersResponse = z.object({
+  data: z.array(zItemsPartners).optional(),
+})
+
+export const zCreateItemsPartnersBody = z.union([
+  z.array(zItemsPartners),
+  zItemsPartners,
+])
+
+export const zCreateItemsPartnersQuery = z.object({
+  meta: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zCreateItemsPartnersResponse = z.object({
+  data: z.array(zItemsPartners).optional(),
+})
+
+export const zReadSingleItemsPartnersPath = z.object({
+  id: z.union([z.int(), z.string()]),
+})
+
+export const zReadSingleItemsPartnersQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  meta: z.string().optional(),
+  version: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zReadSingleItemsPartnersResponse = z.object({
+  data: zItemsPartners.optional(),
+})
+
+export const zUpdateSingleItemsPartnersBody = zItemsPartners
+
+export const zUpdateSingleItemsPartnersPath = z.object({
+  id: z.union([z.int(), z.string()]),
+})
+
+export const zUpdateSingleItemsPartnersQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  meta: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zUpdateSingleItemsPartnersResponse = z.object({
+  data: zItemsPartners.optional(),
+})
+
+export const zReadItemsProjectsTranslationsQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  limit: z.int().optional(),
+  meta: z.string().optional(),
+  offset: z.int().optional(),
+  sort: z.array(z.string()).optional(),
+  filter: z.record(z.string(), z.unknown()).optional(),
+  search: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zReadItemsProjectsTranslationsResponse = z.object({
+  data: z.array(zItemsProjectsTranslations).optional(),
+  meta: zXMetadata.optional(),
+})
+
+export const zUpdateItemsProjectsTranslationsBody = z.union([
+  z.array(zItemsProjectsTranslations),
+  zItemsProjectsTranslations,
+])
+
+export const zUpdateItemsProjectsTranslationsQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  limit: z.int().optional(),
+  meta: z.string().optional(),
+  offset: z.int().optional(),
+  sort: z.array(z.string()).optional(),
+  filter: z.record(z.string(), z.unknown()).optional(),
+  search: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zUpdateItemsProjectsTranslationsResponse = z.object({
+  data: z.array(zItemsProjectsTranslations).optional(),
+})
+
+export const zCreateItemsProjectsTranslationsBody = z.union([
+  z.array(zItemsProjectsTranslations),
+  zItemsProjectsTranslations,
+])
+
+export const zCreateItemsProjectsTranslationsQuery = z.object({
+  meta: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zCreateItemsProjectsTranslationsResponse = z.object({
+  data: z.array(zItemsProjectsTranslations).optional(),
+})
+
+export const zReadSingleItemsProjectsTranslationsPath = z.object({
+  id: z.union([z.int(), z.string()]),
+})
+
+export const zReadSingleItemsProjectsTranslationsQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  meta: z.string().optional(),
+  version: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zReadSingleItemsProjectsTranslationsResponse = z.object({
+  data: zItemsProjectsTranslations.optional(),
+})
+
+export const zUpdateSingleItemsProjectsTranslationsBody =
+  zItemsProjectsTranslations
+
+export const zUpdateSingleItemsProjectsTranslationsPath = z.object({
+  id: z.union([z.int(), z.string()]),
+})
+
+export const zUpdateSingleItemsProjectsTranslationsQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  meta: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zUpdateSingleItemsProjectsTranslationsResponse = z.object({
+  data: zItemsProjectsTranslations.optional(),
+})
+
+export const zReadItemsCheckoutsQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  limit: z.int().optional(),
+  meta: z.string().optional(),
+  offset: z.int().optional(),
+  sort: z.array(z.string()).optional(),
+  filter: z.record(z.string(), z.unknown()).optional(),
+  search: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zReadItemsCheckoutsResponse = z.object({
+  data: z.array(zItemsCheckouts).optional(),
+  meta: zXMetadata.optional(),
+})
+
+export const zUpdateItemsCheckoutsBody = z.union([
+  z.array(zItemsCheckouts),
+  zItemsCheckouts,
+])
+
+export const zUpdateItemsCheckoutsQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  limit: z.int().optional(),
+  meta: z.string().optional(),
+  offset: z.int().optional(),
+  sort: z.array(z.string()).optional(),
+  filter: z.record(z.string(), z.unknown()).optional(),
+  search: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zUpdateItemsCheckoutsResponse = z.object({
+  data: z.array(zItemsCheckouts).optional(),
+})
+
+export const zCreateItemsCheckoutsBody = z.union([
+  z.array(zItemsCheckouts),
+  zItemsCheckouts,
+])
+
+export const zCreateItemsCheckoutsQuery = z.object({
+  meta: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zCreateItemsCheckoutsResponse = z.object({
+  data: z.array(zItemsCheckouts).optional(),
+})
+
+export const zReadSingleItemsCheckoutsPath = z.object({
+  id: z.union([z.int(), z.string()]),
+})
+
+export const zReadSingleItemsCheckoutsQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  meta: z.string().optional(),
+  version: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zReadSingleItemsCheckoutsResponse = z.object({
+  data: zItemsCheckouts.optional(),
+})
+
+export const zUpdateSingleItemsCheckoutsBody = zItemsCheckouts
+
+export const zUpdateSingleItemsCheckoutsPath = z.object({
+  id: z.union([z.int(), z.string()]),
+})
+
+export const zUpdateSingleItemsCheckoutsQuery = z.object({
+  fields: z.array(z.string()).optional(),
+  meta: z.string().optional(),
+})
+
+/**
+ * Successful request
+ */
+export const zUpdateSingleItemsCheckoutsResponse = z.object({
+  data: zItemsCheckouts.optional(),
 })
 
 export const zReadItemsDonationsQuery = z.object({
@@ -1790,370 +2081,4 @@ export const zUpdateSingleItemsRefundsQuery = z.object({
  */
 export const zUpdateSingleItemsRefundsResponse = z.object({
   data: zItemsRefunds.optional(),
-})
-
-export const zReadItemsCategoriesTranslationsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  limit: z.int().optional(),
-  meta: z.string().optional(),
-  offset: z.int().optional(),
-  sort: z.array(z.string()).optional(),
-  filter: z.record(z.string(), z.unknown()).optional(),
-  search: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zReadItemsCategoriesTranslationsResponse = z.object({
-  data: z.array(zItemsCategoriesTranslations).optional(),
-  meta: zXMetadata.optional(),
-})
-
-export const zUpdateItemsCategoriesTranslationsBody = z.union([
-  z.array(zItemsCategoriesTranslations),
-  zItemsCategoriesTranslations,
-])
-
-export const zUpdateItemsCategoriesTranslationsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  limit: z.int().optional(),
-  meta: z.string().optional(),
-  offset: z.int().optional(),
-  sort: z.array(z.string()).optional(),
-  filter: z.record(z.string(), z.unknown()).optional(),
-  search: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zUpdateItemsCategoriesTranslationsResponse = z.object({
-  data: z.array(zItemsCategoriesTranslations).optional(),
-})
-
-export const zCreateItemsCategoriesTranslationsBody = z.union([
-  z.array(zItemsCategoriesTranslations),
-  zItemsCategoriesTranslations,
-])
-
-export const zCreateItemsCategoriesTranslationsQuery = z.object({
-  meta: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zCreateItemsCategoriesTranslationsResponse = z.object({
-  data: z.array(zItemsCategoriesTranslations).optional(),
-})
-
-export const zReadSingleItemsCategoriesTranslationsPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zReadSingleItemsCategoriesTranslationsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  meta: z.string().optional(),
-  version: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zReadSingleItemsCategoriesTranslationsResponse = z.object({
-  data: zItemsCategoriesTranslations.optional(),
-})
-
-export const zUpdateSingleItemsCategoriesTranslationsBody =
-  zItemsCategoriesTranslations
-
-export const zUpdateSingleItemsCategoriesTranslationsPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zUpdateSingleItemsCategoriesTranslationsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  meta: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zUpdateSingleItemsCategoriesTranslationsResponse = z.object({
-  data: zItemsCategoriesTranslations.optional(),
-})
-
-export const zReadItemsProjectsTranslationsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  limit: z.int().optional(),
-  meta: z.string().optional(),
-  offset: z.int().optional(),
-  sort: z.array(z.string()).optional(),
-  filter: z.record(z.string(), z.unknown()).optional(),
-  search: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zReadItemsProjectsTranslationsResponse = z.object({
-  data: z.array(zItemsProjectsTranslations).optional(),
-  meta: zXMetadata.optional(),
-})
-
-export const zUpdateItemsProjectsTranslationsBody = z.union([
-  z.array(zItemsProjectsTranslations),
-  zItemsProjectsTranslations,
-])
-
-export const zUpdateItemsProjectsTranslationsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  limit: z.int().optional(),
-  meta: z.string().optional(),
-  offset: z.int().optional(),
-  sort: z.array(z.string()).optional(),
-  filter: z.record(z.string(), z.unknown()).optional(),
-  search: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zUpdateItemsProjectsTranslationsResponse = z.object({
-  data: z.array(zItemsProjectsTranslations).optional(),
-})
-
-export const zCreateItemsProjectsTranslationsBody = z.union([
-  z.array(zItemsProjectsTranslations),
-  zItemsProjectsTranslations,
-])
-
-export const zCreateItemsProjectsTranslationsQuery = z.object({
-  meta: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zCreateItemsProjectsTranslationsResponse = z.object({
-  data: z.array(zItemsProjectsTranslations).optional(),
-})
-
-export const zReadSingleItemsProjectsTranslationsPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zReadSingleItemsProjectsTranslationsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  meta: z.string().optional(),
-  version: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zReadSingleItemsProjectsTranslationsResponse = z.object({
-  data: zItemsProjectsTranslations.optional(),
-})
-
-export const zUpdateSingleItemsProjectsTranslationsBody =
-  zItemsProjectsTranslations
-
-export const zUpdateSingleItemsProjectsTranslationsPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zUpdateSingleItemsProjectsTranslationsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  meta: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zUpdateSingleItemsProjectsTranslationsResponse = z.object({
-  data: zItemsProjectsTranslations.optional(),
-})
-
-export const zReadItemsDonationPurposesQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  limit: z.int().optional(),
-  meta: z.string().optional(),
-  offset: z.int().optional(),
-  sort: z.array(z.string()).optional(),
-  filter: z.record(z.string(), z.unknown()).optional(),
-  search: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zReadItemsDonationPurposesResponse = z.object({
-  data: z.array(zItemsDonationPurposes).optional(),
-  meta: zXMetadata.optional(),
-})
-
-export const zUpdateItemsDonationPurposesBody = z.union([
-  z.array(zItemsDonationPurposes),
-  zItemsDonationPurposes,
-])
-
-export const zUpdateItemsDonationPurposesQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  limit: z.int().optional(),
-  meta: z.string().optional(),
-  offset: z.int().optional(),
-  sort: z.array(z.string()).optional(),
-  filter: z.record(z.string(), z.unknown()).optional(),
-  search: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zUpdateItemsDonationPurposesResponse = z.object({
-  data: z.array(zItemsDonationPurposes).optional(),
-})
-
-export const zCreateItemsDonationPurposesBody = z.union([
-  z.array(zItemsDonationPurposes),
-  zItemsDonationPurposes,
-])
-
-export const zCreateItemsDonationPurposesQuery = z.object({
-  meta: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zCreateItemsDonationPurposesResponse = z.object({
-  data: z.array(zItemsDonationPurposes).optional(),
-})
-
-export const zReadSingleItemsDonationPurposesPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zReadSingleItemsDonationPurposesQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  meta: z.string().optional(),
-  version: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zReadSingleItemsDonationPurposesResponse = z.object({
-  data: zItemsDonationPurposes.optional(),
-})
-
-export const zUpdateSingleItemsDonationPurposesBody = zItemsDonationPurposes
-
-export const zUpdateSingleItemsDonationPurposesPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zUpdateSingleItemsDonationPurposesQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  meta: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zUpdateSingleItemsDonationPurposesResponse = z.object({
-  data: zItemsDonationPurposes.optional(),
-})
-
-export const zReadItemsCheckoutsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  limit: z.int().optional(),
-  meta: z.string().optional(),
-  offset: z.int().optional(),
-  sort: z.array(z.string()).optional(),
-  filter: z.record(z.string(), z.unknown()).optional(),
-  search: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zReadItemsCheckoutsResponse = z.object({
-  data: z.array(zItemsCheckouts).optional(),
-  meta: zXMetadata.optional(),
-})
-
-export const zUpdateItemsCheckoutsBody = z.union([
-  z.array(zItemsCheckouts),
-  zItemsCheckouts,
-])
-
-export const zUpdateItemsCheckoutsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  limit: z.int().optional(),
-  meta: z.string().optional(),
-  offset: z.int().optional(),
-  sort: z.array(z.string()).optional(),
-  filter: z.record(z.string(), z.unknown()).optional(),
-  search: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zUpdateItemsCheckoutsResponse = z.object({
-  data: z.array(zItemsCheckouts).optional(),
-})
-
-export const zCreateItemsCheckoutsBody = z.union([
-  z.array(zItemsCheckouts),
-  zItemsCheckouts,
-])
-
-export const zCreateItemsCheckoutsQuery = z.object({
-  meta: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zCreateItemsCheckoutsResponse = z.object({
-  data: z.array(zItemsCheckouts).optional(),
-})
-
-export const zReadSingleItemsCheckoutsPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zReadSingleItemsCheckoutsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  meta: z.string().optional(),
-  version: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zReadSingleItemsCheckoutsResponse = z.object({
-  data: zItemsCheckouts.optional(),
-})
-
-export const zUpdateSingleItemsCheckoutsBody = zItemsCheckouts
-
-export const zUpdateSingleItemsCheckoutsPath = z.object({
-  id: z.union([z.int(), z.string()]),
-})
-
-export const zUpdateSingleItemsCheckoutsQuery = z.object({
-  fields: z.array(z.string()).optional(),
-  meta: z.string().optional(),
-})
-
-/**
- * Successful request
- */
-export const zUpdateSingleItemsCheckoutsResponse = z.object({
-  data: zItemsCheckouts.optional(),
 })

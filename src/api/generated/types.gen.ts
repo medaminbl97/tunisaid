@@ -232,35 +232,14 @@ export type XMetadata = {
   filter_count?: number
 }
 
-export type ItemsBackendMigrations = {
-  id: string
-  name: string
-  checksum: string
-  applied_at?: string | null
-}
-
-export type ItemsLanguages = {
-  id: string
-  name: string
-}
-
-export type ItemsProjects = {
-  id: string
-  slug: string
-  status?: string
-  cover_image?: string | Files | null
-  starts_at?: string | null
-  ends_at?: string | null
-  translations?: Array<string | ItemsProjectsTranslations> | null
-  campaigns?: Array<string | ItemsCampaignProjects> | null
-  purposes?: Array<string | ItemsDonationPurposes> | null
-}
-
 export type ItemsCampaigns = {
   id: string
   slug: string
   status?: string
-  goal_cents?: number
+  /**
+   * Amount in euros (EUR) with two decimal places.
+   */
+  goal_amount?: string
   currency?: string
   starts_at?: string | null
   ends_at?: string | null
@@ -275,21 +254,16 @@ export type ItemsCampaignProjects = {
   project: string | ItemsProjects
 }
 
-export type ItemsPartners = {
-  id: string
-  slug: string
-  name: string
-  status?: string
-  website?: string | null
-  logo?: string | Files | null
-}
-
-export type ItemsCategories = {
+export type ItemsProjects = {
   id: string
   slug: string
   status?: string
-  sort?: number
-  translations?: Array<string | ItemsCategoriesTranslations> | null
+  cover_image?: string | Files | null
+  starts_at?: string | null
+  ends_at?: string | null
+  translations?: Array<string | ItemsProjectsTranslations> | null
+  campaigns?: Array<string | ItemsCampaignProjects> | null
+  purposes?: Array<string | ItemsDonationPurposes> | null
 }
 
 export type ItemsCampaignsTranslations = {
@@ -300,6 +274,43 @@ export type ItemsCampaignsTranslations = {
   summary?: string | null
   body?: string | null
   image_alt?: string | null
+}
+
+export type ItemsLanguages = {
+  id: string
+  name: string
+}
+
+export type ItemsCategories = {
+  id: string
+  slug: string
+  status?: string
+  sort?: number
+  translations?: Array<string | ItemsCategoriesTranslations> | null
+}
+
+export type ItemsCategoriesTranslations = {
+  id: string
+  parent: string | ItemsCategories
+  language: string | ItemsLanguages
+  title: string
+}
+
+export type ItemsDonationPurposes = {
+  id: string
+  slug: string
+  status?: string
+  category?: string | ItemsCategories | null
+  project?: string | ItemsProjects | null
+  /**
+   * Amount in euros (EUR) with two decimal places.
+   */
+  unit_amount?: string
+  currency?: string
+  image?: string | Files | null
+  sort?: number
+  is_illustrative?: boolean
+  translations?: Array<string | ItemsDonationPurposesTranslations> | null
 }
 
 export type ItemsDonationPurposesTranslations = {
@@ -315,6 +326,25 @@ export type ItemsDonationPurposesTranslations = {
   image_alt?: string | null
 }
 
+export type ItemsPartners = {
+  id: string
+  slug: string
+  name: string
+  status?: string
+  website?: string | null
+  logo?: string | Files | null
+}
+
+export type ItemsProjectsTranslations = {
+  id: string
+  parent: string | ItemsProjects
+  language: string | ItemsLanguages
+  title: string
+  summary?: string | null
+  body?: string | null
+  image_alt?: string | null
+}
+
 export type ItemsDonors = {
   id: string
   display_name?: string | null
@@ -325,12 +355,31 @@ export type ItemsDonors = {
   created_at?: string | null
 }
 
+export type ItemsCheckouts = {
+  id: string
+  reference: string
+  donor?: string | ItemsDonors | null
+  status?: string
+  currency?: string
+  /**
+   * Amount in euros (EUR) with two decimal places.
+   */
+  total_amount?: string
+  created_at?: string | null
+  paid_at?: string | null
+  donations?: Array<string | ItemsDonations> | null
+  payment_attempts?: Array<string | ItemsPaymentAttempts> | null
+}
+
 export type ItemsDonations = {
   id: string
   checkout: string | ItemsCheckouts
   campaign?: string | ItemsCampaigns | null
   currency?: string
-  total_cents?: number
+  /**
+   * Amount in euros (EUR) with two decimal places.
+   */
+  total_amount?: string
   items?: Array<string | ItemsDonationItems> | null
   refunds?: Array<string | ItemsRefunds> | null
 }
@@ -342,8 +391,14 @@ export type ItemsDonationItems = {
   kind?: string
   title_snapshot: string
   quantity?: number
-  unit_amount_cents?: number
-  total_cents?: number
+  /**
+   * Amount in euros (EUR) with two decimal places.
+   */
+  unit_amount?: string
+  /**
+   * Amount in euros (EUR) with two decimal places.
+   */
+  total_amount?: string
   requested_purpose_snapshot?: string | null
 }
 
@@ -354,7 +409,10 @@ export type ItemsPaymentAttempts = {
   provider_payment_id?: string | null
   idempotency_key: string
   status?: string
-  amount_cents?: number
+  /**
+   * Amount in euros (EUR) with two decimal places.
+   */
+  amount?: string
   currency?: string
   failure_code?: string | null
   created_at?: string | null
@@ -381,54 +439,13 @@ export type ItemsRefunds = {
   provider_refund_id?: string | null
   idempotency_key: string
   status?: string
-  amount_cents?: number
+  /**
+   * Amount in euros (EUR) with two decimal places.
+   */
+  amount?: string
   currency?: string
   reason_code?: string | null
   created_at?: string | null
-}
-
-export type ItemsCategoriesTranslations = {
-  id: string
-  parent: string | ItemsCategories
-  language: string | ItemsLanguages
-  title: string
-}
-
-export type ItemsProjectsTranslations = {
-  id: string
-  parent: string | ItemsProjects
-  language: string | ItemsLanguages
-  title: string
-  summary?: string | null
-  body?: string | null
-  image_alt?: string | null
-}
-
-export type ItemsDonationPurposes = {
-  id: string
-  slug: string
-  status?: string
-  category?: string | ItemsCategories | null
-  project?: string | ItemsProjects | null
-  unit_amount_cents?: number
-  currency?: string
-  image?: string | Files | null
-  sort?: number
-  is_illustrative?: boolean
-  translations?: Array<string | ItemsDonationPurposesTranslations> | null
-}
-
-export type ItemsCheckouts = {
-  id: string
-  reference: string
-  donor?: string | ItemsDonors | null
-  status?: string
-  currency?: string
-  total_cents?: number
-  created_at?: string | null
-  paid_at?: string | null
-  donations?: Array<string | ItemsDonations> | null
-  payment_attempts?: Array<string | ItemsPaymentAttempts> | null
 }
 
 /**
@@ -474,1050 +491,6 @@ export type Fields = Array<string>
  *
  */
 export type Version = string
-
-export type DeleteItemsBackendMigrationsData = {
-  body?: never
-  path?: never
-  query?: never
-  url: '/items/backend_migrations'
-}
-
-export type DeleteItemsBackendMigrationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type DeleteItemsBackendMigrationsError =
-  DeleteItemsBackendMigrationsErrors[keyof DeleteItemsBackendMigrationsErrors]
-
-export type DeleteItemsBackendMigrationsResponses = {
-  /**
-   * Successful request
-   */
-  200: unknown
-}
-
-export type ReadItemsBackendMigrationsData = {
-  body?: never
-  path?: never
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * A limit on the number of objects that are returned.
-     */
-    limit?: number
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * How many items to skip when fetching data.
-     */
-    offset?: number
-    /**
-     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
-     *
-     */
-    sort?: Array<string>
-    /**
-     * Select items in collection by given conditions.
-     */
-    filter?: {
-      [key: string]: unknown
-    }
-    /**
-     * Filter by items that contain the given search query in one of their fields.
-     */
-    search?: string
-  }
-  url: '/items/backend_migrations'
-}
-
-export type ReadItemsBackendMigrationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type ReadItemsBackendMigrationsError =
-  ReadItemsBackendMigrationsErrors[keyof ReadItemsBackendMigrationsErrors]
-
-export type ReadItemsBackendMigrationsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsBackendMigrations>
-    meta?: XMetadata
-  }
-}
-
-export type ReadItemsBackendMigrationsResponse =
-  ReadItemsBackendMigrationsResponses[keyof ReadItemsBackendMigrationsResponses]
-
-export type UpdateItemsBackendMigrationsData = {
-  body?: Array<ItemsBackendMigrations> | ItemsBackendMigrations
-  path?: never
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * A limit on the number of objects that are returned.
-     */
-    limit?: number
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * How many items to skip when fetching data.
-     */
-    offset?: number
-    /**
-     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
-     *
-     */
-    sort?: Array<string>
-    /**
-     * Select items in collection by given conditions.
-     */
-    filter?: {
-      [key: string]: unknown
-    }
-    /**
-     * Filter by items that contain the given search query in one of their fields.
-     */
-    search?: string
-  }
-  url: '/items/backend_migrations'
-}
-
-export type UpdateItemsBackendMigrationsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsBackendMigrations>
-  }
-}
-
-export type UpdateItemsBackendMigrationsResponse =
-  UpdateItemsBackendMigrationsResponses[keyof UpdateItemsBackendMigrationsResponses]
-
-export type CreateItemsBackendMigrationsData = {
-  body?: Array<ItemsBackendMigrations> | ItemsBackendMigrations
-  path?: never
-  query?: {
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-  }
-  url: '/items/backend_migrations'
-}
-
-export type CreateItemsBackendMigrationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type CreateItemsBackendMigrationsError =
-  CreateItemsBackendMigrationsErrors[keyof CreateItemsBackendMigrationsErrors]
-
-export type CreateItemsBackendMigrationsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsBackendMigrations>
-  }
-}
-
-export type CreateItemsBackendMigrationsResponse =
-  CreateItemsBackendMigrationsResponses[keyof CreateItemsBackendMigrationsResponses]
-
-export type DeleteSingleItemsBackendMigrationsData = {
-  body?: never
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: never
-  url: '/items/backend_migrations/{id}'
-}
-
-export type DeleteSingleItemsBackendMigrationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type DeleteSingleItemsBackendMigrationsError =
-  DeleteSingleItemsBackendMigrationsErrors[keyof DeleteSingleItemsBackendMigrationsErrors]
-
-export type DeleteSingleItemsBackendMigrationsResponses = {
-  /**
-   * Successful request
-   */
-  200: unknown
-}
-
-export type ReadSingleItemsBackendMigrationsData = {
-  body?: never
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content Version.
-     *
-     */
-    version?: string
-  }
-  url: '/items/backend_migrations/{id}'
-}
-
-export type ReadSingleItemsBackendMigrationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type ReadSingleItemsBackendMigrationsError =
-  ReadSingleItemsBackendMigrationsErrors[keyof ReadSingleItemsBackendMigrationsErrors]
-
-export type ReadSingleItemsBackendMigrationsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: ItemsBackendMigrations
-  }
-}
-
-export type ReadSingleItemsBackendMigrationsResponse =
-  ReadSingleItemsBackendMigrationsResponses[keyof ReadSingleItemsBackendMigrationsResponses]
-
-export type UpdateSingleItemsBackendMigrationsData = {
-  body?: ItemsBackendMigrations
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-  }
-  url: '/items/backend_migrations/{id}'
-}
-
-export type UpdateSingleItemsBackendMigrationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type UpdateSingleItemsBackendMigrationsError =
-  UpdateSingleItemsBackendMigrationsErrors[keyof UpdateSingleItemsBackendMigrationsErrors]
-
-export type UpdateSingleItemsBackendMigrationsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: ItemsBackendMigrations
-  }
-}
-
-export type UpdateSingleItemsBackendMigrationsResponse =
-  UpdateSingleItemsBackendMigrationsResponses[keyof UpdateSingleItemsBackendMigrationsResponses]
-
-export type DeleteItemsLanguagesData = {
-  body?: never
-  path?: never
-  query?: never
-  url: '/items/languages'
-}
-
-export type DeleteItemsLanguagesErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type DeleteItemsLanguagesError =
-  DeleteItemsLanguagesErrors[keyof DeleteItemsLanguagesErrors]
-
-export type DeleteItemsLanguagesResponses = {
-  /**
-   * Successful request
-   */
-  200: unknown
-}
-
-export type ReadItemsLanguagesData = {
-  body?: never
-  path?: never
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * A limit on the number of objects that are returned.
-     */
-    limit?: number
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * How many items to skip when fetching data.
-     */
-    offset?: number
-    /**
-     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
-     *
-     */
-    sort?: Array<string>
-    /**
-     * Select items in collection by given conditions.
-     */
-    filter?: {
-      [key: string]: unknown
-    }
-    /**
-     * Filter by items that contain the given search query in one of their fields.
-     */
-    search?: string
-  }
-  url: '/items/languages'
-}
-
-export type ReadItemsLanguagesErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type ReadItemsLanguagesError =
-  ReadItemsLanguagesErrors[keyof ReadItemsLanguagesErrors]
-
-export type ReadItemsLanguagesResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsLanguages>
-    meta?: XMetadata
-  }
-}
-
-export type ReadItemsLanguagesResponse =
-  ReadItemsLanguagesResponses[keyof ReadItemsLanguagesResponses]
-
-export type UpdateItemsLanguagesData = {
-  body?: Array<ItemsLanguages> | ItemsLanguages
-  path?: never
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * A limit on the number of objects that are returned.
-     */
-    limit?: number
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * How many items to skip when fetching data.
-     */
-    offset?: number
-    /**
-     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
-     *
-     */
-    sort?: Array<string>
-    /**
-     * Select items in collection by given conditions.
-     */
-    filter?: {
-      [key: string]: unknown
-    }
-    /**
-     * Filter by items that contain the given search query in one of their fields.
-     */
-    search?: string
-  }
-  url: '/items/languages'
-}
-
-export type UpdateItemsLanguagesResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsLanguages>
-  }
-}
-
-export type UpdateItemsLanguagesResponse =
-  UpdateItemsLanguagesResponses[keyof UpdateItemsLanguagesResponses]
-
-export type CreateItemsLanguagesData = {
-  body?: Array<ItemsLanguages> | ItemsLanguages
-  path?: never
-  query?: {
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-  }
-  url: '/items/languages'
-}
-
-export type CreateItemsLanguagesErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type CreateItemsLanguagesError =
-  CreateItemsLanguagesErrors[keyof CreateItemsLanguagesErrors]
-
-export type CreateItemsLanguagesResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsLanguages>
-  }
-}
-
-export type CreateItemsLanguagesResponse =
-  CreateItemsLanguagesResponses[keyof CreateItemsLanguagesResponses]
-
-export type DeleteSingleItemsLanguagesData = {
-  body?: never
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: never
-  url: '/items/languages/{id}'
-}
-
-export type DeleteSingleItemsLanguagesErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type DeleteSingleItemsLanguagesError =
-  DeleteSingleItemsLanguagesErrors[keyof DeleteSingleItemsLanguagesErrors]
-
-export type DeleteSingleItemsLanguagesResponses = {
-  /**
-   * Successful request
-   */
-  200: unknown
-}
-
-export type ReadSingleItemsLanguagesData = {
-  body?: never
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content Version.
-     *
-     */
-    version?: string
-  }
-  url: '/items/languages/{id}'
-}
-
-export type ReadSingleItemsLanguagesErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type ReadSingleItemsLanguagesError =
-  ReadSingleItemsLanguagesErrors[keyof ReadSingleItemsLanguagesErrors]
-
-export type ReadSingleItemsLanguagesResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: ItemsLanguages
-  }
-}
-
-export type ReadSingleItemsLanguagesResponse =
-  ReadSingleItemsLanguagesResponses[keyof ReadSingleItemsLanguagesResponses]
-
-export type UpdateSingleItemsLanguagesData = {
-  body?: ItemsLanguages
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-  }
-  url: '/items/languages/{id}'
-}
-
-export type UpdateSingleItemsLanguagesErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type UpdateSingleItemsLanguagesError =
-  UpdateSingleItemsLanguagesErrors[keyof UpdateSingleItemsLanguagesErrors]
-
-export type UpdateSingleItemsLanguagesResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: ItemsLanguages
-  }
-}
-
-export type UpdateSingleItemsLanguagesResponse =
-  UpdateSingleItemsLanguagesResponses[keyof UpdateSingleItemsLanguagesResponses]
-
-export type DeleteItemsProjectsData = {
-  body?: never
-  path?: never
-  query?: never
-  url: '/items/projects'
-}
-
-export type DeleteItemsProjectsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type DeleteItemsProjectsError =
-  DeleteItemsProjectsErrors[keyof DeleteItemsProjectsErrors]
-
-export type DeleteItemsProjectsResponses = {
-  /**
-   * Successful request
-   */
-  200: unknown
-}
-
-export type ReadItemsProjectsData = {
-  body?: never
-  path?: never
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * A limit on the number of objects that are returned.
-     */
-    limit?: number
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * How many items to skip when fetching data.
-     */
-    offset?: number
-    /**
-     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
-     *
-     */
-    sort?: Array<string>
-    /**
-     * Select items in collection by given conditions.
-     */
-    filter?: {
-      [key: string]: unknown
-    }
-    /**
-     * Filter by items that contain the given search query in one of their fields.
-     */
-    search?: string
-  }
-  url: '/items/projects'
-}
-
-export type ReadItemsProjectsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type ReadItemsProjectsError =
-  ReadItemsProjectsErrors[keyof ReadItemsProjectsErrors]
-
-export type ReadItemsProjectsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsProjects>
-    meta?: XMetadata
-  }
-}
-
-export type ReadItemsProjectsResponse =
-  ReadItemsProjectsResponses[keyof ReadItemsProjectsResponses]
-
-export type UpdateItemsProjectsData = {
-  body?: Array<ItemsProjects> | ItemsProjects
-  path?: never
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * A limit on the number of objects that are returned.
-     */
-    limit?: number
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * How many items to skip when fetching data.
-     */
-    offset?: number
-    /**
-     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
-     *
-     */
-    sort?: Array<string>
-    /**
-     * Select items in collection by given conditions.
-     */
-    filter?: {
-      [key: string]: unknown
-    }
-    /**
-     * Filter by items that contain the given search query in one of their fields.
-     */
-    search?: string
-  }
-  url: '/items/projects'
-}
-
-export type UpdateItemsProjectsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsProjects>
-  }
-}
-
-export type UpdateItemsProjectsResponse =
-  UpdateItemsProjectsResponses[keyof UpdateItemsProjectsResponses]
-
-export type CreateItemsProjectsData = {
-  body?: Array<ItemsProjects> | ItemsProjects
-  path?: never
-  query?: {
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-  }
-  url: '/items/projects'
-}
-
-export type CreateItemsProjectsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type CreateItemsProjectsError =
-  CreateItemsProjectsErrors[keyof CreateItemsProjectsErrors]
-
-export type CreateItemsProjectsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsProjects>
-  }
-}
-
-export type CreateItemsProjectsResponse =
-  CreateItemsProjectsResponses[keyof CreateItemsProjectsResponses]
-
-export type DeleteSingleItemsProjectsData = {
-  body?: never
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: never
-  url: '/items/projects/{id}'
-}
-
-export type DeleteSingleItemsProjectsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type DeleteSingleItemsProjectsError =
-  DeleteSingleItemsProjectsErrors[keyof DeleteSingleItemsProjectsErrors]
-
-export type DeleteSingleItemsProjectsResponses = {
-  /**
-   * Successful request
-   */
-  200: unknown
-}
-
-export type ReadSingleItemsProjectsData = {
-  body?: never
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content Version.
-     *
-     */
-    version?: string
-  }
-  url: '/items/projects/{id}'
-}
-
-export type ReadSingleItemsProjectsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type ReadSingleItemsProjectsError =
-  ReadSingleItemsProjectsErrors[keyof ReadSingleItemsProjectsErrors]
-
-export type ReadSingleItemsProjectsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: ItemsProjects
-  }
-}
-
-export type ReadSingleItemsProjectsResponse =
-  ReadSingleItemsProjectsResponses[keyof ReadSingleItemsProjectsResponses]
-
-export type UpdateSingleItemsProjectsData = {
-  body?: ItemsProjects
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-  }
-  url: '/items/projects/{id}'
-}
-
-export type UpdateSingleItemsProjectsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type UpdateSingleItemsProjectsError =
-  UpdateSingleItemsProjectsErrors[keyof UpdateSingleItemsProjectsErrors]
-
-export type UpdateSingleItemsProjectsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: ItemsProjects
-  }
-}
-
-export type UpdateSingleItemsProjectsResponse =
-  UpdateSingleItemsProjectsResponses[keyof UpdateSingleItemsProjectsResponses]
 
 export type DeleteItemsCampaignsData = {
   body?: never
@@ -2215,14 +1188,14 @@ export type UpdateSingleItemsCampaignProjectsResponses = {
 export type UpdateSingleItemsCampaignProjectsResponse =
   UpdateSingleItemsCampaignProjectsResponses[keyof UpdateSingleItemsCampaignProjectsResponses]
 
-export type DeleteItemsPartnersData = {
+export type DeleteItemsProjectsData = {
   body?: never
   path?: never
   query?: never
-  url: '/items/partners'
+  url: '/items/projects'
 }
 
-export type DeleteItemsPartnersErrors = {
+export type DeleteItemsProjectsErrors = {
   /**
    * Error: Unauthorized request
    */
@@ -2234,17 +1207,17 @@ export type DeleteItemsPartnersErrors = {
   }
 }
 
-export type DeleteItemsPartnersError =
-  DeleteItemsPartnersErrors[keyof DeleteItemsPartnersErrors]
+export type DeleteItemsProjectsError =
+  DeleteItemsProjectsErrors[keyof DeleteItemsProjectsErrors]
 
-export type DeleteItemsPartnersResponses = {
+export type DeleteItemsProjectsResponses = {
   /**
    * Successful request
    */
   200: unknown
 }
 
-export type ReadItemsPartnersData = {
+export type ReadItemsProjectsData = {
   body?: never
   path?: never
   query?: {
@@ -2280,10 +1253,10 @@ export type ReadItemsPartnersData = {
      */
     search?: string
   }
-  url: '/items/partners'
+  url: '/items/projects'
 }
 
-export type ReadItemsPartnersErrors = {
+export type ReadItemsProjectsErrors = {
   /**
    * Error: Unauthorized request
    */
@@ -2295,24 +1268,24 @@ export type ReadItemsPartnersErrors = {
   }
 }
 
-export type ReadItemsPartnersError =
-  ReadItemsPartnersErrors[keyof ReadItemsPartnersErrors]
+export type ReadItemsProjectsError =
+  ReadItemsProjectsErrors[keyof ReadItemsProjectsErrors]
 
-export type ReadItemsPartnersResponses = {
+export type ReadItemsProjectsResponses = {
   /**
    * Successful request
    */
   200: {
-    data?: Array<ItemsPartners>
+    data?: Array<ItemsProjects>
     meta?: XMetadata
   }
 }
 
-export type ReadItemsPartnersResponse =
-  ReadItemsPartnersResponses[keyof ReadItemsPartnersResponses]
+export type ReadItemsProjectsResponse =
+  ReadItemsProjectsResponses[keyof ReadItemsProjectsResponses]
 
-export type UpdateItemsPartnersData = {
-  body?: Array<ItemsPartners> | ItemsPartners
+export type UpdateItemsProjectsData = {
+  body?: Array<ItemsProjects> | ItemsProjects
   path?: never
   query?: {
     /**
@@ -2347,23 +1320,23 @@ export type UpdateItemsPartnersData = {
      */
     search?: string
   }
-  url: '/items/partners'
+  url: '/items/projects'
 }
 
-export type UpdateItemsPartnersResponses = {
+export type UpdateItemsProjectsResponses = {
   /**
    * Successful request
    */
   200: {
-    data?: Array<ItemsPartners>
+    data?: Array<ItemsProjects>
   }
 }
 
-export type UpdateItemsPartnersResponse =
-  UpdateItemsPartnersResponses[keyof UpdateItemsPartnersResponses]
+export type UpdateItemsProjectsResponse =
+  UpdateItemsProjectsResponses[keyof UpdateItemsProjectsResponses]
 
-export type CreateItemsPartnersData = {
-  body?: Array<ItemsPartners> | ItemsPartners
+export type CreateItemsProjectsData = {
+  body?: Array<ItemsProjects> | ItemsProjects
   path?: never
   query?: {
     /**
@@ -2371,10 +1344,10 @@ export type CreateItemsPartnersData = {
      */
     meta?: string
   }
-  url: '/items/partners'
+  url: '/items/projects'
 }
 
-export type CreateItemsPartnersErrors = {
+export type CreateItemsProjectsErrors = {
   /**
    * Error: Unauthorized request
    */
@@ -2386,22 +1359,22 @@ export type CreateItemsPartnersErrors = {
   }
 }
 
-export type CreateItemsPartnersError =
-  CreateItemsPartnersErrors[keyof CreateItemsPartnersErrors]
+export type CreateItemsProjectsError =
+  CreateItemsProjectsErrors[keyof CreateItemsProjectsErrors]
 
-export type CreateItemsPartnersResponses = {
+export type CreateItemsProjectsResponses = {
   /**
    * Successful request
    */
   200: {
-    data?: Array<ItemsPartners>
+    data?: Array<ItemsProjects>
   }
 }
 
-export type CreateItemsPartnersResponse =
-  CreateItemsPartnersResponses[keyof CreateItemsPartnersResponses]
+export type CreateItemsProjectsResponse =
+  CreateItemsProjectsResponses[keyof CreateItemsProjectsResponses]
 
-export type DeleteSingleItemsPartnersData = {
+export type DeleteSingleItemsProjectsData = {
   body?: never
   path: {
     /**
@@ -2410,10 +1383,10 @@ export type DeleteSingleItemsPartnersData = {
     id: number | string
   }
   query?: never
-  url: '/items/partners/{id}'
+  url: '/items/projects/{id}'
 }
 
-export type DeleteSingleItemsPartnersErrors = {
+export type DeleteSingleItemsProjectsErrors = {
   /**
    * Error: Unauthorized request
    */
@@ -2434,17 +1407,17 @@ export type DeleteSingleItemsPartnersErrors = {
   }
 }
 
-export type DeleteSingleItemsPartnersError =
-  DeleteSingleItemsPartnersErrors[keyof DeleteSingleItemsPartnersErrors]
+export type DeleteSingleItemsProjectsError =
+  DeleteSingleItemsProjectsErrors[keyof DeleteSingleItemsProjectsErrors]
 
-export type DeleteSingleItemsPartnersResponses = {
+export type DeleteSingleItemsProjectsResponses = {
   /**
    * Successful request
    */
   200: unknown
 }
 
-export type ReadSingleItemsPartnersData = {
+export type ReadSingleItemsProjectsData = {
   body?: never
   path: {
     /**
@@ -2467,10 +1440,10 @@ export type ReadSingleItemsPartnersData = {
      */
     version?: string
   }
-  url: '/items/partners/{id}'
+  url: '/items/projects/{id}'
 }
 
-export type ReadSingleItemsPartnersErrors = {
+export type ReadSingleItemsProjectsErrors = {
   /**
    * Error: Unauthorized request
    */
@@ -2491,23 +1464,23 @@ export type ReadSingleItemsPartnersErrors = {
   }
 }
 
-export type ReadSingleItemsPartnersError =
-  ReadSingleItemsPartnersErrors[keyof ReadSingleItemsPartnersErrors]
+export type ReadSingleItemsProjectsError =
+  ReadSingleItemsProjectsErrors[keyof ReadSingleItemsProjectsErrors]
 
-export type ReadSingleItemsPartnersResponses = {
+export type ReadSingleItemsProjectsResponses = {
   /**
    * Successful request
    */
   200: {
-    data?: ItemsPartners
+    data?: ItemsProjects
   }
 }
 
-export type ReadSingleItemsPartnersResponse =
-  ReadSingleItemsPartnersResponses[keyof ReadSingleItemsPartnersResponses]
+export type ReadSingleItemsProjectsResponse =
+  ReadSingleItemsProjectsResponses[keyof ReadSingleItemsProjectsResponses]
 
-export type UpdateSingleItemsPartnersData = {
-  body?: ItemsPartners
+export type UpdateSingleItemsProjectsData = {
+  body?: ItemsProjects
   path: {
     /**
      * Index of the item.
@@ -2524,10 +1497,10 @@ export type UpdateSingleItemsPartnersData = {
      */
     meta?: string
   }
-  url: '/items/partners/{id}'
+  url: '/items/projects/{id}'
 }
 
-export type UpdateSingleItemsPartnersErrors = {
+export type UpdateSingleItemsProjectsErrors = {
   /**
    * Error: Unauthorized request
    */
@@ -2548,20 +1521,716 @@ export type UpdateSingleItemsPartnersErrors = {
   }
 }
 
-export type UpdateSingleItemsPartnersError =
-  UpdateSingleItemsPartnersErrors[keyof UpdateSingleItemsPartnersErrors]
+export type UpdateSingleItemsProjectsError =
+  UpdateSingleItemsProjectsErrors[keyof UpdateSingleItemsProjectsErrors]
 
-export type UpdateSingleItemsPartnersResponses = {
+export type UpdateSingleItemsProjectsResponses = {
   /**
    * Successful request
    */
   200: {
-    data?: ItemsPartners
+    data?: ItemsProjects
   }
 }
 
-export type UpdateSingleItemsPartnersResponse =
-  UpdateSingleItemsPartnersResponses[keyof UpdateSingleItemsPartnersResponses]
+export type UpdateSingleItemsProjectsResponse =
+  UpdateSingleItemsProjectsResponses[keyof UpdateSingleItemsProjectsResponses]
+
+export type DeleteItemsCampaignsTranslationsData = {
+  body?: never
+  path?: never
+  query?: never
+  url: '/items/campaigns_translations'
+}
+
+export type DeleteItemsCampaignsTranslationsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type DeleteItemsCampaignsTranslationsError =
+  DeleteItemsCampaignsTranslationsErrors[keyof DeleteItemsCampaignsTranslationsErrors]
+
+export type DeleteItemsCampaignsTranslationsResponses = {
+  /**
+   * Successful request
+   */
+  200: unknown
+}
+
+export type ReadItemsCampaignsTranslationsData = {
+  body?: never
+  path?: never
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * A limit on the number of objects that are returned.
+     */
+    limit?: number
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * How many items to skip when fetching data.
+     */
+    offset?: number
+    /**
+     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
+     *
+     */
+    sort?: Array<string>
+    /**
+     * Select items in collection by given conditions.
+     */
+    filter?: {
+      [key: string]: unknown
+    }
+    /**
+     * Filter by items that contain the given search query in one of their fields.
+     */
+    search?: string
+  }
+  url: '/items/campaigns_translations'
+}
+
+export type ReadItemsCampaignsTranslationsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type ReadItemsCampaignsTranslationsError =
+  ReadItemsCampaignsTranslationsErrors[keyof ReadItemsCampaignsTranslationsErrors]
+
+export type ReadItemsCampaignsTranslationsResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsCampaignsTranslations>
+    meta?: XMetadata
+  }
+}
+
+export type ReadItemsCampaignsTranslationsResponse =
+  ReadItemsCampaignsTranslationsResponses[keyof ReadItemsCampaignsTranslationsResponses]
+
+export type UpdateItemsCampaignsTranslationsData = {
+  body?: Array<ItemsCampaignsTranslations> | ItemsCampaignsTranslations
+  path?: never
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * A limit on the number of objects that are returned.
+     */
+    limit?: number
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * How many items to skip when fetching data.
+     */
+    offset?: number
+    /**
+     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
+     *
+     */
+    sort?: Array<string>
+    /**
+     * Select items in collection by given conditions.
+     */
+    filter?: {
+      [key: string]: unknown
+    }
+    /**
+     * Filter by items that contain the given search query in one of their fields.
+     */
+    search?: string
+  }
+  url: '/items/campaigns_translations'
+}
+
+export type UpdateItemsCampaignsTranslationsResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsCampaignsTranslations>
+  }
+}
+
+export type UpdateItemsCampaignsTranslationsResponse =
+  UpdateItemsCampaignsTranslationsResponses[keyof UpdateItemsCampaignsTranslationsResponses]
+
+export type CreateItemsCampaignsTranslationsData = {
+  body?: Array<ItemsCampaignsTranslations> | ItemsCampaignsTranslations
+  path?: never
+  query?: {
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+  }
+  url: '/items/campaigns_translations'
+}
+
+export type CreateItemsCampaignsTranslationsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type CreateItemsCampaignsTranslationsError =
+  CreateItemsCampaignsTranslationsErrors[keyof CreateItemsCampaignsTranslationsErrors]
+
+export type CreateItemsCampaignsTranslationsResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsCampaignsTranslations>
+  }
+}
+
+export type CreateItemsCampaignsTranslationsResponse =
+  CreateItemsCampaignsTranslationsResponses[keyof CreateItemsCampaignsTranslationsResponses]
+
+export type DeleteSingleItemsCampaignsTranslationsData = {
+  body?: never
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: never
+  url: '/items/campaigns_translations/{id}'
+}
+
+export type DeleteSingleItemsCampaignsTranslationsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type DeleteSingleItemsCampaignsTranslationsError =
+  DeleteSingleItemsCampaignsTranslationsErrors[keyof DeleteSingleItemsCampaignsTranslationsErrors]
+
+export type DeleteSingleItemsCampaignsTranslationsResponses = {
+  /**
+   * Successful request
+   */
+  200: unknown
+}
+
+export type ReadSingleItemsCampaignsTranslationsData = {
+  body?: never
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content Version.
+     *
+     */
+    version?: string
+  }
+  url: '/items/campaigns_translations/{id}'
+}
+
+export type ReadSingleItemsCampaignsTranslationsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type ReadSingleItemsCampaignsTranslationsError =
+  ReadSingleItemsCampaignsTranslationsErrors[keyof ReadSingleItemsCampaignsTranslationsErrors]
+
+export type ReadSingleItemsCampaignsTranslationsResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: ItemsCampaignsTranslations
+  }
+}
+
+export type ReadSingleItemsCampaignsTranslationsResponse =
+  ReadSingleItemsCampaignsTranslationsResponses[keyof ReadSingleItemsCampaignsTranslationsResponses]
+
+export type UpdateSingleItemsCampaignsTranslationsData = {
+  body?: ItemsCampaignsTranslations
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+  }
+  url: '/items/campaigns_translations/{id}'
+}
+
+export type UpdateSingleItemsCampaignsTranslationsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type UpdateSingleItemsCampaignsTranslationsError =
+  UpdateSingleItemsCampaignsTranslationsErrors[keyof UpdateSingleItemsCampaignsTranslationsErrors]
+
+export type UpdateSingleItemsCampaignsTranslationsResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: ItemsCampaignsTranslations
+  }
+}
+
+export type UpdateSingleItemsCampaignsTranslationsResponse =
+  UpdateSingleItemsCampaignsTranslationsResponses[keyof UpdateSingleItemsCampaignsTranslationsResponses]
+
+export type DeleteItemsLanguagesData = {
+  body?: never
+  path?: never
+  query?: never
+  url: '/items/languages'
+}
+
+export type DeleteItemsLanguagesErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type DeleteItemsLanguagesError =
+  DeleteItemsLanguagesErrors[keyof DeleteItemsLanguagesErrors]
+
+export type DeleteItemsLanguagesResponses = {
+  /**
+   * Successful request
+   */
+  200: unknown
+}
+
+export type ReadItemsLanguagesData = {
+  body?: never
+  path?: never
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * A limit on the number of objects that are returned.
+     */
+    limit?: number
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * How many items to skip when fetching data.
+     */
+    offset?: number
+    /**
+     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
+     *
+     */
+    sort?: Array<string>
+    /**
+     * Select items in collection by given conditions.
+     */
+    filter?: {
+      [key: string]: unknown
+    }
+    /**
+     * Filter by items that contain the given search query in one of their fields.
+     */
+    search?: string
+  }
+  url: '/items/languages'
+}
+
+export type ReadItemsLanguagesErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type ReadItemsLanguagesError =
+  ReadItemsLanguagesErrors[keyof ReadItemsLanguagesErrors]
+
+export type ReadItemsLanguagesResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsLanguages>
+    meta?: XMetadata
+  }
+}
+
+export type ReadItemsLanguagesResponse =
+  ReadItemsLanguagesResponses[keyof ReadItemsLanguagesResponses]
+
+export type UpdateItemsLanguagesData = {
+  body?: Array<ItemsLanguages> | ItemsLanguages
+  path?: never
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * A limit on the number of objects that are returned.
+     */
+    limit?: number
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * How many items to skip when fetching data.
+     */
+    offset?: number
+    /**
+     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
+     *
+     */
+    sort?: Array<string>
+    /**
+     * Select items in collection by given conditions.
+     */
+    filter?: {
+      [key: string]: unknown
+    }
+    /**
+     * Filter by items that contain the given search query in one of their fields.
+     */
+    search?: string
+  }
+  url: '/items/languages'
+}
+
+export type UpdateItemsLanguagesResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsLanguages>
+  }
+}
+
+export type UpdateItemsLanguagesResponse =
+  UpdateItemsLanguagesResponses[keyof UpdateItemsLanguagesResponses]
+
+export type CreateItemsLanguagesData = {
+  body?: Array<ItemsLanguages> | ItemsLanguages
+  path?: never
+  query?: {
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+  }
+  url: '/items/languages'
+}
+
+export type CreateItemsLanguagesErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type CreateItemsLanguagesError =
+  CreateItemsLanguagesErrors[keyof CreateItemsLanguagesErrors]
+
+export type CreateItemsLanguagesResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsLanguages>
+  }
+}
+
+export type CreateItemsLanguagesResponse =
+  CreateItemsLanguagesResponses[keyof CreateItemsLanguagesResponses]
+
+export type DeleteSingleItemsLanguagesData = {
+  body?: never
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: never
+  url: '/items/languages/{id}'
+}
+
+export type DeleteSingleItemsLanguagesErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type DeleteSingleItemsLanguagesError =
+  DeleteSingleItemsLanguagesErrors[keyof DeleteSingleItemsLanguagesErrors]
+
+export type DeleteSingleItemsLanguagesResponses = {
+  /**
+   * Successful request
+   */
+  200: unknown
+}
+
+export type ReadSingleItemsLanguagesData = {
+  body?: never
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content Version.
+     *
+     */
+    version?: string
+  }
+  url: '/items/languages/{id}'
+}
+
+export type ReadSingleItemsLanguagesErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type ReadSingleItemsLanguagesError =
+  ReadSingleItemsLanguagesErrors[keyof ReadSingleItemsLanguagesErrors]
+
+export type ReadSingleItemsLanguagesResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: ItemsLanguages
+  }
+}
+
+export type ReadSingleItemsLanguagesResponse =
+  ReadSingleItemsLanguagesResponses[keyof ReadSingleItemsLanguagesResponses]
+
+export type UpdateSingleItemsLanguagesData = {
+  body?: ItemsLanguages
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+  }
+  url: '/items/languages/{id}'
+}
+
+export type UpdateSingleItemsLanguagesErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type UpdateSingleItemsLanguagesError =
+  UpdateSingleItemsLanguagesErrors[keyof UpdateSingleItemsLanguagesErrors]
+
+export type UpdateSingleItemsLanguagesResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: ItemsLanguages
+  }
+}
+
+export type UpdateSingleItemsLanguagesResponse =
+  UpdateSingleItemsLanguagesResponses[keyof UpdateSingleItemsLanguagesResponses]
 
 export type DeleteItemsCategoriesData = {
   body?: never
@@ -2911,14 +2580,14 @@ export type UpdateSingleItemsCategoriesResponses = {
 export type UpdateSingleItemsCategoriesResponse =
   UpdateSingleItemsCategoriesResponses[keyof UpdateSingleItemsCategoriesResponses]
 
-export type DeleteItemsCampaignsTranslationsData = {
+export type DeleteItemsCategoriesTranslationsData = {
   body?: never
   path?: never
   query?: never
-  url: '/items/campaigns_translations'
+  url: '/items/categories_translations'
 }
 
-export type DeleteItemsCampaignsTranslationsErrors = {
+export type DeleteItemsCategoriesTranslationsErrors = {
   /**
    * Error: Unauthorized request
    */
@@ -2930,17 +2599,17 @@ export type DeleteItemsCampaignsTranslationsErrors = {
   }
 }
 
-export type DeleteItemsCampaignsTranslationsError =
-  DeleteItemsCampaignsTranslationsErrors[keyof DeleteItemsCampaignsTranslationsErrors]
+export type DeleteItemsCategoriesTranslationsError =
+  DeleteItemsCategoriesTranslationsErrors[keyof DeleteItemsCategoriesTranslationsErrors]
 
-export type DeleteItemsCampaignsTranslationsResponses = {
+export type DeleteItemsCategoriesTranslationsResponses = {
   /**
    * Successful request
    */
   200: unknown
 }
 
-export type ReadItemsCampaignsTranslationsData = {
+export type ReadItemsCategoriesTranslationsData = {
   body?: never
   path?: never
   query?: {
@@ -2976,10 +2645,10 @@ export type ReadItemsCampaignsTranslationsData = {
      */
     search?: string
   }
-  url: '/items/campaigns_translations'
+  url: '/items/categories_translations'
 }
 
-export type ReadItemsCampaignsTranslationsErrors = {
+export type ReadItemsCategoriesTranslationsErrors = {
   /**
    * Error: Unauthorized request
    */
@@ -2991,24 +2660,24 @@ export type ReadItemsCampaignsTranslationsErrors = {
   }
 }
 
-export type ReadItemsCampaignsTranslationsError =
-  ReadItemsCampaignsTranslationsErrors[keyof ReadItemsCampaignsTranslationsErrors]
+export type ReadItemsCategoriesTranslationsError =
+  ReadItemsCategoriesTranslationsErrors[keyof ReadItemsCategoriesTranslationsErrors]
 
-export type ReadItemsCampaignsTranslationsResponses = {
+export type ReadItemsCategoriesTranslationsResponses = {
   /**
    * Successful request
    */
   200: {
-    data?: Array<ItemsCampaignsTranslations>
+    data?: Array<ItemsCategoriesTranslations>
     meta?: XMetadata
   }
 }
 
-export type ReadItemsCampaignsTranslationsResponse =
-  ReadItemsCampaignsTranslationsResponses[keyof ReadItemsCampaignsTranslationsResponses]
+export type ReadItemsCategoriesTranslationsResponse =
+  ReadItemsCategoriesTranslationsResponses[keyof ReadItemsCategoriesTranslationsResponses]
 
-export type UpdateItemsCampaignsTranslationsData = {
-  body?: Array<ItemsCampaignsTranslations> | ItemsCampaignsTranslations
+export type UpdateItemsCategoriesTranslationsData = {
+  body?: Array<ItemsCategoriesTranslations> | ItemsCategoriesTranslations
   path?: never
   query?: {
     /**
@@ -3043,23 +2712,23 @@ export type UpdateItemsCampaignsTranslationsData = {
      */
     search?: string
   }
-  url: '/items/campaigns_translations'
+  url: '/items/categories_translations'
 }
 
-export type UpdateItemsCampaignsTranslationsResponses = {
+export type UpdateItemsCategoriesTranslationsResponses = {
   /**
    * Successful request
    */
   200: {
-    data?: Array<ItemsCampaignsTranslations>
+    data?: Array<ItemsCategoriesTranslations>
   }
 }
 
-export type UpdateItemsCampaignsTranslationsResponse =
-  UpdateItemsCampaignsTranslationsResponses[keyof UpdateItemsCampaignsTranslationsResponses]
+export type UpdateItemsCategoriesTranslationsResponse =
+  UpdateItemsCategoriesTranslationsResponses[keyof UpdateItemsCategoriesTranslationsResponses]
 
-export type CreateItemsCampaignsTranslationsData = {
-  body?: Array<ItemsCampaignsTranslations> | ItemsCampaignsTranslations
+export type CreateItemsCategoriesTranslationsData = {
+  body?: Array<ItemsCategoriesTranslations> | ItemsCategoriesTranslations
   path?: never
   query?: {
     /**
@@ -3067,10 +2736,10 @@ export type CreateItemsCampaignsTranslationsData = {
      */
     meta?: string
   }
-  url: '/items/campaigns_translations'
+  url: '/items/categories_translations'
 }
 
-export type CreateItemsCampaignsTranslationsErrors = {
+export type CreateItemsCategoriesTranslationsErrors = {
   /**
    * Error: Unauthorized request
    */
@@ -3082,22 +2751,22 @@ export type CreateItemsCampaignsTranslationsErrors = {
   }
 }
 
-export type CreateItemsCampaignsTranslationsError =
-  CreateItemsCampaignsTranslationsErrors[keyof CreateItemsCampaignsTranslationsErrors]
+export type CreateItemsCategoriesTranslationsError =
+  CreateItemsCategoriesTranslationsErrors[keyof CreateItemsCategoriesTranslationsErrors]
 
-export type CreateItemsCampaignsTranslationsResponses = {
+export type CreateItemsCategoriesTranslationsResponses = {
   /**
    * Successful request
    */
   200: {
-    data?: Array<ItemsCampaignsTranslations>
+    data?: Array<ItemsCategoriesTranslations>
   }
 }
 
-export type CreateItemsCampaignsTranslationsResponse =
-  CreateItemsCampaignsTranslationsResponses[keyof CreateItemsCampaignsTranslationsResponses]
+export type CreateItemsCategoriesTranslationsResponse =
+  CreateItemsCategoriesTranslationsResponses[keyof CreateItemsCategoriesTranslationsResponses]
 
-export type DeleteSingleItemsCampaignsTranslationsData = {
+export type DeleteSingleItemsCategoriesTranslationsData = {
   body?: never
   path: {
     /**
@@ -3106,10 +2775,10 @@ export type DeleteSingleItemsCampaignsTranslationsData = {
     id: number | string
   }
   query?: never
-  url: '/items/campaigns_translations/{id}'
+  url: '/items/categories_translations/{id}'
 }
 
-export type DeleteSingleItemsCampaignsTranslationsErrors = {
+export type DeleteSingleItemsCategoriesTranslationsErrors = {
   /**
    * Error: Unauthorized request
    */
@@ -3130,17 +2799,17 @@ export type DeleteSingleItemsCampaignsTranslationsErrors = {
   }
 }
 
-export type DeleteSingleItemsCampaignsTranslationsError =
-  DeleteSingleItemsCampaignsTranslationsErrors[keyof DeleteSingleItemsCampaignsTranslationsErrors]
+export type DeleteSingleItemsCategoriesTranslationsError =
+  DeleteSingleItemsCategoriesTranslationsErrors[keyof DeleteSingleItemsCategoriesTranslationsErrors]
 
-export type DeleteSingleItemsCampaignsTranslationsResponses = {
+export type DeleteSingleItemsCategoriesTranslationsResponses = {
   /**
    * Successful request
    */
   200: unknown
 }
 
-export type ReadSingleItemsCampaignsTranslationsData = {
+export type ReadSingleItemsCategoriesTranslationsData = {
   body?: never
   path: {
     /**
@@ -3163,10 +2832,10 @@ export type ReadSingleItemsCampaignsTranslationsData = {
      */
     version?: string
   }
-  url: '/items/campaigns_translations/{id}'
+  url: '/items/categories_translations/{id}'
 }
 
-export type ReadSingleItemsCampaignsTranslationsErrors = {
+export type ReadSingleItemsCategoriesTranslationsErrors = {
   /**
    * Error: Unauthorized request
    */
@@ -3187,23 +2856,23 @@ export type ReadSingleItemsCampaignsTranslationsErrors = {
   }
 }
 
-export type ReadSingleItemsCampaignsTranslationsError =
-  ReadSingleItemsCampaignsTranslationsErrors[keyof ReadSingleItemsCampaignsTranslationsErrors]
+export type ReadSingleItemsCategoriesTranslationsError =
+  ReadSingleItemsCategoriesTranslationsErrors[keyof ReadSingleItemsCategoriesTranslationsErrors]
 
-export type ReadSingleItemsCampaignsTranslationsResponses = {
+export type ReadSingleItemsCategoriesTranslationsResponses = {
   /**
    * Successful request
    */
   200: {
-    data?: ItemsCampaignsTranslations
+    data?: ItemsCategoriesTranslations
   }
 }
 
-export type ReadSingleItemsCampaignsTranslationsResponse =
-  ReadSingleItemsCampaignsTranslationsResponses[keyof ReadSingleItemsCampaignsTranslationsResponses]
+export type ReadSingleItemsCategoriesTranslationsResponse =
+  ReadSingleItemsCategoriesTranslationsResponses[keyof ReadSingleItemsCategoriesTranslationsResponses]
 
-export type UpdateSingleItemsCampaignsTranslationsData = {
-  body?: ItemsCampaignsTranslations
+export type UpdateSingleItemsCategoriesTranslationsData = {
+  body?: ItemsCategoriesTranslations
   path: {
     /**
      * Index of the item.
@@ -3220,10 +2889,10 @@ export type UpdateSingleItemsCampaignsTranslationsData = {
      */
     meta?: string
   }
-  url: '/items/campaigns_translations/{id}'
+  url: '/items/categories_translations/{id}'
 }
 
-export type UpdateSingleItemsCampaignsTranslationsErrors = {
+export type UpdateSingleItemsCategoriesTranslationsErrors = {
   /**
    * Error: Unauthorized request
    */
@@ -3244,20 +2913,368 @@ export type UpdateSingleItemsCampaignsTranslationsErrors = {
   }
 }
 
-export type UpdateSingleItemsCampaignsTranslationsError =
-  UpdateSingleItemsCampaignsTranslationsErrors[keyof UpdateSingleItemsCampaignsTranslationsErrors]
+export type UpdateSingleItemsCategoriesTranslationsError =
+  UpdateSingleItemsCategoriesTranslationsErrors[keyof UpdateSingleItemsCategoriesTranslationsErrors]
 
-export type UpdateSingleItemsCampaignsTranslationsResponses = {
+export type UpdateSingleItemsCategoriesTranslationsResponses = {
   /**
    * Successful request
    */
   200: {
-    data?: ItemsCampaignsTranslations
+    data?: ItemsCategoriesTranslations
   }
 }
 
-export type UpdateSingleItemsCampaignsTranslationsResponse =
-  UpdateSingleItemsCampaignsTranslationsResponses[keyof UpdateSingleItemsCampaignsTranslationsResponses]
+export type UpdateSingleItemsCategoriesTranslationsResponse =
+  UpdateSingleItemsCategoriesTranslationsResponses[keyof UpdateSingleItemsCategoriesTranslationsResponses]
+
+export type DeleteItemsDonationPurposesData = {
+  body?: never
+  path?: never
+  query?: never
+  url: '/items/donation_purposes'
+}
+
+export type DeleteItemsDonationPurposesErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type DeleteItemsDonationPurposesError =
+  DeleteItemsDonationPurposesErrors[keyof DeleteItemsDonationPurposesErrors]
+
+export type DeleteItemsDonationPurposesResponses = {
+  /**
+   * Successful request
+   */
+  200: unknown
+}
+
+export type ReadItemsDonationPurposesData = {
+  body?: never
+  path?: never
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * A limit on the number of objects that are returned.
+     */
+    limit?: number
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * How many items to skip when fetching data.
+     */
+    offset?: number
+    /**
+     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
+     *
+     */
+    sort?: Array<string>
+    /**
+     * Select items in collection by given conditions.
+     */
+    filter?: {
+      [key: string]: unknown
+    }
+    /**
+     * Filter by items that contain the given search query in one of their fields.
+     */
+    search?: string
+  }
+  url: '/items/donation_purposes'
+}
+
+export type ReadItemsDonationPurposesErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type ReadItemsDonationPurposesError =
+  ReadItemsDonationPurposesErrors[keyof ReadItemsDonationPurposesErrors]
+
+export type ReadItemsDonationPurposesResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsDonationPurposes>
+    meta?: XMetadata
+  }
+}
+
+export type ReadItemsDonationPurposesResponse =
+  ReadItemsDonationPurposesResponses[keyof ReadItemsDonationPurposesResponses]
+
+export type UpdateItemsDonationPurposesData = {
+  body?: Array<ItemsDonationPurposes> | ItemsDonationPurposes
+  path?: never
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * A limit on the number of objects that are returned.
+     */
+    limit?: number
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * How many items to skip when fetching data.
+     */
+    offset?: number
+    /**
+     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
+     *
+     */
+    sort?: Array<string>
+    /**
+     * Select items in collection by given conditions.
+     */
+    filter?: {
+      [key: string]: unknown
+    }
+    /**
+     * Filter by items that contain the given search query in one of their fields.
+     */
+    search?: string
+  }
+  url: '/items/donation_purposes'
+}
+
+export type UpdateItemsDonationPurposesResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsDonationPurposes>
+  }
+}
+
+export type UpdateItemsDonationPurposesResponse =
+  UpdateItemsDonationPurposesResponses[keyof UpdateItemsDonationPurposesResponses]
+
+export type CreateItemsDonationPurposesData = {
+  body?: Array<ItemsDonationPurposes> | ItemsDonationPurposes
+  path?: never
+  query?: {
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+  }
+  url: '/items/donation_purposes'
+}
+
+export type CreateItemsDonationPurposesErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type CreateItemsDonationPurposesError =
+  CreateItemsDonationPurposesErrors[keyof CreateItemsDonationPurposesErrors]
+
+export type CreateItemsDonationPurposesResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsDonationPurposes>
+  }
+}
+
+export type CreateItemsDonationPurposesResponse =
+  CreateItemsDonationPurposesResponses[keyof CreateItemsDonationPurposesResponses]
+
+export type DeleteSingleItemsDonationPurposesData = {
+  body?: never
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: never
+  url: '/items/donation_purposes/{id}'
+}
+
+export type DeleteSingleItemsDonationPurposesErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type DeleteSingleItemsDonationPurposesError =
+  DeleteSingleItemsDonationPurposesErrors[keyof DeleteSingleItemsDonationPurposesErrors]
+
+export type DeleteSingleItemsDonationPurposesResponses = {
+  /**
+   * Successful request
+   */
+  200: unknown
+}
+
+export type ReadSingleItemsDonationPurposesData = {
+  body?: never
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content Version.
+     *
+     */
+    version?: string
+  }
+  url: '/items/donation_purposes/{id}'
+}
+
+export type ReadSingleItemsDonationPurposesErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type ReadSingleItemsDonationPurposesError =
+  ReadSingleItemsDonationPurposesErrors[keyof ReadSingleItemsDonationPurposesErrors]
+
+export type ReadSingleItemsDonationPurposesResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: ItemsDonationPurposes
+  }
+}
+
+export type ReadSingleItemsDonationPurposesResponse =
+  ReadSingleItemsDonationPurposesResponses[keyof ReadSingleItemsDonationPurposesResponses]
+
+export type UpdateSingleItemsDonationPurposesData = {
+  body?: ItemsDonationPurposes
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+  }
+  url: '/items/donation_purposes/{id}'
+}
+
+export type UpdateSingleItemsDonationPurposesErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type UpdateSingleItemsDonationPurposesError =
+  UpdateSingleItemsDonationPurposesErrors[keyof UpdateSingleItemsDonationPurposesErrors]
+
+export type UpdateSingleItemsDonationPurposesResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: ItemsDonationPurposes
+  }
+}
+
+export type UpdateSingleItemsDonationPurposesResponse =
+  UpdateSingleItemsDonationPurposesResponses[keyof UpdateSingleItemsDonationPurposesResponses]
 
 export type DeleteItemsDonationPurposesTranslationsData = {
   body?: never
@@ -3609,6 +3626,702 @@ export type UpdateSingleItemsDonationPurposesTranslationsResponses = {
 export type UpdateSingleItemsDonationPurposesTranslationsResponse =
   UpdateSingleItemsDonationPurposesTranslationsResponses[keyof UpdateSingleItemsDonationPurposesTranslationsResponses]
 
+export type DeleteItemsPartnersData = {
+  body?: never
+  path?: never
+  query?: never
+  url: '/items/partners'
+}
+
+export type DeleteItemsPartnersErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type DeleteItemsPartnersError =
+  DeleteItemsPartnersErrors[keyof DeleteItemsPartnersErrors]
+
+export type DeleteItemsPartnersResponses = {
+  /**
+   * Successful request
+   */
+  200: unknown
+}
+
+export type ReadItemsPartnersData = {
+  body?: never
+  path?: never
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * A limit on the number of objects that are returned.
+     */
+    limit?: number
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * How many items to skip when fetching data.
+     */
+    offset?: number
+    /**
+     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
+     *
+     */
+    sort?: Array<string>
+    /**
+     * Select items in collection by given conditions.
+     */
+    filter?: {
+      [key: string]: unknown
+    }
+    /**
+     * Filter by items that contain the given search query in one of their fields.
+     */
+    search?: string
+  }
+  url: '/items/partners'
+}
+
+export type ReadItemsPartnersErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type ReadItemsPartnersError =
+  ReadItemsPartnersErrors[keyof ReadItemsPartnersErrors]
+
+export type ReadItemsPartnersResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsPartners>
+    meta?: XMetadata
+  }
+}
+
+export type ReadItemsPartnersResponse =
+  ReadItemsPartnersResponses[keyof ReadItemsPartnersResponses]
+
+export type UpdateItemsPartnersData = {
+  body?: Array<ItemsPartners> | ItemsPartners
+  path?: never
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * A limit on the number of objects that are returned.
+     */
+    limit?: number
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * How many items to skip when fetching data.
+     */
+    offset?: number
+    /**
+     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
+     *
+     */
+    sort?: Array<string>
+    /**
+     * Select items in collection by given conditions.
+     */
+    filter?: {
+      [key: string]: unknown
+    }
+    /**
+     * Filter by items that contain the given search query in one of their fields.
+     */
+    search?: string
+  }
+  url: '/items/partners'
+}
+
+export type UpdateItemsPartnersResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsPartners>
+  }
+}
+
+export type UpdateItemsPartnersResponse =
+  UpdateItemsPartnersResponses[keyof UpdateItemsPartnersResponses]
+
+export type CreateItemsPartnersData = {
+  body?: Array<ItemsPartners> | ItemsPartners
+  path?: never
+  query?: {
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+  }
+  url: '/items/partners'
+}
+
+export type CreateItemsPartnersErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type CreateItemsPartnersError =
+  CreateItemsPartnersErrors[keyof CreateItemsPartnersErrors]
+
+export type CreateItemsPartnersResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsPartners>
+  }
+}
+
+export type CreateItemsPartnersResponse =
+  CreateItemsPartnersResponses[keyof CreateItemsPartnersResponses]
+
+export type DeleteSingleItemsPartnersData = {
+  body?: never
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: never
+  url: '/items/partners/{id}'
+}
+
+export type DeleteSingleItemsPartnersErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type DeleteSingleItemsPartnersError =
+  DeleteSingleItemsPartnersErrors[keyof DeleteSingleItemsPartnersErrors]
+
+export type DeleteSingleItemsPartnersResponses = {
+  /**
+   * Successful request
+   */
+  200: unknown
+}
+
+export type ReadSingleItemsPartnersData = {
+  body?: never
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content Version.
+     *
+     */
+    version?: string
+  }
+  url: '/items/partners/{id}'
+}
+
+export type ReadSingleItemsPartnersErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type ReadSingleItemsPartnersError =
+  ReadSingleItemsPartnersErrors[keyof ReadSingleItemsPartnersErrors]
+
+export type ReadSingleItemsPartnersResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: ItemsPartners
+  }
+}
+
+export type ReadSingleItemsPartnersResponse =
+  ReadSingleItemsPartnersResponses[keyof ReadSingleItemsPartnersResponses]
+
+export type UpdateSingleItemsPartnersData = {
+  body?: ItemsPartners
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+  }
+  url: '/items/partners/{id}'
+}
+
+export type UpdateSingleItemsPartnersErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type UpdateSingleItemsPartnersError =
+  UpdateSingleItemsPartnersErrors[keyof UpdateSingleItemsPartnersErrors]
+
+export type UpdateSingleItemsPartnersResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: ItemsPartners
+  }
+}
+
+export type UpdateSingleItemsPartnersResponse =
+  UpdateSingleItemsPartnersResponses[keyof UpdateSingleItemsPartnersResponses]
+
+export type DeleteItemsProjectsTranslationsData = {
+  body?: never
+  path?: never
+  query?: never
+  url: '/items/projects_translations'
+}
+
+export type DeleteItemsProjectsTranslationsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type DeleteItemsProjectsTranslationsError =
+  DeleteItemsProjectsTranslationsErrors[keyof DeleteItemsProjectsTranslationsErrors]
+
+export type DeleteItemsProjectsTranslationsResponses = {
+  /**
+   * Successful request
+   */
+  200: unknown
+}
+
+export type ReadItemsProjectsTranslationsData = {
+  body?: never
+  path?: never
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * A limit on the number of objects that are returned.
+     */
+    limit?: number
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * How many items to skip when fetching data.
+     */
+    offset?: number
+    /**
+     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
+     *
+     */
+    sort?: Array<string>
+    /**
+     * Select items in collection by given conditions.
+     */
+    filter?: {
+      [key: string]: unknown
+    }
+    /**
+     * Filter by items that contain the given search query in one of their fields.
+     */
+    search?: string
+  }
+  url: '/items/projects_translations'
+}
+
+export type ReadItemsProjectsTranslationsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type ReadItemsProjectsTranslationsError =
+  ReadItemsProjectsTranslationsErrors[keyof ReadItemsProjectsTranslationsErrors]
+
+export type ReadItemsProjectsTranslationsResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsProjectsTranslations>
+    meta?: XMetadata
+  }
+}
+
+export type ReadItemsProjectsTranslationsResponse =
+  ReadItemsProjectsTranslationsResponses[keyof ReadItemsProjectsTranslationsResponses]
+
+export type UpdateItemsProjectsTranslationsData = {
+  body?: Array<ItemsProjectsTranslations> | ItemsProjectsTranslations
+  path?: never
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * A limit on the number of objects that are returned.
+     */
+    limit?: number
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * How many items to skip when fetching data.
+     */
+    offset?: number
+    /**
+     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
+     *
+     */
+    sort?: Array<string>
+    /**
+     * Select items in collection by given conditions.
+     */
+    filter?: {
+      [key: string]: unknown
+    }
+    /**
+     * Filter by items that contain the given search query in one of their fields.
+     */
+    search?: string
+  }
+  url: '/items/projects_translations'
+}
+
+export type UpdateItemsProjectsTranslationsResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsProjectsTranslations>
+  }
+}
+
+export type UpdateItemsProjectsTranslationsResponse =
+  UpdateItemsProjectsTranslationsResponses[keyof UpdateItemsProjectsTranslationsResponses]
+
+export type CreateItemsProjectsTranslationsData = {
+  body?: Array<ItemsProjectsTranslations> | ItemsProjectsTranslations
+  path?: never
+  query?: {
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+  }
+  url: '/items/projects_translations'
+}
+
+export type CreateItemsProjectsTranslationsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type CreateItemsProjectsTranslationsError =
+  CreateItemsProjectsTranslationsErrors[keyof CreateItemsProjectsTranslationsErrors]
+
+export type CreateItemsProjectsTranslationsResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsProjectsTranslations>
+  }
+}
+
+export type CreateItemsProjectsTranslationsResponse =
+  CreateItemsProjectsTranslationsResponses[keyof CreateItemsProjectsTranslationsResponses]
+
+export type DeleteSingleItemsProjectsTranslationsData = {
+  body?: never
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: never
+  url: '/items/projects_translations/{id}'
+}
+
+export type DeleteSingleItemsProjectsTranslationsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type DeleteSingleItemsProjectsTranslationsError =
+  DeleteSingleItemsProjectsTranslationsErrors[keyof DeleteSingleItemsProjectsTranslationsErrors]
+
+export type DeleteSingleItemsProjectsTranslationsResponses = {
+  /**
+   * Successful request
+   */
+  200: unknown
+}
+
+export type ReadSingleItemsProjectsTranslationsData = {
+  body?: never
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content Version.
+     *
+     */
+    version?: string
+  }
+  url: '/items/projects_translations/{id}'
+}
+
+export type ReadSingleItemsProjectsTranslationsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type ReadSingleItemsProjectsTranslationsError =
+  ReadSingleItemsProjectsTranslationsErrors[keyof ReadSingleItemsProjectsTranslationsErrors]
+
+export type ReadSingleItemsProjectsTranslationsResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: ItemsProjectsTranslations
+  }
+}
+
+export type ReadSingleItemsProjectsTranslationsResponse =
+  ReadSingleItemsProjectsTranslationsResponses[keyof ReadSingleItemsProjectsTranslationsResponses]
+
+export type UpdateSingleItemsProjectsTranslationsData = {
+  body?: ItemsProjectsTranslations
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+  }
+  url: '/items/projects_translations/{id}'
+}
+
+export type UpdateSingleItemsProjectsTranslationsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type UpdateSingleItemsProjectsTranslationsError =
+  UpdateSingleItemsProjectsTranslationsErrors[keyof UpdateSingleItemsProjectsTranslationsErrors]
+
+export type UpdateSingleItemsProjectsTranslationsResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: ItemsProjectsTranslations
+  }
+}
+
+export type UpdateSingleItemsProjectsTranslationsResponse =
+  UpdateSingleItemsProjectsTranslationsResponses[keyof UpdateSingleItemsProjectsTranslationsResponses]
+
 export type DeleteItemsDonorsData = {
   body?: never
   path?: never
@@ -3956,6 +4669,354 @@ export type UpdateSingleItemsDonorsResponses = {
 
 export type UpdateSingleItemsDonorsResponse =
   UpdateSingleItemsDonorsResponses[keyof UpdateSingleItemsDonorsResponses]
+
+export type DeleteItemsCheckoutsData = {
+  body?: never
+  path?: never
+  query?: never
+  url: '/items/checkouts'
+}
+
+export type DeleteItemsCheckoutsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type DeleteItemsCheckoutsError =
+  DeleteItemsCheckoutsErrors[keyof DeleteItemsCheckoutsErrors]
+
+export type DeleteItemsCheckoutsResponses = {
+  /**
+   * Successful request
+   */
+  200: unknown
+}
+
+export type ReadItemsCheckoutsData = {
+  body?: never
+  path?: never
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * A limit on the number of objects that are returned.
+     */
+    limit?: number
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * How many items to skip when fetching data.
+     */
+    offset?: number
+    /**
+     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
+     *
+     */
+    sort?: Array<string>
+    /**
+     * Select items in collection by given conditions.
+     */
+    filter?: {
+      [key: string]: unknown
+    }
+    /**
+     * Filter by items that contain the given search query in one of their fields.
+     */
+    search?: string
+  }
+  url: '/items/checkouts'
+}
+
+export type ReadItemsCheckoutsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type ReadItemsCheckoutsError =
+  ReadItemsCheckoutsErrors[keyof ReadItemsCheckoutsErrors]
+
+export type ReadItemsCheckoutsResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsCheckouts>
+    meta?: XMetadata
+  }
+}
+
+export type ReadItemsCheckoutsResponse =
+  ReadItemsCheckoutsResponses[keyof ReadItemsCheckoutsResponses]
+
+export type UpdateItemsCheckoutsData = {
+  body?: Array<ItemsCheckouts> | ItemsCheckouts
+  path?: never
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * A limit on the number of objects that are returned.
+     */
+    limit?: number
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * How many items to skip when fetching data.
+     */
+    offset?: number
+    /**
+     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
+     *
+     */
+    sort?: Array<string>
+    /**
+     * Select items in collection by given conditions.
+     */
+    filter?: {
+      [key: string]: unknown
+    }
+    /**
+     * Filter by items that contain the given search query in one of their fields.
+     */
+    search?: string
+  }
+  url: '/items/checkouts'
+}
+
+export type UpdateItemsCheckoutsResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsCheckouts>
+  }
+}
+
+export type UpdateItemsCheckoutsResponse =
+  UpdateItemsCheckoutsResponses[keyof UpdateItemsCheckoutsResponses]
+
+export type CreateItemsCheckoutsData = {
+  body?: Array<ItemsCheckouts> | ItemsCheckouts
+  path?: never
+  query?: {
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+  }
+  url: '/items/checkouts'
+}
+
+export type CreateItemsCheckoutsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type CreateItemsCheckoutsError =
+  CreateItemsCheckoutsErrors[keyof CreateItemsCheckoutsErrors]
+
+export type CreateItemsCheckoutsResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: Array<ItemsCheckouts>
+  }
+}
+
+export type CreateItemsCheckoutsResponse =
+  CreateItemsCheckoutsResponses[keyof CreateItemsCheckoutsResponses]
+
+export type DeleteSingleItemsCheckoutsData = {
+  body?: never
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: never
+  url: '/items/checkouts/{id}'
+}
+
+export type DeleteSingleItemsCheckoutsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type DeleteSingleItemsCheckoutsError =
+  DeleteSingleItemsCheckoutsErrors[keyof DeleteSingleItemsCheckoutsErrors]
+
+export type DeleteSingleItemsCheckoutsResponses = {
+  /**
+   * Successful request
+   */
+  200: unknown
+}
+
+export type ReadSingleItemsCheckoutsData = {
+  body?: never
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+    /**
+     * Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content Version.
+     *
+     */
+    version?: string
+  }
+  url: '/items/checkouts/{id}'
+}
+
+export type ReadSingleItemsCheckoutsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type ReadSingleItemsCheckoutsError =
+  ReadSingleItemsCheckoutsErrors[keyof ReadSingleItemsCheckoutsErrors]
+
+export type ReadSingleItemsCheckoutsResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: ItemsCheckouts
+  }
+}
+
+export type ReadSingleItemsCheckoutsResponse =
+  ReadSingleItemsCheckoutsResponses[keyof ReadSingleItemsCheckoutsResponses]
+
+export type UpdateSingleItemsCheckoutsData = {
+  body?: ItemsCheckouts
+  path: {
+    /**
+     * Index of the item.
+     */
+    id: number | string
+  }
+  query?: {
+    /**
+     * Control what fields are being returned in the object.
+     */
+    fields?: Array<string>
+    /**
+     * What metadata to return in the response.
+     */
+    meta?: string
+  }
+  url: '/items/checkouts/{id}'
+}
+
+export type UpdateSingleItemsCheckoutsErrors = {
+  /**
+   * Error: Unauthorized request
+   */
+  401: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+  /**
+   * Error: Not found.
+   */
+  404: {
+    error?: {
+      code?: number
+      message?: string
+    }
+  }
+}
+
+export type UpdateSingleItemsCheckoutsError =
+  UpdateSingleItemsCheckoutsErrors[keyof UpdateSingleItemsCheckoutsErrors]
+
+export type UpdateSingleItemsCheckoutsResponses = {
+  /**
+   * Successful request
+   */
+  200: {
+    data?: ItemsCheckouts
+  }
+}
+
+export type UpdateSingleItemsCheckoutsResponse =
+  UpdateSingleItemsCheckoutsResponses[keyof UpdateSingleItemsCheckoutsResponses]
 
 export type DeleteItemsDonationsData = {
   body?: never
@@ -5696,1395 +6757,3 @@ export type UpdateSingleItemsRefundsResponses = {
 
 export type UpdateSingleItemsRefundsResponse =
   UpdateSingleItemsRefundsResponses[keyof UpdateSingleItemsRefundsResponses]
-
-export type DeleteItemsCategoriesTranslationsData = {
-  body?: never
-  path?: never
-  query?: never
-  url: '/items/categories_translations'
-}
-
-export type DeleteItemsCategoriesTranslationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type DeleteItemsCategoriesTranslationsError =
-  DeleteItemsCategoriesTranslationsErrors[keyof DeleteItemsCategoriesTranslationsErrors]
-
-export type DeleteItemsCategoriesTranslationsResponses = {
-  /**
-   * Successful request
-   */
-  200: unknown
-}
-
-export type ReadItemsCategoriesTranslationsData = {
-  body?: never
-  path?: never
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * A limit on the number of objects that are returned.
-     */
-    limit?: number
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * How many items to skip when fetching data.
-     */
-    offset?: number
-    /**
-     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
-     *
-     */
-    sort?: Array<string>
-    /**
-     * Select items in collection by given conditions.
-     */
-    filter?: {
-      [key: string]: unknown
-    }
-    /**
-     * Filter by items that contain the given search query in one of their fields.
-     */
-    search?: string
-  }
-  url: '/items/categories_translations'
-}
-
-export type ReadItemsCategoriesTranslationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type ReadItemsCategoriesTranslationsError =
-  ReadItemsCategoriesTranslationsErrors[keyof ReadItemsCategoriesTranslationsErrors]
-
-export type ReadItemsCategoriesTranslationsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsCategoriesTranslations>
-    meta?: XMetadata
-  }
-}
-
-export type ReadItemsCategoriesTranslationsResponse =
-  ReadItemsCategoriesTranslationsResponses[keyof ReadItemsCategoriesTranslationsResponses]
-
-export type UpdateItemsCategoriesTranslationsData = {
-  body?: Array<ItemsCategoriesTranslations> | ItemsCategoriesTranslations
-  path?: never
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * A limit on the number of objects that are returned.
-     */
-    limit?: number
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * How many items to skip when fetching data.
-     */
-    offset?: number
-    /**
-     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
-     *
-     */
-    sort?: Array<string>
-    /**
-     * Select items in collection by given conditions.
-     */
-    filter?: {
-      [key: string]: unknown
-    }
-    /**
-     * Filter by items that contain the given search query in one of their fields.
-     */
-    search?: string
-  }
-  url: '/items/categories_translations'
-}
-
-export type UpdateItemsCategoriesTranslationsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsCategoriesTranslations>
-  }
-}
-
-export type UpdateItemsCategoriesTranslationsResponse =
-  UpdateItemsCategoriesTranslationsResponses[keyof UpdateItemsCategoriesTranslationsResponses]
-
-export type CreateItemsCategoriesTranslationsData = {
-  body?: Array<ItemsCategoriesTranslations> | ItemsCategoriesTranslations
-  path?: never
-  query?: {
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-  }
-  url: '/items/categories_translations'
-}
-
-export type CreateItemsCategoriesTranslationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type CreateItemsCategoriesTranslationsError =
-  CreateItemsCategoriesTranslationsErrors[keyof CreateItemsCategoriesTranslationsErrors]
-
-export type CreateItemsCategoriesTranslationsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsCategoriesTranslations>
-  }
-}
-
-export type CreateItemsCategoriesTranslationsResponse =
-  CreateItemsCategoriesTranslationsResponses[keyof CreateItemsCategoriesTranslationsResponses]
-
-export type DeleteSingleItemsCategoriesTranslationsData = {
-  body?: never
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: never
-  url: '/items/categories_translations/{id}'
-}
-
-export type DeleteSingleItemsCategoriesTranslationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type DeleteSingleItemsCategoriesTranslationsError =
-  DeleteSingleItemsCategoriesTranslationsErrors[keyof DeleteSingleItemsCategoriesTranslationsErrors]
-
-export type DeleteSingleItemsCategoriesTranslationsResponses = {
-  /**
-   * Successful request
-   */
-  200: unknown
-}
-
-export type ReadSingleItemsCategoriesTranslationsData = {
-  body?: never
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content Version.
-     *
-     */
-    version?: string
-  }
-  url: '/items/categories_translations/{id}'
-}
-
-export type ReadSingleItemsCategoriesTranslationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type ReadSingleItemsCategoriesTranslationsError =
-  ReadSingleItemsCategoriesTranslationsErrors[keyof ReadSingleItemsCategoriesTranslationsErrors]
-
-export type ReadSingleItemsCategoriesTranslationsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: ItemsCategoriesTranslations
-  }
-}
-
-export type ReadSingleItemsCategoriesTranslationsResponse =
-  ReadSingleItemsCategoriesTranslationsResponses[keyof ReadSingleItemsCategoriesTranslationsResponses]
-
-export type UpdateSingleItemsCategoriesTranslationsData = {
-  body?: ItemsCategoriesTranslations
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-  }
-  url: '/items/categories_translations/{id}'
-}
-
-export type UpdateSingleItemsCategoriesTranslationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type UpdateSingleItemsCategoriesTranslationsError =
-  UpdateSingleItemsCategoriesTranslationsErrors[keyof UpdateSingleItemsCategoriesTranslationsErrors]
-
-export type UpdateSingleItemsCategoriesTranslationsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: ItemsCategoriesTranslations
-  }
-}
-
-export type UpdateSingleItemsCategoriesTranslationsResponse =
-  UpdateSingleItemsCategoriesTranslationsResponses[keyof UpdateSingleItemsCategoriesTranslationsResponses]
-
-export type DeleteItemsProjectsTranslationsData = {
-  body?: never
-  path?: never
-  query?: never
-  url: '/items/projects_translations'
-}
-
-export type DeleteItemsProjectsTranslationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type DeleteItemsProjectsTranslationsError =
-  DeleteItemsProjectsTranslationsErrors[keyof DeleteItemsProjectsTranslationsErrors]
-
-export type DeleteItemsProjectsTranslationsResponses = {
-  /**
-   * Successful request
-   */
-  200: unknown
-}
-
-export type ReadItemsProjectsTranslationsData = {
-  body?: never
-  path?: never
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * A limit on the number of objects that are returned.
-     */
-    limit?: number
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * How many items to skip when fetching data.
-     */
-    offset?: number
-    /**
-     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
-     *
-     */
-    sort?: Array<string>
-    /**
-     * Select items in collection by given conditions.
-     */
-    filter?: {
-      [key: string]: unknown
-    }
-    /**
-     * Filter by items that contain the given search query in one of their fields.
-     */
-    search?: string
-  }
-  url: '/items/projects_translations'
-}
-
-export type ReadItemsProjectsTranslationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type ReadItemsProjectsTranslationsError =
-  ReadItemsProjectsTranslationsErrors[keyof ReadItemsProjectsTranslationsErrors]
-
-export type ReadItemsProjectsTranslationsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsProjectsTranslations>
-    meta?: XMetadata
-  }
-}
-
-export type ReadItemsProjectsTranslationsResponse =
-  ReadItemsProjectsTranslationsResponses[keyof ReadItemsProjectsTranslationsResponses]
-
-export type UpdateItemsProjectsTranslationsData = {
-  body?: Array<ItemsProjectsTranslations> | ItemsProjectsTranslations
-  path?: never
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * A limit on the number of objects that are returned.
-     */
-    limit?: number
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * How many items to skip when fetching data.
-     */
-    offset?: number
-    /**
-     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
-     *
-     */
-    sort?: Array<string>
-    /**
-     * Select items in collection by given conditions.
-     */
-    filter?: {
-      [key: string]: unknown
-    }
-    /**
-     * Filter by items that contain the given search query in one of their fields.
-     */
-    search?: string
-  }
-  url: '/items/projects_translations'
-}
-
-export type UpdateItemsProjectsTranslationsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsProjectsTranslations>
-  }
-}
-
-export type UpdateItemsProjectsTranslationsResponse =
-  UpdateItemsProjectsTranslationsResponses[keyof UpdateItemsProjectsTranslationsResponses]
-
-export type CreateItemsProjectsTranslationsData = {
-  body?: Array<ItemsProjectsTranslations> | ItemsProjectsTranslations
-  path?: never
-  query?: {
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-  }
-  url: '/items/projects_translations'
-}
-
-export type CreateItemsProjectsTranslationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type CreateItemsProjectsTranslationsError =
-  CreateItemsProjectsTranslationsErrors[keyof CreateItemsProjectsTranslationsErrors]
-
-export type CreateItemsProjectsTranslationsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsProjectsTranslations>
-  }
-}
-
-export type CreateItemsProjectsTranslationsResponse =
-  CreateItemsProjectsTranslationsResponses[keyof CreateItemsProjectsTranslationsResponses]
-
-export type DeleteSingleItemsProjectsTranslationsData = {
-  body?: never
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: never
-  url: '/items/projects_translations/{id}'
-}
-
-export type DeleteSingleItemsProjectsTranslationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type DeleteSingleItemsProjectsTranslationsError =
-  DeleteSingleItemsProjectsTranslationsErrors[keyof DeleteSingleItemsProjectsTranslationsErrors]
-
-export type DeleteSingleItemsProjectsTranslationsResponses = {
-  /**
-   * Successful request
-   */
-  200: unknown
-}
-
-export type ReadSingleItemsProjectsTranslationsData = {
-  body?: never
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content Version.
-     *
-     */
-    version?: string
-  }
-  url: '/items/projects_translations/{id}'
-}
-
-export type ReadSingleItemsProjectsTranslationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type ReadSingleItemsProjectsTranslationsError =
-  ReadSingleItemsProjectsTranslationsErrors[keyof ReadSingleItemsProjectsTranslationsErrors]
-
-export type ReadSingleItemsProjectsTranslationsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: ItemsProjectsTranslations
-  }
-}
-
-export type ReadSingleItemsProjectsTranslationsResponse =
-  ReadSingleItemsProjectsTranslationsResponses[keyof ReadSingleItemsProjectsTranslationsResponses]
-
-export type UpdateSingleItemsProjectsTranslationsData = {
-  body?: ItemsProjectsTranslations
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-  }
-  url: '/items/projects_translations/{id}'
-}
-
-export type UpdateSingleItemsProjectsTranslationsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type UpdateSingleItemsProjectsTranslationsError =
-  UpdateSingleItemsProjectsTranslationsErrors[keyof UpdateSingleItemsProjectsTranslationsErrors]
-
-export type UpdateSingleItemsProjectsTranslationsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: ItemsProjectsTranslations
-  }
-}
-
-export type UpdateSingleItemsProjectsTranslationsResponse =
-  UpdateSingleItemsProjectsTranslationsResponses[keyof UpdateSingleItemsProjectsTranslationsResponses]
-
-export type DeleteItemsDonationPurposesData = {
-  body?: never
-  path?: never
-  query?: never
-  url: '/items/donation_purposes'
-}
-
-export type DeleteItemsDonationPurposesErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type DeleteItemsDonationPurposesError =
-  DeleteItemsDonationPurposesErrors[keyof DeleteItemsDonationPurposesErrors]
-
-export type DeleteItemsDonationPurposesResponses = {
-  /**
-   * Successful request
-   */
-  200: unknown
-}
-
-export type ReadItemsDonationPurposesData = {
-  body?: never
-  path?: never
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * A limit on the number of objects that are returned.
-     */
-    limit?: number
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * How many items to skip when fetching data.
-     */
-    offset?: number
-    /**
-     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
-     *
-     */
-    sort?: Array<string>
-    /**
-     * Select items in collection by given conditions.
-     */
-    filter?: {
-      [key: string]: unknown
-    }
-    /**
-     * Filter by items that contain the given search query in one of their fields.
-     */
-    search?: string
-  }
-  url: '/items/donation_purposes'
-}
-
-export type ReadItemsDonationPurposesErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type ReadItemsDonationPurposesError =
-  ReadItemsDonationPurposesErrors[keyof ReadItemsDonationPurposesErrors]
-
-export type ReadItemsDonationPurposesResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsDonationPurposes>
-    meta?: XMetadata
-  }
-}
-
-export type ReadItemsDonationPurposesResponse =
-  ReadItemsDonationPurposesResponses[keyof ReadItemsDonationPurposesResponses]
-
-export type UpdateItemsDonationPurposesData = {
-  body?: Array<ItemsDonationPurposes> | ItemsDonationPurposes
-  path?: never
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * A limit on the number of objects that are returned.
-     */
-    limit?: number
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * How many items to skip when fetching data.
-     */
-    offset?: number
-    /**
-     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
-     *
-     */
-    sort?: Array<string>
-    /**
-     * Select items in collection by given conditions.
-     */
-    filter?: {
-      [key: string]: unknown
-    }
-    /**
-     * Filter by items that contain the given search query in one of their fields.
-     */
-    search?: string
-  }
-  url: '/items/donation_purposes'
-}
-
-export type UpdateItemsDonationPurposesResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsDonationPurposes>
-  }
-}
-
-export type UpdateItemsDonationPurposesResponse =
-  UpdateItemsDonationPurposesResponses[keyof UpdateItemsDonationPurposesResponses]
-
-export type CreateItemsDonationPurposesData = {
-  body?: Array<ItemsDonationPurposes> | ItemsDonationPurposes
-  path?: never
-  query?: {
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-  }
-  url: '/items/donation_purposes'
-}
-
-export type CreateItemsDonationPurposesErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type CreateItemsDonationPurposesError =
-  CreateItemsDonationPurposesErrors[keyof CreateItemsDonationPurposesErrors]
-
-export type CreateItemsDonationPurposesResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsDonationPurposes>
-  }
-}
-
-export type CreateItemsDonationPurposesResponse =
-  CreateItemsDonationPurposesResponses[keyof CreateItemsDonationPurposesResponses]
-
-export type DeleteSingleItemsDonationPurposesData = {
-  body?: never
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: never
-  url: '/items/donation_purposes/{id}'
-}
-
-export type DeleteSingleItemsDonationPurposesErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type DeleteSingleItemsDonationPurposesError =
-  DeleteSingleItemsDonationPurposesErrors[keyof DeleteSingleItemsDonationPurposesErrors]
-
-export type DeleteSingleItemsDonationPurposesResponses = {
-  /**
-   * Successful request
-   */
-  200: unknown
-}
-
-export type ReadSingleItemsDonationPurposesData = {
-  body?: never
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content Version.
-     *
-     */
-    version?: string
-  }
-  url: '/items/donation_purposes/{id}'
-}
-
-export type ReadSingleItemsDonationPurposesErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type ReadSingleItemsDonationPurposesError =
-  ReadSingleItemsDonationPurposesErrors[keyof ReadSingleItemsDonationPurposesErrors]
-
-export type ReadSingleItemsDonationPurposesResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: ItemsDonationPurposes
-  }
-}
-
-export type ReadSingleItemsDonationPurposesResponse =
-  ReadSingleItemsDonationPurposesResponses[keyof ReadSingleItemsDonationPurposesResponses]
-
-export type UpdateSingleItemsDonationPurposesData = {
-  body?: ItemsDonationPurposes
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-  }
-  url: '/items/donation_purposes/{id}'
-}
-
-export type UpdateSingleItemsDonationPurposesErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type UpdateSingleItemsDonationPurposesError =
-  UpdateSingleItemsDonationPurposesErrors[keyof UpdateSingleItemsDonationPurposesErrors]
-
-export type UpdateSingleItemsDonationPurposesResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: ItemsDonationPurposes
-  }
-}
-
-export type UpdateSingleItemsDonationPurposesResponse =
-  UpdateSingleItemsDonationPurposesResponses[keyof UpdateSingleItemsDonationPurposesResponses]
-
-export type DeleteItemsCheckoutsData = {
-  body?: never
-  path?: never
-  query?: never
-  url: '/items/checkouts'
-}
-
-export type DeleteItemsCheckoutsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type DeleteItemsCheckoutsError =
-  DeleteItemsCheckoutsErrors[keyof DeleteItemsCheckoutsErrors]
-
-export type DeleteItemsCheckoutsResponses = {
-  /**
-   * Successful request
-   */
-  200: unknown
-}
-
-export type ReadItemsCheckoutsData = {
-  body?: never
-  path?: never
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * A limit on the number of objects that are returned.
-     */
-    limit?: number
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * How many items to skip when fetching data.
-     */
-    offset?: number
-    /**
-     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
-     *
-     */
-    sort?: Array<string>
-    /**
-     * Select items in collection by given conditions.
-     */
-    filter?: {
-      [key: string]: unknown
-    }
-    /**
-     * Filter by items that contain the given search query in one of their fields.
-     */
-    search?: string
-  }
-  url: '/items/checkouts'
-}
-
-export type ReadItemsCheckoutsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type ReadItemsCheckoutsError =
-  ReadItemsCheckoutsErrors[keyof ReadItemsCheckoutsErrors]
-
-export type ReadItemsCheckoutsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsCheckouts>
-    meta?: XMetadata
-  }
-}
-
-export type ReadItemsCheckoutsResponse =
-  ReadItemsCheckoutsResponses[keyof ReadItemsCheckoutsResponses]
-
-export type UpdateItemsCheckoutsData = {
-  body?: Array<ItemsCheckouts> | ItemsCheckouts
-  path?: never
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * A limit on the number of objects that are returned.
-     */
-    limit?: number
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * How many items to skip when fetching data.
-     */
-    offset?: number
-    /**
-     * How to sort the returned items. `sort` is a CSV of fields used to sort the fetched items. Sorting defaults to ascending (ASC) order but a minus sign (` - `) can be used to reverse this to descending (DESC) order. Fields are prioritized by their order in the CSV. You can also use a ` ? ` to sort randomly.
-     *
-     */
-    sort?: Array<string>
-    /**
-     * Select items in collection by given conditions.
-     */
-    filter?: {
-      [key: string]: unknown
-    }
-    /**
-     * Filter by items that contain the given search query in one of their fields.
-     */
-    search?: string
-  }
-  url: '/items/checkouts'
-}
-
-export type UpdateItemsCheckoutsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsCheckouts>
-  }
-}
-
-export type UpdateItemsCheckoutsResponse =
-  UpdateItemsCheckoutsResponses[keyof UpdateItemsCheckoutsResponses]
-
-export type CreateItemsCheckoutsData = {
-  body?: Array<ItemsCheckouts> | ItemsCheckouts
-  path?: never
-  query?: {
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-  }
-  url: '/items/checkouts'
-}
-
-export type CreateItemsCheckoutsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type CreateItemsCheckoutsError =
-  CreateItemsCheckoutsErrors[keyof CreateItemsCheckoutsErrors]
-
-export type CreateItemsCheckoutsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: Array<ItemsCheckouts>
-  }
-}
-
-export type CreateItemsCheckoutsResponse =
-  CreateItemsCheckoutsResponses[keyof CreateItemsCheckoutsResponses]
-
-export type DeleteSingleItemsCheckoutsData = {
-  body?: never
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: never
-  url: '/items/checkouts/{id}'
-}
-
-export type DeleteSingleItemsCheckoutsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type DeleteSingleItemsCheckoutsError =
-  DeleteSingleItemsCheckoutsErrors[keyof DeleteSingleItemsCheckoutsErrors]
-
-export type DeleteSingleItemsCheckoutsResponses = {
-  /**
-   * Successful request
-   */
-  200: unknown
-}
-
-export type ReadSingleItemsCheckoutsData = {
-  body?: never
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-    /**
-     * Retrieve an item's state from a specific Content Version. The value corresponds to the "key" of the Content Version.
-     *
-     */
-    version?: string
-  }
-  url: '/items/checkouts/{id}'
-}
-
-export type ReadSingleItemsCheckoutsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type ReadSingleItemsCheckoutsError =
-  ReadSingleItemsCheckoutsErrors[keyof ReadSingleItemsCheckoutsErrors]
-
-export type ReadSingleItemsCheckoutsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: ItemsCheckouts
-  }
-}
-
-export type ReadSingleItemsCheckoutsResponse =
-  ReadSingleItemsCheckoutsResponses[keyof ReadSingleItemsCheckoutsResponses]
-
-export type UpdateSingleItemsCheckoutsData = {
-  body?: ItemsCheckouts
-  path: {
-    /**
-     * Index of the item.
-     */
-    id: number | string
-  }
-  query?: {
-    /**
-     * Control what fields are being returned in the object.
-     */
-    fields?: Array<string>
-    /**
-     * What metadata to return in the response.
-     */
-    meta?: string
-  }
-  url: '/items/checkouts/{id}'
-}
-
-export type UpdateSingleItemsCheckoutsErrors = {
-  /**
-   * Error: Unauthorized request
-   */
-  401: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-  /**
-   * Error: Not found.
-   */
-  404: {
-    error?: {
-      code?: number
-      message?: string
-    }
-  }
-}
-
-export type UpdateSingleItemsCheckoutsError =
-  UpdateSingleItemsCheckoutsErrors[keyof UpdateSingleItemsCheckoutsErrors]
-
-export type UpdateSingleItemsCheckoutsResponses = {
-  /**
-   * Successful request
-   */
-  200: {
-    data?: ItemsCheckouts
-  }
-}
-
-export type UpdateSingleItemsCheckoutsResponse =
-  UpdateSingleItemsCheckoutsResponses[keyof UpdateSingleItemsCheckoutsResponses]

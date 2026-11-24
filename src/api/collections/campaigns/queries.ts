@@ -9,7 +9,7 @@ const summaryFields = [
   'id',
   'slug',
   'status',
-  'goal_cents',
+  'goal_amount',
   'currency',
   'starts_at',
   'ends_at',
@@ -85,8 +85,13 @@ function localize(campaign: Campaign, language: CampaignLanguage) {
         ]
       : []
   })
-  const { translations: _translations, projects: _projects, ...rest } = campaign
-  return { ...rest, translation: matches[0], projects }
+  const {
+    translations: _translations,
+    projects: _projects,
+    goal_amount: goalCents,
+    ...rest
+  } = campaign
+  return { ...rest, goalCents, translation: matches[0], projects }
 }
 
 export type LocalizedCampaign = ReturnType<typeof localize>
