@@ -2,13 +2,15 @@ import assert from 'node:assert/strict'
 import { randomUUID } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import {
+  desiredSnapshot,
   loadDefinitions,
   loginAsAdmin,
+  request as api,
   waitForDirectus,
-} from '../scripts/apply-schemas.js'
+} from '../scripts/schema-model.js'
 import { loadSeeds } from '../scripts/seed-data.js'
 
-// Live check of a running, freshly synchronized backend. It reads the same
+// Live check of a running, freshly started backend. It reads the same
 // YAML the image bakes in, so the expectations cannot drift from the schemas.
 const baseUrl = (process.env.DIRECTUS_URL ??= 'http://127.0.0.1:8056')
 const dir = (name) => fileURLToPath(new URL(`../${name}/`, import.meta.url))
@@ -51,6 +53,20 @@ function anonymous(path, method = 'GET') {
     signal: AbortSignal.timeout(10_000),
   })
 }
+
+// The instance matches the YAML: every revision is applied and none is
+// missing. An empty diff comes back as null.
+const live = (await api('/schema/snapshot', { token })).data
+const pending = await api('/schema/diff', {
+  method: 'POST',
+  body: desiredSnapshot(live, definitions),
+  token,
+})
+assert.equal(
+  pending,
+  null,
+  'The YAML has changes no revision contains (run make revision)',
+)
 
 const existing = new Set(
   (await request('/collections')).map((item) => item.collection),
@@ -153,7 +169,12 @@ async function checkSeeds(seeds, expectedStatus) {
             label,
           )
         } else {
-          assert.equal(row[name], expected, label)
+          // Directus returns decimal columns as strings ("35.00").
+          const actual =
+            typeof expected === 'number' && typeof row[name] === 'string'
+              ? Number(row[name])
+              : row[name]
+          assert.equal(actual, expected, label)
         }
       }
       seedCount++
@@ -195,7 +216,7 @@ if (serviceChecked) {
       {
         reference: `invalid-${randomUUID()}`,
         status: 'paid',
-        total_cents: 1000,
+        total_amount: 10,
       },
     ],
   ]) {
@@ -267,12 +288,12 @@ try {
   const publicCampaign = await create('campaigns', {
     slug: `verification-${randomUUID()}`,
     status: 'published',
-    goal_cents: 1000,
+    goal_amount: 10,
   })
   const draftCampaign = await create('campaigns', {
     slug: `verification-${randomUUID()}`,
     status: 'draft',
-    goal_cents: 1000,
+    goal_amount: 10,
   })
   await create('campaign_projects', {
     campaign: publicCampaign.id,
@@ -291,7 +312,7 @@ try {
     'cover_image',
     'currency',
     'ends_at',
-    'goal_cents',
+    'goal_amount',
     'id',
     'projects',
     'slug',
@@ -315,12 +336,12 @@ try {
     slug: `verification-${randomUUID()}`,
     status: 'published',
     category: publicCategory.id,
-    unit_amount_cents: 1000,
+    unit_amount: 10,
   })
   const draftPurpose = await create('donation_purposes', {
     slug: `verification-${randomUUID()}`,
     status: 'draft',
-    unit_amount_cents: 1000,
+    unit_amount: 10,
   })
   const exposedPurpose = await (
     await anonymous(
@@ -338,7 +359,7 @@ try {
     'sort',
     'status',
     'translations',
-    'unit_amount_cents',
+    'unit_amount',
   ])
   assert.equal(exposedPurpose.data.category.slug, publicCategory.slug)
   assert.equal(
@@ -347,21 +368,21 @@ try {
   )
   const checkout = await create('checkouts', {
     reference: `verification-${randomUUID()}`,
-    total_cents: 1000,
+    total_amount: 10,
   })
   assert.equal(checkout.status, 'pending')
   const donation = await create('donations', {
     checkout: checkout.id,
     campaign: publicCampaign.id,
-    total_cents: 1000,
+    total_amount: 10,
   })
   const item = await create('donation_items', {
     donation: donation.id,
     kind: 'flexible',
     title_snapshot: 'Synthetic verification fixture',
     quantity: 1,
-    unit_amount_cents: 1000,
-    total_cents: 1000,
+    unit_amount: 10,
+    total_amount: 10,
   })
   assert.equal(item.donation, donation.id)
   for (const path of [
@@ -376,7 +397,7 @@ try {
   await assert.rejects(
     request('/items/checkouts', {
       method: 'POST',
-      body: { reference: `invalid-${randomUUID()}`, total_cents: -1 },
+      body: { reference: `invalid-${randomUUID()}`, total_amount: -1 },
     }),
     /HTTP 400/,
   )
@@ -408,11 +429,11 @@ try {
   const paidCheckout = await create('checkouts', {
     reference: `verification-${randomUUID()}`,
     status: 'paid',
-    total_cents: 1000,
+    total_amount: 10,
   })
   const paid = await create('donations', {
     checkout: paidCheckout.id,
-    total_cents: 1000,
+    total_amount: 10,
   })
   const paidAttempt = await create('payment_attempts', {
     checkout: paidCheckout.id,
@@ -420,14 +441,14 @@ try {
     provider_payment_id: `synthetic_${randomUUID()}`,
     idempotency_key: `verification:${randomUUID()}`,
     status: 'succeeded',
-    amount_cents: 1000,
+    amount: 10,
   })
   await create('refunds', {
     donation: paid.id,
     payment_attempt: paidAttempt.id,
     provider: 'synthetic',
     idempotency_key: `verification:${randomUUID()}`,
-    amount_cents: 400,
+    amount: 4,
     status: 'succeeded',
   })
   // Owned rows follow their parent: translations and campaign links cascade.
@@ -455,12 +476,12 @@ try {
 
   // Refund state is derived from the relation; the stored status stays paid.
   const linked = await request(
-    `/items/donations/${paid.id}?fields=checkout.status,refunds.amount_cents`,
+    `/items/donations/${paid.id}?fields=checkout.status,refunds.amount`,
   )
   assert.equal(linked.checkout.status, 'paid')
   assert.deepEqual(
-    linked.refunds.map((refund) => refund.amount_cents),
-    [400],
+    linked.refunds.map((refund) => Number(refund.amount)),
+    [4],
   )
   await assert.rejects(
     request('/items/checkouts', {

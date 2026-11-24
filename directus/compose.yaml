@@ -19,7 +19,6 @@ services:
   directus:
     build:
       context: .
-    image: tunisaid-directus:local
     ports:
       - '127.0.0.1:${DIRECTUS_PORT:-8056}:8055'
     env_file:
@@ -43,6 +42,8 @@ services:
       CORS_METHODS: GET
       CACHE_SCHEMA: 'false'
       CMS_ENV: ${CMS_ENV:-dev}
+      # Set by `make revision` for its throwaway stack only.
+      REVISIONS_ONLY: ${REVISIONS_ONLY:-false}
       SEED_PUBLISH_DEMO: ${SEED_PUBLISH_DEMO:-false}
       DONATION_SERVICE_TOKEN: ${DONATION_SERVICE_TOKEN:-}
     volumes:
@@ -64,6 +65,4 @@ services:
 
 volumes:
   database:
-    name: tunisaid-backend-v11_database
   uploads:
-    name: tunisaid-backend-v11_uploads

@@ -1,10 +1,10 @@
 import { readFile, readdir } from 'node:fs/promises'
 import path from 'node:path'
 import { setTimeout as sleep } from 'node:timers/promises'
-import { fileURLToPath, pathToFileURL } from 'node:url'
 import yaml from 'js-yaml'
-import { applyPolicies } from './apply-policies.js'
-import { seedData, seedEnvironment } from './seed-data.js'
+
+// The project's schema model: the YAML format, the snapshot the YAML implies,
+// and the Directus REST helpers shared by revisions.js and sync.js.
 
 const NAME = /^[a-zA-Z][a-zA-Z0-9_]*$/
 const FIELD_TYPES = new Set([
@@ -203,8 +203,15 @@ function merge(base, changes) {
 // Directus 11.17.4 applies full version-1 snapshots, so the desired snapshot
 // starts from the instance's own snapshot. Anything the YAML does not declare
 // (other collections, extra fields, relations, system-field indexes, snapshot
-// metadata) is preserved, which keeps the sync non-destructive.
-export function desiredSnapshot(snapshot, definitions) {
+// metadata) is preserved, so only what the YAML describes can change.
+// `dropCollections` names collections that are ours (created by an earlier
+// revision) but no longer declared: they are left out, so the diff reports them
+// as deletions for a revision to contain.
+export function desiredSnapshot(
+  snapshot,
+  definitions,
+  { dropCollections = [] } = {},
+) {
   const desired = structuredClone(snapshot)
 
   const foreignKey = (name) => {
@@ -295,6 +302,37 @@ export function desiredSnapshot(snapshot, definitions) {
       )
     }
   }
+
+  // The YAML is the complete definition of the collections it declares: fields
+  // and relations of those collections that it no longer mentions are left out,
+  // so the diff reports them as deletions. Collections the YAML does not
+  // declare stay untouched, unless they are listed in `dropCollections`.
+  const removed = new Set(
+    dropCollections.filter(
+      (name) => !definitions.some((item) => item.collection === name),
+    ),
+  )
+  desired.collections = desired.collections.filter(
+    (item) => !removed.has(item.collection),
+  )
+  desired.fields = desired.fields.filter(
+    (item) => !removed.has(item.collection),
+  )
+  desired.relations = desired.relations.filter(
+    (item) => !removed.has(item.collection),
+  )
+  const declared = new Map(definitions.map((item) => [item.collection, item]))
+  desired.fields = desired.fields.filter((field) => {
+    const owner = declared.get(field.collection)
+    return !owner || owner.fields.some((item) => item.field === field.field)
+  })
+  desired.relations = desired.relations.filter((relation) => {
+    const owner = declared.get(relation.collection)
+    return (
+      !owner ||
+      (owner.relations ?? []).some((item) => item.field === relation.field)
+    )
+  })
   return desired
 }
 
@@ -302,24 +340,6 @@ function upsert(list, matches, value) {
   const index = list.findIndex(matches)
   if (index === -1) list.push(value)
   else list[index] = value
-}
-
-// Whole collections, fields or relations missing from the desired snapshot show
-// up as top-level `D` entries. Property edits (`E`/`N`/`A`) carry a path.
-export function findDeletions(diff) {
-  const deletions = []
-  for (const kind of ['collections', 'fields', 'relations']) {
-    for (const entry of diff?.diff?.[kind] ?? []) {
-      if (entry.diff?.some((change) => change.kind === 'D' && !change.path)) {
-        deletions.push(
-          [kind.slice(0, -1), entry.collection, entry.field]
-            .filter(Boolean)
-            .join(' '),
-        )
-      }
-    }
-  }
-  return deletions
 }
 
 const baseUrl = () => process.env.DIRECTUS_URL ?? 'http://127.0.0.1:8057'
@@ -371,54 +391,4 @@ export async function loginAsAdmin(env = process.env) {
     body: { email: env.ADMIN_EMAIL, password: env.ADMIN_PASSWORD },
   })
   return login.data.access_token
-}
-
-const root = new URL('../', import.meta.url)
-const dir = (name) => fileURLToPath(new URL(`${name}/`, root))
-
-export async function synchronize({ env = process.env } = {}) {
-  const environment = seedEnvironment(env.CMS_ENV ?? 'prod')
-
-  // Everything is read and validated before the database is touched.
-  const definitions = await loadDefinitions(dir('schemas'))
-  await waitForDirectus()
-  const token = await loginAsAdmin(env)
-
-  const snapshot = (await request('/schema/snapshot', { token })).data
-  const diff = await request('/schema/diff', {
-    method: 'POST',
-    body: desiredSnapshot(snapshot, definitions),
-    token,
-  })
-  if (diff?.data?.diff) {
-    const deletions = findDeletions(diff.data)
-    if (deletions.length) {
-      throw new Error(
-        `Refusing to delete: ${deletions.join(', ')}. The sync is non-destructive; remove these manually if intended.`,
-      )
-    }
-    await request('/schema/apply', { method: 'POST', body: diff.data, token })
-    console.log('Applied schema changes.')
-  } else {
-    console.log('Schemas are already up to date.')
-  }
-
-  await applyPolicies(request, token, definitions, {
-    env,
-    accessDir: dir('access'),
-  })
-  await seedData(definitions, request, token, {
-    environment,
-    seedsDir: dir('seeds'),
-    publishDraft: env.SEED_PUBLISH_DEMO === 'true',
-  })
-}
-
-if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
-  try {
-    await synchronize()
-  } catch (error) {
-    console.error(`Schema synchronization failed: ${error.message}`)
-    process.exitCode = 1
-  }
 }
