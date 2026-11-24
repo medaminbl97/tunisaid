@@ -7,6 +7,7 @@ import {
   zItemsProjectsTranslations,
 } from '#/api/generated/zod.gen'
 import { projectLanguageSchema } from '#/api/collections/projects/schemas'
+import { euroCents } from '#/lib/money'
 
 export const campaignLanguageSchema = projectLanguageSchema
 
@@ -32,7 +33,8 @@ const campaignProjectSchema = zItemsCampaignProjects.extend({
 export const campaignSchema = zItemsCampaigns.extend({
   status: statusSchema,
   slug: z.string().trim().min(1),
-  goal_cents: z.int().nonnegative(),
+  // Parsed from Directus' decimal euros to integer cents.
+  goal_amount: euroCents.pipe(z.int().nonnegative()),
   currency: z.literal('EUR'),
   translations: z.array(campaignTranslationSchema).min(1),
   projects: z.array(campaignProjectSchema).optional(),

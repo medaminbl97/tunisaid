@@ -28,13 +28,15 @@ npm run api:generate
 npm run api:test
 ```
 
-Generation requires Node.js 22.18+. Set `OPENAPI_TOKEN` in the git-ignored root
-`.env.local` or your shell; the generator uses it as a Bearer token to fetch
-Directus's OpenAPI specification. It does not log in with administrator credentials
-or read `directus/.env`. Optionally set `DIRECTUS_URL` for another Directus server.
-The anonymous specification omits private collections. The token is used only
-by the local generator, never written to the generated client. Never prefix it
-with `VITE_` or commit it. To use another contract, run
+Generation requires Node.js 22.18+. The generator fetches Directus's OpenAPI
+specification with `DIRECTUS_SERVICE_TOKEN` from the git-ignored root `.env` (the
+Donation service's token, the same one the website server uses) and
+`DIRECTUS_URL` (from the dev container, `http://host.docker.internal:8056`).
+`OPENAPI_TOKEN` in `.env.local` or the shell overrides the token, but an
+administrator token is never needed. The generator does not log in with
+administrator credentials or read `directus/.env`. The token is used only by the
+local generator, never written to the generated client. Never prefix it with
+`VITE_` or commit it. To use another contract, run
 `OPENAPI_INPUT=/path/to/openapi.json npm run api:generate` (a URL also works).
 For a URL, `OPENAPI_TOKEN` is sent if set; use only trusted spec URLs. Redirects
 are rejected. Local input files do not require a token.
@@ -42,9 +44,14 @@ The input must expose the Projects list/detail operations and expanded translati
 Generated output lives in `src/api/generated/`; never edit it manually.
 Regenerate after changing the Directus schema or OpenAPI contract. Only
 `/items/*` operations are generated; the token's Directus role decides which
-collections and methods appear in the spec, so grant it read access to expose a
-new collection. Use an administrator token so the one generated SDK covers both
-the public collections and the private donation collections the server uses.
+collections, fields and methods appear in the spec, and Directus builds it from the
+caller's own permissions only (it does not add the Public policy). So the Donation
+service policy can read everything the website client uses: the same published
+content fields as `access/public.yaml`, the aliases on the other side of relations
+(a nested type only appears when both ends and the alias are readable), and every
+field the server writes. `directus/scripts/apply-policies.test.js` guards both
+rules; to expose a new collection or field, grant it in
+`access/donation-service.yaml`. Donor details stay write-only on purpose.
 Bundling an operation grants nothing: Directus enforces the caller's policy on
 every request.
 
@@ -136,44 +143,50 @@ npm run preview
 
 This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
 
-The site header is a fixed, floating glass panel based on the Figma redesign, with a centered 82.5rem maximum width, the supplied heart-handshake mark, and a Fraunces wordmark. Navigation uses an animated active pill, the Donate action links to `/donate`, and EN/DE controls switch the bundled translations and document language. On smaller screens the navigation moves into a scrollable second row. Hovering over the header or focusing a control expands the bar and logo with a Motion spring; reduced-motion preferences disable movement. Its layout slot reserves the collapsed height to prevent page jumps, and document scroll padding keeps anchor targets below the expanded bar. Header colors, dimensions, and shadow are defined as `brand-` tokens in `src/styles.css`.
+The site header is a fixed, floating glass panel based on the Figma redesign, with a centered 82.5rem maximum width, the supplied heart-handshake mark, and a Fraunces wordmark. Navigation uses an animated active pill, the Donate action links to `/donate` (a heart icon button below 640px, a text pill from there up; the open menu also has a text link), the gift and menu buttons sit on a light lagoon tint so they stand out from the glass, and EN/DE controls switch the bundled translations and document language. On smaller screens the navigation moves into a scrollable second row. Hovering over the header or focusing a control expands the bar and logo with a Motion spring; reduced-motion preferences disable movement. Its layout slot reserves the collapsed height to prevent page jumps, and document scroll padding keeps anchor targets below the expanded bar. Header colors, dimensions, and shadow are defined as `brand-` tokens in `src/styles.css`.
 
-### Generated website imagery
+### Website imagery
 
-Seven supplied Gemini images are integrated as illustrative artwork, not evidence
-of real TunisAid projects or team members. Home uses the courtyard scene and
-illustrated project covers; About uses the planning-table scene; What we do uses
-the workshop scene above six unboxed support descriptions; Contact reuses the
-planning-table scene because a separate contact image was not supplied. The real
-team-photo placeholder is unchanged. Donate uses four tactile illustrations and
-reuses the groceries image in its hero. Checkout and confirmation remain focused
-on their existing, explicitly unavailable-payment behavior.
+The editorial slots use **real photographs of the work**, not generated images:
+Home's hero is the courtyard walk (a care worker, a boy on crutches and a person in
+a wheelchair, seen from behind), and its two project covers are the sewing training
+and the craft workshop; About shows the equipment warehouse beside the story; What
+we do shows the hearing test above the six support descriptions; Contact shows a
+man helping a wheelchair user into an accessible van. They carry no AI caption and
+have localized alt text that describes only what is visible. The team-photo
+placeholder is unchanged, because none of these photographs is a team portrait.
 
-The original unoptimized `Gemini_Generated_Image_*.jpeg` files were removed after
-conversion. Application code imports only WebP derivatives from `src/assets/images/optimized/` through
-`src/lib/site-images.ts`. `ImagePanel` supplies responsive sources, intrinsic
-dimensions, lazy loading (except priority hero images), reduced-motion-aware
-entrances, and a token-based cream gradient wash. Generated editorial scenes have
-localized alt text and visible AI disclosure; donation illustrations repeat the
-adjacent content and have empty alt text with a disclosure below the collection.
+Donate still uses four tactile AI illustrations (and reuses the groceries image in
+its hero). They stay labeled as illustrations, with empty alt text and a disclosure
+below the collection, because gift amounts and items are illustrative. Checkout and
+confirmation remain focused on their existing, explicitly unavailable-payment
+behavior.
 
-Derivatives were encoded with the existing `cwebp` CLI at quality 80, method 6,
-with metadata removed. Editorial widths are 800/1600px. Donation artwork is
-cropped to 1792×1536 before resizing to 480×412 and 960×823, keeping subjects
-intact while removing excess portrait whitespace:
+Application code imports only WebP derivatives from `src/assets/images/optimized/`
+through `src/lib/site-images.ts`. `ImagePanel` supplies responsive sources,
+intrinsic dimensions, lazy loading (except priority hero images), reduced-motion-aware
+entrances, and a token-based cream gradient wash.
 
-The seven originals totaled 17,883,050 bytes. All fourteen responsive WebP files
-combined total 574,684 bytes (96.8% smaller); each file is under 120 KB.
+The photographs were optimized with ImageMagick: auto-oriented, converted to sRGB,
+all metadata removed, and encoded as WebP (method 6) at quality 78 (full) and 74
+(`-small`), shrunk to at most 1280px and 720px wide and never upscaled. The full
+files are 86 to 262 KB and the small ones 34 to 99 KB, down from 300 to 600 KB
+JPEGs. A page loads one variant of each image through `srcset`. The original
+WhatsApp JPEGs in `src/assets/tunisaid/` are source material and should not be
+committed. A photograph of a food-package distribution (`food-packages`) is
+optimized but not used yet. Before publishing any photograph of identifiable people,
+especially children, confirm that consent and usage rights are in place; the
+patient-care photograph was deliberately left out of the site.
 
-| Source filename suffix  | Output stem             | Crop origin |
-| ----------------------- | ----------------------- | ----------- |
-| `gje4kygje4kygje4.jpeg` | `everyday-independence` | Uncropped   |
-| `4y67w54y67w54y67.jpeg` | `shared-purpose`        | Uncropped   |
-| `semrvtsemrvtsemr.jpeg` | `room-to-participate`   | Uncropped   |
-| `7d90o57d90o57d90.jpeg` | `donate-koffa`          | x=0, y=600  |
-| `c0bkzyc0bkzyc0bk.jpeg` | `donate-mobility`       | x=0, y=520  |
-| `oa4abdoa4abdoa4a.jpeg` | `donate-school`         | x=0, y=480  |
-| `gmodlcgmodlcgmod.jpeg` | `donate-warmth`         | x=0, y=640  |
+The donation artwork was encoded with `cwebp` at quality 80, method 6, with metadata
+removed, cropped to 1792×1536 and resized to 480×412 and 960×823:
+
+| Source filename suffix  | Output stem       | Crop origin |
+| ----------------------- | ----------------- | ----------- |
+| `7d90o57d90o57d90.jpeg` | `donate-koffa`    | x=0, y=600  |
+| `c0bkzyc0bkzyc0bk.jpeg` | `donate-mobility` | x=0, y=520  |
+| `oa4abdoa4abdoa4a.jpeg` | `donate-school`   | x=0, y=480  |
+| `gmodlcgmodlcgmod.jpeg` | `donate-warmth`   | x=0, y=640  |
 
 ### Removing Tailwind CSS
 
@@ -196,11 +209,13 @@ The existing Button, GlassCard, IconChip, and SectionHeading remain the foundati
 `DonationProvider` owns the gift basket. Amounts use integer EUR cents and are
 formatted for the active language. The basket is saved in the browser's
 `localStorage` (`tunisaid.donation-basket.v1`: gift slugs, quantities and amounts
-only, validated on load, dropped after 30 days or when payment succeeds), so it
-survives reloads, returning from the payment page and other tabs. `hydrated` tells
+only, validated on load, dropped after 30 days, and cleared on the thank-you page
+once the payment step is complete: the checkout is paid, or pending while the
+provider's confirmation is on its way; failed, cancelled and expired checkouts
+keep it), so it survives reloads, returning from the payment page and other tabs. `hydrated` tells
 pages when the saved basket has been read, so they do not flash an empty basket.
-No personal or payment information is stored. The site header's basket button
-(`DonationBasketButton`) shows a badge with the number of gifts and opens a
+No personal or payment information is stored. The site header's gift button
+(`DonationBasketButton`, a gift icon on a light lagoon tint) shows a badge with the number of gifts and opens a
 preview with the lines, the total and a link to checkout. The `donation` translation namespace
 contains matching English/German copy. Catalog prices are illustrative, not
 validated procurement costs. Donors never choose a campaign: `/donate?campaign=<slug>`

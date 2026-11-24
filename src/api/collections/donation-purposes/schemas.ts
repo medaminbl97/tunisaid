@@ -8,6 +8,7 @@ import {
   zItemsProjectsTranslations,
 } from '#/api/generated/zod.gen'
 import { projectLanguageSchema } from '#/api/collections/projects/schemas'
+import { euroCents } from '#/lib/money'
 
 export const donationPurposeLanguageSchema = projectLanguageSchema
 
@@ -40,7 +41,8 @@ export const donationPurposeSchema = zItemsDonationPurposes.extend({
   slug: z.string().trim().min(1),
   category: categorySchema.nullish(),
   project: linkedProjectSchema.nullish(),
-  unit_amount_cents: z.int().positive(),
+  // Parsed from Directus' decimal euros to integer cents.
+  unit_amount: euroCents.pipe(z.int().positive()),
   currency: z.literal('EUR'),
   sort: z.int().nullish(),
   is_illustrative: z.boolean(),

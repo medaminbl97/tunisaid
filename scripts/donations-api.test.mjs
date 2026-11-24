@@ -4,6 +4,10 @@ import { after, before, beforeEach, test } from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { createServer } from 'vite'
 
+// Directus stores euros as decimal(12,2) and returns them as strings.
+const euro = (cents) => (cents / 100).toFixed(2)
+const toCents = (value) => Math.round(Number(value) * 100)
+
 let server
 let service
 let signing
@@ -29,7 +33,7 @@ function purpose(slug, unitCents, projectId, title, status = 'published') {
     slug,
     status,
     project: projectId,
-    unit_amount_cents: unitCents,
+    unit_amount: euro(unitCents),
     currency: 'EUR',
     translations: [{ language: 'en', title, basket_title: null }],
   }
@@ -183,14 +187,14 @@ async function fakeDirectus(input, init = {}) {
       matches(collection, item, filter),
     )) {
       const group = groups.get(row.campaign) ?? { sum: 0, count: 0 }
-      group.sum += row.total_cents
+      group.sum += toCents(row.total_amount)
       group.count += 1
       groups.set(row.campaign, group)
     }
     return json({
       data: [...groups].map(([campaign, group]) => ({
         campaign,
-        sum: { total_cents: String(group.sum) },
+        sum: { total_amount: euro(group.sum) },
         count: { id: String(group.count) },
       })),
     })
@@ -282,7 +286,7 @@ const shares = () =>
   db.donations.map((donation) => ({
     campaign:
       db.campaigns.find((item) => item.id === donation.campaign)?.slug ?? null,
-    total: donation.total_cents,
+    total: toCents(donation.total_amount),
     items: db.donation_items
       .filter((item) => item.donation === donation.id)
       .map((item) => item.title_snapshot),
@@ -309,7 +313,7 @@ test('checkout splits one payment into one donation per campaign', async () => {
     {
       reference: db.checkouts[0].reference,
       status: db.checkouts[0].status,
-      total: db.checkouts[0].total_cents,
+      total: toCents(db.checkouts[0].total_amount),
       donor: db.checkouts[0].donor,
     },
     {
@@ -334,7 +338,7 @@ test('checkout splits one payment into one donation per campaign', async () => {
   assert.equal(db.payment_attempts.length, 1)
   assert.equal(db.payment_attempts[0].checkout, db.checkouts[0].id)
   assert.equal(db.payment_attempts[0].status, 'pending')
-  assert.equal(db.payment_attempts[0].amount_cents, 11700)
+  assert.equal(db.payment_attempts[0].amount, '117.00')
   assert.equal(result.attemptId, db.payment_attempts[0].id)
 })
 
@@ -499,12 +503,16 @@ test('receipts show each line with its campaign and no donor details', async () 
 })
 
 function paidShare(campaign, totalCents, status = 'paid') {
-  const checkoutRow = { id: randomUUID(), status, total_cents: totalCents }
+  const checkoutRow = {
+    id: randomUUID(),
+    status,
+    total_amount: euro(totalCents),
+  }
   const donation = {
     id: randomUUID(),
     checkout: checkoutRow.id,
     campaign,
-    total_cents: totalCents,
+    total_amount: euro(totalCents),
   }
   db.checkouts.push(checkoutRow)
   db.donations.push(donation)
@@ -523,13 +531,13 @@ test('campaign raised totals count paid shares minus succeeded refunds', async (
       id: randomUUID(),
       donation: second.id,
       status: 'succeeded',
-      amount_cents: 2000,
+      amount: euro(2000),
     },
     {
       id: randomUUID(),
       donation: first.id,
       status: 'failed',
-      amount_cents: 1000,
+      amount: euro(1000),
     },
   )
   assert.deepEqual(
@@ -557,7 +565,7 @@ test('receipt refund state is derived from refunds across the checkout', async (
   Object.assign(checkoutRow, {
     reference: 'TA-REFUNDREFUND',
     currency: 'EUR',
-    total_cents: 1000,
+    total_amount: euro(1000),
   })
   db.donations.find((item) => item.id === generalShare.id).checkout =
     checkoutRow.id
@@ -566,13 +574,13 @@ test('receipt refund state is derived from refunds across the checkout', async (
       id: randomUUID(),
       donation: winterShare.id,
       status: 'succeeded',
-      amount_cents: 600,
+      amount: euro(600),
     },
     {
       id: randomUUID(),
       donation: generalShare.id,
       status: 'pending',
-      amount_cents: 400,
+      amount: euro(400),
     },
   )
   assert.equal(
@@ -888,7 +896,7 @@ test('stripe refunds are recorded once, split across shares and updated in place
     ['pending', 'pending'],
   )
   assert.equal(
-    db.refunds.reduce((sum, row) => sum + row.amount_cents, 0),
+    db.refunds.reduce((sum, row) => sum + toCents(row.amount), 0),
     2000,
   )
   assert.ok(db.refunds.every((row) => row.provider === 'stripe'))
@@ -924,7 +932,7 @@ test('stripe refunds never exceed what was paid and failed ones record nothing',
     refundEvent('refund.created', attemptId, { id: 're_2', amount: 6000 }),
   )
   const refunded = () =>
-    db.refunds.reduce((sum, row) => sum + row.amount_cents, 0)
+    db.refunds.reduce((sum, row) => sum + toCents(row.amount), 0)
   assert.equal(refunded(), 6000)
   const result = await run(
     refundEvent('refund.created', attemptId, { id: 're_3', amount: 1 }),

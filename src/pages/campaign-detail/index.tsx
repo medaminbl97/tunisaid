@@ -115,7 +115,7 @@ export function CampaignDetailPage(props: CampaignDetailPageProps) {
   const facts = [
     {
       label: t('facts.goal'),
-      value: formatDonationAmount(campaign.data.goal_cents, language),
+      value: formatDonationAmount(campaign.data.goalCents, language),
     },
     {
       label: t('facts.period'),
@@ -149,7 +149,7 @@ export function CampaignDetailPage(props: CampaignDetailPageProps) {
           {raisedEntry && (
             <CampaignProgress
               raisedCents={raisedEntry.raisedCents}
-              goalCents={campaign.data.goal_cents}
+              goalCents={campaign.data.goalCents}
               label={t('facts.raised')}
               formatAmount={(cents) => formatDonationAmount(cents, language)}
               progressLabel={(percent) => t('facts.progress', { percent })}

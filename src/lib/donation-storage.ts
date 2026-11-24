@@ -63,3 +63,12 @@ export function basketItemCount(basket: DonationBasket) {
   )
   return gifts + (basket.flexibleCents > 0 ? 1 : 0)
 }
+
+// The gifts leave the basket once the donor has completed the payment step: the
+// checkout is paid, or still pending because the provider's confirmation (the
+// Stripe webhook) has not arrived yet. Keeping them would invite a second
+// donation of the same gifts. Failed, cancelled and expired checkouts keep the
+// basket so the donor can try again.
+export function shouldClearBasket(status: string | undefined) {
+  return status === 'paid' || status === 'pending'
+}

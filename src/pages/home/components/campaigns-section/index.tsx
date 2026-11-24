@@ -102,7 +102,7 @@ export function CampaignsSection() {
                         {
                           label: t('goal'),
                           value: formatDonationAmount(
-                            campaign.goal_cents,
+                            campaign.goalCents,
                             language,
                           ),
                         },
@@ -112,7 +112,7 @@ export function CampaignsSection() {
                     {raisedEntry && (
                       <CampaignProgress
                         raisedCents={raisedEntry.raisedCents}
-                        goalCents={campaign.goal_cents}
+                        goalCents={campaign.goalCents}
                         label={t('raised')}
                         formatAmount={(cents) =>
                           formatDonationAmount(cents, language)

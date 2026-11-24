@@ -59,10 +59,12 @@
     }
   },
   "imagery": {
-    "caption": "KI-generierte Illustration · Kein Foto von TunisAid-Projekten oder Teammitgliedern.",
-    "independence": "Ein vorgestelltes Gespräch im Innenhof zwischen einem Rollstuhlnutzer und einer Freundin.",
-    "collaboration": "Eine vorgestellte Gruppe plant gemeinsam an einem Tisch, daneben ist ein Rollstuhl zu sehen.",
-    "learning": "Ein vorgestellter inklusiver Workshop mit Erwachsenen an einem barrierefreien Tisch.",
+    "courtyard": "Eine Frau im weißen Kittel geht in einem sonnigen Innenhof neben einem Jungen an Unterarmgehstützen, daneben fährt eine Person im Rollstuhl.",
+    "sewing": "Eine Frau im weißen Kittel zeigt einem Mann in einem Schulungsraum, wie man Stoff durch eine Industrienähmaschine führt.",
+    "craft": "Eine junge Person in Kittel und Handschuhen bemalt in einer Kunstwerkstatt mit einem feinen Pinsel eine goldene Vase.",
+    "equipment": "Reihen von Rollstühlen und Pflegebetten, die in einer großen Lagerhalle stehen.",
+    "hearing": "Ein Fachmann untersucht das Ohr eines Jungen, während ein Kollege neben Hörtestgeräten Notizen macht.",
+    "transport": "Ein Mann hilft einer Person im Rollstuhl eine Rampe hinauf in einen barrierefreien Transporter.",
     "donationCaption": "KI-generierte Illustrationen · Spendenbeträge und Gegenstände dienen als Beispiele."
   },
   "contact": {

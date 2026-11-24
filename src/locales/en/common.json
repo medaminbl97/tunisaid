@@ -59,10 +59,12 @@
     }
   },
   "imagery": {
-    "caption": "AI-generated illustration · Not a photograph of TunisAid projects or team members.",
-    "independence": "An imagined courtyard conversation between a wheelchair user and a friend.",
-    "collaboration": "An imagined group planning together around a table, with a wheelchair visible alongside.",
-    "learning": "An imagined inclusive workshop with adults collaborating at an accessible table.",
+    "courtyard": "A woman in a white coat walks beside a boy on crutches, next to a person in a wheelchair, across a sunlit courtyard.",
+    "sewing": "A woman in a white coat shows a man how to guide fabric through an industrial sewing machine in a training room.",
+    "craft": "A young person in a lab coat and gloves paints a golden vase with a fine brush in an art workshop.",
+    "equipment": "Rows of wheelchairs and care beds stored in a large warehouse.",
+    "hearing": "A specialist examines a boy's ear while a colleague takes notes next to hearing-test equipment.",
+    "transport": "A man helps a wheelchair user up a ramp into an accessible van.",
     "donationCaption": "AI-generated illustrations · Gift amounts and items are illustrative."
   },
   "contact": {

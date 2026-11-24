@@ -9,6 +9,7 @@ import {
 import { donationStatusLookupSchema } from '#/api/collections/donations/schemas'
 import { useDonationBasket } from '#/components/donation-provider'
 import { Button } from '#/components/ui/button'
+import { shouldClearBasket } from '#/lib/donation-storage'
 import { DonationReceipt } from './components/donation-receipt'
 import { GiftRecap } from './components/gift-recap'
 import { GratitudeHero } from './components/gratitude-hero'
@@ -60,13 +61,18 @@ function DonationStatus(props: {
   const status = receipt.data?.status
   const paid = status === 'paid'
 
+  const submitted = shouldClearBasket(status)
+
+  useEffect(() => {
+    if (submitted) clearBasket()
+  }, [submitted, clearBasket])
+
   useEffect(() => {
     if (!paid) return
-    clearBasket()
     void queryClient.invalidateQueries({
       queryKey: donationKeys.campaignRaisedAll(),
     })
-  }, [paid, clearBasket, queryClient])
+  }, [paid, queryClient])
 
   if (props.valid && receipt.isPending) {
     return (

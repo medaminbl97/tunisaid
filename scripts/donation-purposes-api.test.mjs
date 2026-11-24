@@ -33,7 +33,7 @@ function purpose(index, slug, overrides = {}) {
     id: uuid('3', index),
     slug,
     status: 'published',
-    unit_amount_cents: 1000 * index,
+    unit_amount: (10 * index).toFixed(2),
     currency: 'EUR',
     sort: index,
     is_illustrative: true,
@@ -200,7 +200,7 @@ test('categories are unique and ordered by sort then slug', () => {
 })
 
 test('invalid catalog responses are rejected', async () => {
-  reply({ data: [purpose(1, 'koffa', { unit_amount_cents: -5 })] })
+  reply({ data: [purpose(1, 'koffa', { unit_amount: '-0.05' })] })
   await assert.rejects(api.getDonationPurposes('en'))
   reply({ errors: [{ message: 'Forbidden' }] }, 403)
   await assert.rejects(api.getDonationPurposes('en'))

@@ -36,6 +36,7 @@ import {
   zItemsPaymentAttempts,
   zItemsPaymentEvents,
 } from '#/api/generated/zod.gen'
+import { centsToEuro, euroCents } from '#/lib/money'
 import { DirectusError, createServiceClient } from './directus'
 import type { ServiceConnection } from './directus'
 import { allocateRefund } from './refund-allocation'
@@ -59,7 +60,7 @@ const purposeRowSchema = zItemsDonationPurposes
   .extend({
     status: z.literal('published'),
     project: z.uuid().nullish(),
-    unit_amount_cents: z.int().positive(),
+    unit_amount: euroCents.pipe(z.int().positive()),
     currency: z.literal('EUR'),
     translations: z.array(
       zItemsDonationPurposesTranslations
@@ -78,7 +79,7 @@ const attemptRowSchema = zItemsPaymentAttempts.pick({ id: true }).extend({
   provider: z.string(),
   provider_payment_id: z.string().nullish(),
   status: z.enum(['created', 'pending', 'succeeded', 'failed', 'cancelled']),
-  amount_cents: z.int(),
+  amount: euroCents,
   currency: z.literal('EUR'),
 })
 const checkoutRowSchema = zItemsCheckouts
@@ -86,7 +87,7 @@ const checkoutRowSchema = zItemsCheckouts
   .extend({
     status: z.enum(storedDonationStatuses),
     currency: z.literal('EUR'),
-    total_cents: z.int(),
+    total_amount: euroCents,
   })
 const itemRowSchema = zItemsDonationItems
   .pick({ id: true, title_snapshot: true })
@@ -105,22 +106,22 @@ const itemRowSchema = zItemsDonationItems
     }),
     kind: z.enum(['purpose', 'flexible']),
     quantity: z.int(),
-    unit_amount_cents: z.int(),
-    total_cents: z.int(),
+    unit_amount: euroCents,
+    total_amount: euroCents,
   })
 const eventRowSchema = zItemsPaymentEvents.pick({ id: true }).extend({
   status: z.enum(['received', 'processed', 'failed']),
 })
-const amountSchema = z.object({ amount_cents: z.int() })
+const amountSchema = z.object({ amount: euroCents })
 const refundRowSchema = z.object({
   id: z.uuid(),
   donation: z.uuid(),
   status: z.enum(['pending', 'succeeded', 'failed']),
-  amount_cents: z.int(),
+  amount: euroCents,
 })
 const donationRowSchema = z.object({
   id: z.uuid(),
-  total_cents: z.int(),
+  total_amount: euroCents,
 })
 
 function rowsOf<T extends z.ZodType>(
@@ -168,7 +169,7 @@ export function createDonationService(options: DonationServiceOptions) {
           'slug',
           'status',
           'project',
-          'unit_amount_cents',
+          'unit_amount',
           'currency',
           'translations.language',
           'translations.title',
@@ -248,14 +249,10 @@ export function createDonationService(options: DonationServiceOptions) {
       const translation =
         purpose?.translations.find((row) => row.language === input.language) ??
         purpose?.translations.find((row) => row.language === 'en')
-      if (
-        !purpose ||
-        !translation ||
-        purpose.unit_amount_cents !== item.unitCents
-      ) {
+      if (!purpose || !translation || purpose.unit_amount !== item.unitCents) {
         return { ok: false, code: 'catalog_changed' }
       }
-      const totalCents = purpose.unit_amount_cents * item.quantity
+      const totalCents = purpose.unit_amount * item.quantity
       if (!Number.isSafeInteger(totalCents) || totalCents > maxDonationCents) {
         return { ok: false, code: 'invalid_amount' }
       }
@@ -265,8 +262,8 @@ export function createDonationService(options: DonationServiceOptions) {
         kind: 'purpose' as const,
         title_snapshot: translation.basket_title || translation.title,
         quantity: item.quantity,
-        unit_amount_cents: purpose.unit_amount_cents,
-        total_cents: totalCents,
+        unitCents: purpose.unit_amount,
+        totalCents,
         requested_purpose_snapshot: purpose.slug,
       })
     }
@@ -277,12 +274,12 @@ export function createDonationService(options: DonationServiceOptions) {
         kind: 'flexible' as const,
         title_snapshot: flexibleTitles[input.language],
         quantity: 1,
-        unit_amount_cents: input.flexibleCents,
-        total_cents: input.flexibleCents,
+        unitCents: input.flexibleCents,
+        totalCents: input.flexibleCents,
         requested_purpose_snapshot: null,
       })
     }
-    const total = lines.reduce((sum, line) => sum + line.total_cents, 0)
+    const total = lines.reduce((sum, line) => sum + line.totalCents, 0)
     if (
       total < minDonationCents ||
       total > Math.min(maxDonationCents, maxTotalCents)
@@ -329,7 +326,7 @@ export function createDonationService(options: DonationServiceOptions) {
         donor: donorId,
         status: 'pending',
         currency: 'EUR',
-        total_cents: total,
+        total_amount: centsToEuro(total),
         created_at: createdAt,
       }),
     )
@@ -342,17 +339,23 @@ export function createDonationService(options: DonationServiceOptions) {
             checkout: checkout.id,
             campaign,
             currency: 'EUR',
-            total_cents: group.reduce((sum, line) => sum + line.total_cents, 0),
+            total_amount: centsToEuro(
+              group.reduce((sum, line) => sum + line.totalCents, 0),
+            ),
           })),
         ),
       )
       await create(
         'donation_items',
         shares.flatMap(([, group], index) =>
-          group.map(({ project: _project, ...line }) => ({
-            ...line,
-            donation: donations[index].id,
-          })),
+          group.map(
+            ({ project: _project, unitCents, totalCents, ...line }) => ({
+              ...line,
+              unit_amount: centsToEuro(unitCents),
+              total_amount: centsToEuro(totalCents),
+              donation: donations[index].id,
+            }),
+          ),
         ),
       )
       const idempotencyKey = `checkout:${randomUUID()}`
@@ -363,7 +366,7 @@ export function createDonationService(options: DonationServiceOptions) {
           provider_payment_id: `${provider}_${randomUUID()}`,
           idempotency_key: idempotencyKey,
           status: 'pending',
-          amount_cents: total,
+          amount: centsToEuro(total),
           currency: 'EUR',
           created_at: createdAt,
           updated_at: createdAt,
@@ -378,7 +381,7 @@ export function createDonationService(options: DonationServiceOptions) {
         lines: lines.map((line) => ({
           title: line.title_snapshot,
           quantity: line.quantity,
-          unitCents: line.unit_amount_cents,
+          unitCents: line.unitCents,
         })),
         donorEmail: donor.email ?? null,
       }
@@ -400,7 +403,7 @@ export function createDonationService(options: DonationServiceOptions) {
           'provider',
           'provider_payment_id',
           'status',
-          'amount_cents',
+          'amount',
           'currency',
         ],
         filter: { id: { _eq: id } },
@@ -429,7 +432,7 @@ export function createDonationService(options: DonationServiceOptions) {
           'reference',
           'status',
           'currency',
-          'total_cents',
+          'total_amount',
           'created_at',
           'paid_at',
         ],
@@ -449,7 +452,7 @@ export function createDonationService(options: DonationServiceOptions) {
     if (!checkout) return null
     return {
       reference: checkout.reference,
-      amountCents: attempt.amount_cents,
+      amountCents: attempt.amount,
       currency: attempt.currency,
       status: attempt.status,
     }
@@ -516,7 +519,7 @@ export function createDonationService(options: DonationServiceOptions) {
       attempt &&
       event.outcome === 'succeeded' &&
       event.collectedCents !== undefined &&
-      event.collectedCents !== attempt.amount_cents
+      event.collectedCents !== attempt.amount
     ) {
       await update('payment_events', stored.id, {
         status: 'failed',
@@ -576,7 +579,7 @@ export function createDonationService(options: DonationServiceOptions) {
         await readItemsRefunds({
           ...reads,
           query: {
-            fields: ['id', 'donation', 'status', 'amount_cents'],
+            fields: ['id', 'donation', 'status', 'amount'],
             filter: { provider_refund_id: { _starts_with: keyPrefix } },
             limit: -1,
           },
@@ -603,7 +606,7 @@ export function createDonationService(options: DonationServiceOptions) {
       await readItemsDonations({
         ...reads,
         query: {
-          fields: ['id', 'total_cents'],
+          fields: ['id', 'total_amount'],
           filter: { checkout: { _eq: attempt.checkout } },
           limit: -1,
         },
@@ -614,7 +617,7 @@ export function createDonationService(options: DonationServiceOptions) {
       await readItemsRefunds({
         ...reads,
         query: {
-          fields: ['id', 'donation', 'status', 'amount_cents'],
+          fields: ['id', 'donation', 'status', 'amount'],
           filter: {
             _and: [
               { donation: { _in: donations.map((donation) => donation.id) } },
@@ -630,10 +633,10 @@ export function createDonationService(options: DonationServiceOptions) {
       donations.map((donation) => ({
         donationId: donation.id,
         remainingCents:
-          donation.total_cents -
+          donation.total_amount -
           taken
             .filter((row) => row.donation === donation.id)
-            .reduce((sum, row) => sum + row.amount_cents, 0),
+            .reduce((sum, row) => sum + row.amount, 0),
       })),
     )
     if (!shares) return { applied: false, reason: 'exceeds_paid_amount' }
@@ -648,7 +651,7 @@ export function createDonationService(options: DonationServiceOptions) {
           provider_refund_id: `${keyPrefix}${share.donationId}`,
           idempotency_key: `${refund.provider}:${keyPrefix}${share.donationId}`,
           status: refund.status,
-          amount_cents: share.amountCents,
+          amount: centsToEuro(share.amountCents),
           currency: 'EUR',
           reason_code: refund.reason ?? null,
           created_at: now(),
@@ -684,8 +687,8 @@ export function createDonationService(options: DonationServiceOptions) {
           'kind',
           'title_snapshot',
           'quantity',
-          'unit_amount_cents',
-          'total_cents',
+          'unit_amount',
+          'total_amount',
         ],
         filter: ofCheckout,
         sort: ['kind'],
@@ -700,23 +703,23 @@ export function createDonationService(options: DonationServiceOptions) {
             await readItemsRefunds({
               ...reads,
               query: {
-                fields: ['amount_cents'],
+                fields: ['amount'],
                 filter: {
                   _and: [ofCheckout, { status: { _eq: 'succeeded' } }],
                 },
                 limit: -1,
               },
             }),
-          ).reduce((sum, refund) => sum + refund.amount_cents, 0)
+          ).reduce((sum, refund) => sum + refund.amount, 0)
         : 0
     return {
       reference: checkout.reference,
       status: receiptStatus(
         checkout.status,
-        checkout.total_cents,
+        checkout.total_amount,
         refundedCents,
       ),
-      totalCents: checkout.total_cents,
+      totalCents: checkout.total_amount,
       currency: checkout.currency,
       createdAt: checkout.created_at ?? null,
       paidAt: checkout.paid_at ?? null,
@@ -730,8 +733,8 @@ export function createDonationService(options: DonationServiceOptions) {
           kind: item.kind,
           title: item.title_snapshot,
           quantity: item.quantity,
-          unitCents: item.unit_amount_cents,
-          totalCents: item.total_cents,
+          unitCents: item.unit_amount,
+          totalCents: item.total_amount,
           campaign: item.donation.campaign
             ? {
                 slug: item.donation.campaign.slug,
@@ -776,14 +779,14 @@ export function createDonationService(options: DonationServiceOptions) {
     const totals = rowsOf(
       z.object({
         campaign: z.uuid(),
-        sum: z.object({ total_cents: z.coerce.number().nullable() }),
+        sum: z.object({ total_amount: euroCents.nullable() }),
         count: z.object({ id: z.coerce.number() }),
       }),
       await client.get<{ 200: { data?: unknown } }, unknown, true>({
         throwOnError: true,
         url: '/items/donations',
         query: {
-          'aggregate[sum]': 'total_cents',
+          'aggregate[sum]': 'total_amount',
           'aggregate[count]': 'id',
           'groupBy[]': 'campaign',
           filter: {
@@ -799,7 +802,7 @@ export function createDonationService(options: DonationServiceOptions) {
       const slug = slugById.get(row.campaign)
       if (slug) {
         result[slug] = {
-          raisedCents: row.sum.total_cents ?? 0,
+          raisedCents: row.sum.total_amount ?? 0,
           donationCount: row.count.id,
         }
       }
@@ -809,7 +812,7 @@ export function createDonationService(options: DonationServiceOptions) {
       await readItemsRefunds({
         ...reads,
         query: {
-          fields: ['amount_cents', 'donation.campaign'],
+          fields: ['amount', 'donation.campaign'],
           filter: {
             _and: [
               { status: { _eq: 'succeeded' } },
@@ -824,7 +827,7 @@ export function createDonationService(options: DonationServiceOptions) {
       const slug = slugById.get(refund.donation.campaign)
       const entry = slug ? result[slug] : undefined
       if (entry)
-        entry.raisedCents = Math.max(entry.raisedCents - refund.amount_cents, 0)
+        entry.raisedCents = Math.max(entry.raisedCents - refund.amount, 0)
     }
     return result
   }
