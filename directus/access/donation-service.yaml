@@ -21,7 +21,7 @@ permissions:
       - slug
       - status
       - project
-      - unit_amount_cents
+      - unit_amount
       - currency
       - translations
     permissions:
@@ -47,7 +47,7 @@ permissions:
       - status
       - starts_at
       - ends_at
-      - goal_cents
+      - goal_amount
       - translations
     permissions:
       status:
@@ -93,7 +93,7 @@ permissions:
       - donor
       - status
       - currency
-      - total_cents
+      - total_amount
       - created_at
     validation:
       status:
@@ -105,7 +105,7 @@ permissions:
       - reference
       - status
       - currency
-      - total_cents
+      - total_amount
       - created_at
       - paid_at
   - collection: checkouts
@@ -130,7 +130,7 @@ permissions:
       - checkout
       - campaign
       - currency
-      - total_cents
+      - total_amount
   - collection: donations
     action: read
     fields:
@@ -138,7 +138,7 @@ permissions:
       - checkout
       - campaign
       - currency
-      - total_cents
+      - total_amount
   - collection: donation_items
     action: create
     fields:
@@ -147,8 +147,8 @@ permissions:
       - kind
       - title_snapshot
       - quantity
-      - unit_amount_cents
-      - total_cents
+      - unit_amount
+      - total_amount
       - requested_purpose_snapshot
   - collection: donation_items
     action: read
@@ -158,8 +158,8 @@ permissions:
       - kind
       - title_snapshot
       - quantity
-      - unit_amount_cents
-      - total_cents
+      - unit_amount
+      - total_amount
   - collection: payment_attempts
     action: create
     fields:
@@ -168,7 +168,7 @@ permissions:
       - provider_payment_id
       - idempotency_key
       - status
-      - amount_cents
+      - amount
       - currency
       - created_at
       - updated_at
@@ -185,7 +185,7 @@ permissions:
       - provider
       - provider_payment_id
       - status
-      - amount_cents
+      - amount
       - currency
       - failure_code
   - collection: payment_attempts
@@ -236,7 +236,7 @@ permissions:
       - payment_attempt
       - provider_refund_id
       - status
-      - amount_cents
+      - amount
   - collection: refunds
     action: create
     fields:
@@ -246,7 +246,7 @@ permissions:
       - provider_refund_id
       - idempotency_key
       - status
-      - amount_cents
+      - amount
       - currency
       - reason_code
       - created_at
