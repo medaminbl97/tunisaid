@@ -33,19 +33,19 @@ the required variables; do not use blank/example credentials in a deployment.
 
 The [`Makefile`](Makefile) wraps these commands. Run it from `directus/`:
 
-| Target                    | What it does                                                          |
-| ------------------------- | --------------------------------------------------------------------- |
-| `make up`                 | Creates `.env` if missing, rebuilds the image and waits until healthy |
-| `make revision m="..."`   | Writes the next revision for a change of `schemas/` (see Revisions)   |
-| `make migrate-status`     | Lists revisions as applied, pending or partial                        |
+| Target                    | What it does                                                           |
+| ------------------------- | ---------------------------------------------------------------------- |
+| `make up`                 | Creates `.env` if missing, rebuilds the image and waits until healthy  |
+| `make revision m="..."`   | Writes the next revision for a change of `schemas/` (see Revisions)    |
+| `make migrate-status`     | Lists revisions as applied, pending or partial                         |
 | `make migrate-down`       | Undoes the newest applied revision (run before deploying an older one) |
-| `make migrate-stamp`      | Records revisions as applied without running them (adoption only)     |
-| `make check`              | Fails if `schemas/` has changes that no revision contains             |
-| `make down`               | Stops the stack and keeps its data                                    |
-| `make restart`            | Restarts Directus (reruns startup, applying pending revisions)        |
-| `make logs`               | Follows the Directus logs                                             |
-| `make test`               | Runs the unit tests (no Docker)                                       |
-| `make reseed CONFIRM=yes` | **Deletes the database and uploads**, then starts from scratch        |
+| `make migrate-stamp`      | Records revisions as applied without running them (adoption only)      |
+| `make check`              | Fails if `schemas/` has changes that no revision contains              |
+| `make down`               | Stops the stack and keeps its data                                     |
+| `make restart`            | Restarts Directus (reruns startup, applying pending revisions)         |
+| `make logs`               | Follows the Directus logs                                              |
+| `make test`               | Runs the unit tests (no Docker)                                        |
+| `make reseed CONFIRM=yes` | **Deletes the database and uploads**, then starts from scratch         |
 
 The project name defaults to `tunisaid-backend-v11` and names the containers and
 the volumes (`tunisaid-backend-v11_database`, `tunisaid-backend-v11_uploads`); the
