@@ -98,6 +98,16 @@ test('a basket nobody came back to expires after 30 days', () => {
   assert.deepEqual(storage.parseStoredBasket(stored(), now + 31 * day), empty)
 })
 
+test('the basket is cleared once the payment step is complete', () => {
+  // Paid, or pending while the provider's confirmation is on its way.
+  assert.equal(storage.shouldClearBasket('paid'), true)
+  assert.equal(storage.shouldClearBasket('pending'), true)
+  // A failed, cancelled or expired checkout keeps the basket for another try.
+  for (const status of ['failed', 'cancelled', 'expired', undefined]) {
+    assert.equal(storage.shouldClearBasket(status), false, String(status))
+  }
+})
+
 test('the badge counts every gift plus the flexible amount once', () => {
   assert.equal(storage.basketItemCount(empty), 0)
   assert.equal(storage.basketItemCount(basket), 3)
