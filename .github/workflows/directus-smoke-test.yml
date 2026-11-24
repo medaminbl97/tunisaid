@@ -18,6 +18,8 @@ jobs:
       # A unique project name keeps parallel runs on one runner apart. It is a
       # disposable stack, so `down -v` below only ever touches this project.
       COMPOSE_PROJECT_NAME: directus-smoke-${{ github.run_id }}
+      # The backend's own Compose file, not whatever sits at the repository root.
+      COMPOSE_FILE: ${{ github.workspace }}/directus/compose.yaml
       CMS_ENV: dev
       SEED_PUBLISH_DEMO: 'false'
     steps:
@@ -49,6 +51,10 @@ jobs:
         run: |
           set -a; . directus/.env; set +a
           directus/scripts/smoke-test.sh
+
+      # Fails when directus/schemas changed without a new revision.
+      - name: Revisions match the YAML
+        run: PROJECT="$COMPOSE_PROJECT_NAME" directus/tools/revisions-cli.sh check
 
       - name: Live verification
         run: |
