@@ -52,8 +52,8 @@ export const Illustrated: Story = {
   args: {
     coverImage: (
       <ImagePanel
-        image={editorialImages.learning}
-        alt="An imagined inclusive workshop."
+        image={editorialImages.sewing}
+        alt="A woman in a white coat shows a man how to guide fabric through an industrial sewing machine in a training room."
         sizes="588px"
         className="h-full [&>div]:h-full [&>div]:rounded-none"
         imageClassName="h-full"

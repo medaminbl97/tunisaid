@@ -17,12 +17,8 @@ const HOME_PROJECT_LIMIT = 2
 
 // Directus assets are not public yet, so covers rotate through local imagery.
 const fallbackCovers = [
-  { image: editorialImages.learning, alt: 'learning', cover: 'lagoon' },
-  {
-    image: editorialImages.collaboration,
-    alt: 'collaboration',
-    cover: 'terracotta',
-  },
+  { image: editorialImages.sewing, alt: 'sewing', cover: 'lagoon' },
+  { image: editorialImages.craft, alt: 'craft', cover: 'terracotta' },
 ] as const
 
 export function ProjectsSection() {
@@ -176,9 +172,6 @@ export function ProjectsSection() {
                 </Button>
               </div>
             )}
-            <p className="-mt-8 text-xs leading-relaxed text-brand-ink-soft">
-              {imageText('caption')}
-            </p>
           </>
         )}
       </div>

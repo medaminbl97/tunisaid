@@ -23,10 +23,10 @@ export function StorySection() {
             title={t('about.story.title')}
           />
           <ImagePanel
-            image={editorialImages.collaboration}
-            alt={t('imagery.collaboration')}
-            caption={t('imagery.caption')}
+            image={editorialImages.equipment}
+            alt={t('imagery.equipment')}
             sizes="(min-width: 1280px) 568px, (min-width: 1024px) 46vw, calc(100vw - 48px)"
+            imageClassName="object-[center_40%]"
           />
         </div>
         <motion.div

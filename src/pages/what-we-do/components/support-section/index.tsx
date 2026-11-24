@@ -32,9 +32,8 @@ export function SupportSection() {
           className="max-w-[45rem]"
         />
         <ImagePanel
-          image={editorialImages.learning}
-          alt={t('imagery.learning')}
-          caption={t('imagery.caption')}
+          image={editorialImages.hearing}
+          alt={t('imagery.hearing')}
           sizes="(min-width: 1280px) 1200px, calc(100vw - 48px)"
           imageClassName="aspect-[4/3] sm:aspect-[2/1] object-[center_40%]"
         />
