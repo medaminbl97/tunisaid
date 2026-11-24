@@ -5,3 +5,6 @@ yarn.lock
 terraform/.terraform
 terraform/.secrets
 terraform/*.tfstate*
+
+# Skills submodule: its files follow the formatting of their own repository
+.agents/
