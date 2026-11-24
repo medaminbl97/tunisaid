@@ -42,15 +42,21 @@ fields:
             - draft
             - published
             - archived
-  - field: goal_cents
-    type: integer
+  - field: goal_amount
+    type: decimal
     schema:
       is_nullable: false
       default_value: 0
+      numeric_precision: 12
+      numeric_scale: 2
     meta:
       interface: input
+      note: Amount in euros (EUR) with two decimal places.
+      options:
+        min: 0
+        step: 0.01
       validation:
-        goal_cents:
+        goal_amount:
           _gte: 0
   - field: currency
     type: string

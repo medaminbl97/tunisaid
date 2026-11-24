@@ -4,7 +4,7 @@ items:
     slug: koffa
     category: 03cee3d5-6d80-54ba-b9c0-e63ec4b94bec
     project: 16c63c86-4666-5ef0-a275-29135ab18309
-    unit_amount_cents: 3500
+    unit_amount: 35.00
     currency: EUR
     sort: 1
     status: draft
@@ -13,7 +13,7 @@ items:
     slug: wheelchair
     category: 44b0d226-957f-5ece-a3ed-819d8a70b8c8
     project: 1e1dae91-d9cd-5a3a-a0b2-6e3c6c31d1be
-    unit_amount_cents: 3000
+    unit_amount: 30.00
     currency: EUR
     sort: 2
     status: draft
@@ -22,7 +22,7 @@ items:
     slug: school
     category: cd29b058-8566-5abc-9dc5-602469584a16
     project: c9b7c88e-1f5f-5df8-918f-10f961691922
-    unit_amount_cents: 2500
+    unit_amount: 25.00
     currency: EUR
     sort: 3
     status: draft
@@ -31,7 +31,7 @@ items:
     slug: warmth
     category: 03cee3d5-6d80-54ba-b9c0-e63ec4b94bec
     project: null
-    unit_amount_cents: 4500
+    unit_amount: 45.00
     currency: EUR
     sort: 4
     status: draft

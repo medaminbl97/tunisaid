@@ -19,7 +19,7 @@ permissions:
       - id
       - slug
       - status
-      - goal_cents
+      - goal_amount
       - currency
       - starts_at
       - ends_at
@@ -62,7 +62,7 @@ permissions:
       - status
       - category
       - project
-      - unit_amount_cents
+      - unit_amount
       - currency
       - image
       - sort
