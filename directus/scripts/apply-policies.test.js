@@ -97,6 +97,84 @@ test('the repository access files validate', async () => {
   assert.ok(documents.every((doc) => !doc.policy.admin_access))
 })
 
+// The OpenAPI export for the generated client runs with the donation service's
+// token, and Directus only lists what the caller may read. So the service must
+// be able to read every field of the published content the Public policy exposes.
+test('the donation service can read everything the public can read', async () => {
+  const documents = await loadAccess(accessDir, definitions)
+  const reads = (doc) =>
+    new Map(
+      doc.permissions
+        .filter((grant) => grant.action === 'read')
+        .map((grant) => [grant.collection, grant.fields]),
+    )
+  const publicReads = reads(documents.find((doc) => doc.policy === 'public'))
+  const service = documents.find(
+    (doc) => doc.policy?.name === 'donation-service-policy',
+  )
+  assert.ok(service, 'the donation service policy exists')
+  const serviceReads = reads(service)
+  for (const [collection, fields] of publicReads) {
+    const allowed = serviceReads.get(collection)
+    assert.ok(allowed, `the service cannot read ${collection}`)
+    const missing = fields.filter((field) => !allowed.includes(field))
+    assert.deepEqual(
+      missing,
+      [],
+      `${collection}: fields the service cannot read`,
+    )
+  }
+})
+
+// The generated client's types come from the OpenAPI spec, which Directus builds
+// from the fields the caller may read. A field the service writes but cannot read is
+// missing from its types, so every written field must be readable too, except the
+// ones listed here on purpose (secrets the service must not read back).
+const WRITE_ONLY = new Map([
+  // Donor details are personal data: the service creates the row and reads back
+  // only its id (tools/verify.mjs asserts that reading them is forbidden).
+  [
+    'donors',
+    [
+      'country_code',
+      'created_at',
+      'display_name',
+      'email',
+      'keep_name_private',
+      'preferred_language',
+    ],
+  ],
+])
+
+test('the donation service can read every field it writes', async () => {
+  const documents = await loadAccess(accessDir, definitions)
+  const service = documents.find(
+    (doc) => doc.policy?.name === 'donation-service-policy',
+  )
+  const fieldsOf = (action, collection) =>
+    service.permissions
+      .filter(
+        (grant) => grant.action === action && grant.collection === collection,
+      )
+      .flatMap((grant) => grant.fields)
+  const unreadable = []
+  for (const grant of service.permissions) {
+    if (!['create', 'update'].includes(grant.action)) continue
+    const readable = fieldsOf('read', grant.collection)
+    const exempt = WRITE_ONLY.get(grant.collection) ?? []
+    for (const field of grant.fields) {
+      if (!readable.includes(field) && !exempt.includes(field)) {
+        unreadable.push(`${grant.collection}.${field}`)
+      }
+    }
+  }
+  assert.deepEqual(
+    [...new Set(unreadable)].sort(),
+    [],
+    'fields the service writes but cannot read',
+  )
+})
+
 test('reconciles policies, role and service user idempotently', async () => {
   const api = fakeApi()
   const options = { env, accessDir }

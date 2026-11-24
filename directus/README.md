@@ -344,6 +344,10 @@ only from server functions; it is never sent to the browser. The policy can:
 
 - read published purposes/campaigns, campaign/project links, and the checkout,
   donation and refund fields needed for attribution, receipts and raised totals;
+- read the same published content fields as the Public policy (projects, categories,
+  translations) and every non-personal field it writes, so `npm run api:generate`
+  can export the OpenAPI spec with this token instead of an admin one. Unit tests
+  keep the two policies from drifting; donor details stay write-only;
 - create donors, `pending` checkouts, their per-campaign donations and items, and
   `pending` payment attempts;
 - move open attempts and `pending` checkouts to a final status, and create and
