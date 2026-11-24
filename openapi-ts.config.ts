@@ -28,14 +28,21 @@ function declareAmountsAsStrings(spec: Record<string, unknown>) {
 }
 
 export default defineConfig(async (): Promise<UserConfig> => {
-  if (existsSync('.env.local')) loadEnvFile('.env.local')
+  // Already-set variables win, so the shell can override .env.local, and .env.local
+  // can override .env.
+  for (const file of ['.env']) {
+    if (existsSync(file)) loadEnvFile(file)
+  }
   let input: string | Record<string, unknown> = process.env.OPENAPI_INPUT ?? ''
 
   if (!input || /^https?:\/\//i.test(input)) {
-    const token = process.env.OPENAPI_TOKEN
+    // The donation service token is enough: its policy can read everything the
+    // website client uses, and Directus only lists what the caller may read.
+    // OPENAPI_TOKEN overrides it; an admin token is never needed.
+    const token = process.env.DIRECTUS_SERVICE_TOKEN
     if (!input && !token) {
       throw new Error(
-        'Set OPENAPI_TOKEN locally in .env.local or the shell, or provide OPENAPI_INPUT.',
+        'Set DIRECTUS_SERVICE_TOKEN in .env (or OPENAPI_TOKEN in .env.local or the shell), or provide OPENAPI_INPUT.',
       )
     }
     const baseUrl =
