@@ -1,0 +1,70 @@
+name: Directus backend
+
+on:
+  pull_request:
+    paths:
+      - 'directus/**'
+      - '.github/workflows/directus-smoke-test.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # A unique project name keeps parallel runs on one runner apart. It is a
+      # disposable stack, so `down -v` below only ever touches this project.
+      COMPOSE_PROJECT_NAME: directus-smoke-${{ github.run_id }}
+      # The backend's own Compose file, not whatever sits at the repository root.
+      COMPOSE_FILE: ${{ github.workspace }}/directus/compose.yaml
+      CMS_ENV: dev
+      SEED_PUBLISH_DEMO: 'false'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: directus/package-lock.json
+
+      - name: Unit tests
+        working-directory: directus
+        run: |
+          npm ci
+          npm test
+
+      # Random throwaway credentials for this run only.
+      - name: Generate credentials
+        run: node directus/tools/init-env.mjs >/dev/null
+
+      - name: Validate the Compose file
+        run: docker compose --env-file directus/.env config --quiet
+
+      - name: Start the backend
+        run: docker compose --env-file directus/.env up --build -d --wait --wait-timeout 300 database directus
+
+      - name: Smoke test
+        run: |
+          set -a; . directus/.env; set +a
+          directus/scripts/smoke-test.sh
+
+      # Fails when directus/schemas changed without a new revision.
+      - name: Revisions match the YAML
+        run: PROJECT="$COMPOSE_PROJECT_NAME" directus/tools/revisions-cli.sh check
+
+      - name: Live verification
+        run: |
+          set -a; . directus/.env; set +a
+          DIRECTUS_URL="http://127.0.0.1:${DIRECTUS_PORT}" node directus/tools/verify.mjs
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose --env-file directus/.env logs --no-color --tail 200
+
+      - name: Stop the backend
+        if: always()
+        run: docker compose --env-file directus/.env down -v

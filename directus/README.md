@@ -1,23 +1,26 @@
-# Directus backend foundation
+# Directus backend
 
-The root `docker-compose.yml` includes `directus/compose.yaml`, which owns the
-backend services, mounts and volumes. Mount paths resolve relative to the
-`directus/` folder. The previous root services have been removed.
-Images are pinned to Directus 11.17.4 and PostgreSQL
-17.6 Alpine. Check Directus's current licensing
-terms for your organization before production deployment.
+The backend is a custom Directus image built from [`Dockerfile`](Dockerfile). It
+extends the pinned `directus/directus` image and bakes in everything that
+defines the backend: collection schemas, access policies, seeds and the loader
+that applies them. Nothing is mounted at runtime; to ship a change, rebuild the
+image.
 
-Schema caching is disabled in this local stack: Directus 11.17.4 relation updates
-can otherwise fail when altering cached, read-only constraint metadata.
+The root `docker-compose.yml` includes `directus/compose.yaml`, which builds the
+image and owns the backend services and volumes. Images are pinned to Directus
+11.17.4 and PostgreSQL 17.6 Alpine. Check Directus's current licensing terms for
+your organization before production deployment.
+
+Schema caching is disabled: Directus 11.17.4 relation updates can otherwise fail
+when altering cached, read-only constraint metadata.
 
 ## Start
 
 From the repository root, with Docker Compose 2.20+ (for `include`) and Node.js 20.6+:
 
 ```bash
-node directus/scripts/init-env.mjs
-docker compose --env-file directus/.env up -d --wait database directus
-docker compose --env-file directus/.env run --rm setup
+node directus/tools/init-env.mjs
+docker compose --env-file directus/.env up -d --build --wait database directus
 ```
 
 The initializer creates git-ignored, owner-readable `directus/.env` and root
@@ -28,24 +31,62 @@ settings (see the root `.env.example`). Edit it locally to choose a real adminis
 `DIRECTUS_PORT` if needed. Do not commit or share it. The blank example documents
 the required variables; do not use blank/example credentials in a deployment.
 
+The [`Makefile`](Makefile) wraps these commands. Run it from `directus/`:
+
+| Target                    | What it does                                                           |
+| ------------------------- | ---------------------------------------------------------------------- |
+| `make up`                 | Creates `.env` if missing, rebuilds the image and waits until healthy  |
+| `make revision m="..."`   | Writes the next revision for a change of `schemas/` (see Revisions)    |
+| `make migrate-status`     | Lists revisions as applied, pending or partial                         |
+| `make migrate-down`       | Undoes the newest applied revision (run before deploying an older one) |
+| `make migrate-stamp`      | Records revisions as applied without running them (adoption only)      |
+| `make check`              | Fails if `schemas/` has changes that no revision contains              |
+| `make down`               | Stops the stack and keeps its data                                     |
+| `make restart`            | Restarts Directus (reruns startup, applying pending revisions)         |
+| `make logs`               | Follows the Directus logs                                              |
+| `make test`               | Runs the unit tests (no Docker)                                        |
+| `make reseed CONFIRM=yes` | **Deletes the database and uploads**, then starts from scratch         |
+
+The project name defaults to `tunisaid-backend-v11` and names the containers and
+the volumes (`tunisaid-backend-v11_database`, `tunisaid-backend-v11_uploads`); the
+`v11` keeps them apart from the old Directus 12 volumes. `compose.yaml` pins no
+names, so a disposable stack (`make up PROJECT=scratch`) gets its own volumes, and
+`make revision` can run its throwaway `tunisaid-backend-v11-gen` project without
+touching yours. Keep the project name stable: it owns your data.
+
 Open **http://localhost:8056** and sign in with `ADMIN_EMAIL` / `ADMIN_PASSWORD`
 from that local file. PostgreSQL has no published host port, and Directus binds
 only to loopback. Another stack using port 8055 is unaffected.
 
-The database healthcheck gates Directus bootstrap. Bootstrap installs/upgrades
-Directus's own system schema; the ping check gates the one-shot setup service.
-Setup must exit **0** before the backend is ready. `up --wait` alone is not proof
-that application setup has completed. Inspect status and setup failures with:
+Rebuild after changing anything in `schemas/`, `revisions/`, `access/`, `seeds/` or `scripts/`:
+`docker compose --env-file directus/.env up -d --build directus`.
+
+### What the container does on start
+
+[`entrypoint.sh`](entrypoint.sh) runs these steps and stops on the first error:
+
+1. `directus bootstrap` installs or upgrades Directus's own system tables and
+   creates the first administrator.
+2. A temporary Directus server starts on loopback only (`SYNC_PORT`, default 8057).
+3. [`scripts/sync.js`](scripts/sync.js) validates the YAML and the revisions, logs in with
+   `ADMIN_EMAIL` / `ADMIN_PASSWORD`, applies pending revisions (schema, then data),
+   then the access policies, and seeds missing rows.
+4. The temporary server stops and the public server starts through pm2.
+
+The public port stays closed until startup has succeeded, so a failed revision
+leaves the container exiting with an error instead of serving a half-configured
+backend. The healthcheck (and `up --wait`) therefore passes only after startup.
+Check the result with:
 
 ```bash
 docker compose --env-file directus/.env ps -a
-docker compose --env-file directus/.env logs --tail 80 setup
+docker compose --env-file directus/.env logs --tail 80 directus
 ```
 
 Administrator credentials are initialization inputs, not a password reset
 mechanism for an existing database. Keep them synchronized with the admin account
-used by setup. A failed bootstrap is not necessarily rolled back; inspect logs
-and use the Directus user-management CLI to recover rather than deleting data.
+used by the sync. Do not run several instances against one database at the same
+time.
 
 ## Model
 
@@ -57,7 +98,6 @@ and use the Directus user-management CLI to recover rather than deleting data.
 | EN/DE content | `*_translations` for categories, projects, campaigns and purposes |
 | Donor intent  | `donors`, `checkouts`, `donations`, `donation_items`              |
 | Payments      | `payment_attempts`, `payment_events`, `refunds`                   |
-| Setup history | `backend_migrations`                                              |
 
 How the records link (all through foreign keys, no duplicated state):
 
@@ -91,8 +131,13 @@ purpose of a project in the Winter campaign and a €10 flexible amount is one
 (Winter) and €10 (no campaign). Each campaign's raised total sums its paid
 donations minus their succeeded refunds.
 
-Amounts are **integer EUR cents**, not floating-point euros (PostgreSQL signed
-32-bit range, maximum 2,147,483,647 cents). Provider events use a unique
+Amounts are **EUR with two decimal places**, stored as PostgreSQL
+`decimal(12,2)` (`unit_amount`, `goal_amount`, `total_amount`, `amount`), never
+as floating-point numbers, so sums and refund splits stay exact. The maximum is
+9,999,999,999.99. Directus returns a decimal as a string such as `"35.00"`, so
+clients must parse it. The website converts to integer cents when it reads these
+fields and back when it writes them, and uses cents only for its own arithmetic
+and for Stripe. Provider events use a unique
 `provider:event-id` key; checkout and refund operations have unique idempotency
 keys.
 
@@ -114,104 +159,155 @@ In Directus, open a record, choose EN or DE in Translations, and edit Body or
 Description. Use the image toolbar button to select/upload an image and provide
 meaningful alt text. No administrator credentials should be embedded in image URLs.
 
-## Migrations and seeds
+## Schemas, access and seeds
 
 ```text
 directus/
-├── migrations/
-│   └── 001-initial-schema.mjs   collections, fields, relations, editor metadata,
-│                                public read access and the donation-service policy
-├── seeds/                       one module per collection, run in dependency order
-│   ├── languages.mjs
-│   ├── categories.mjs
-│   ├── projects.mjs
-│   ├── campaigns.mjs            campaigns + campaign_projects links
-│   └── donation-purposes.mjs
-└── scripts/
-    ├── setup.mjs                migrate → seed → donation-service user
-    ├── migrate.mjs              runs migrations/ in order with a checksum ledger
-    ├── seed.mjs                 global seed runner (order lives in `seedSteps`)
-    ├── schema.mjs               field/relation/permission helpers
-    └── verify.mjs               live verification against a running stack
+├── Dockerfile                   image: pinned Directus + the folders below
+├── entrypoint.sh                bootstrap → sync on loopback → start
+├── schemas/                     the model: one YAML file per collection
+│   ├── content/
+│   └── donations/
+├── revisions/                   one folder per schema change (generated + up/down.sql)
+├── access/                      public policy and the donation-service role/user
+├── seeds/
+│   ├── reference/               always loaded (languages)
+│   └── examples/                demo content, only when CMS_ENV=dev
+├── scripts/                     baked into the image, except the tests and smoke test
+│   ├── sync.js                  run by the entrypoint: revisions, then policies, then seeds
+│   ├── schema-model.js          loads and validates the YAML, builds the desired snapshot
+│   ├── revisions.js             generate / upgrade / down / status / stamp / check
+│   ├── seed-data.js             creates missing seed rows
+│   ├── apply-policies.js        policies, roles, permissions, service user
+│   ├── *.test.js                unit tests (not in the image)
+│   └── smoke-test.sh            quick stack check used by CI (not in the image)
+└── tools/                       local helpers, not in the image
+    ├── init-env.mjs             local .env generator
+    ├── verify.mjs               live check of a running stack
+    ├── revision.sh              behind `make revision`
+    └── revisions-cli.sh         behind `make migrate-*` and `make check`
 ```
 
-These are **application API migrations**, not Knex files for Directus's
-`MIGRATIONS_PATH`. After bootstrap, setup authenticates using environment
-credentials and applies the schema through the supported Directus API. Each
-migration is recorded with a SHA-256 checksum only after success; an interrupted
-run resumes existing collections/fields/relations, and incompatible types or
-relation targets fail explicitly. Do not run multiple setup jobs concurrently.
+Folders under `schemas/` and `seeds/` only organize files; collection names are
+global. Each schema file has the collection, its fields and its `relations`
+(foreign keys with delete rules and the editor aliases on the other side).
 
-`001-initial-schema.mjs` is the single deployable baseline. Once it has been
-applied anywhere that matters, never edit it: add `002-….mjs` for later changes.
+**Schemas and revisions.** `schemas/` is the model and the only place you edit
+it. The YAML is the complete definition of every collection it declares. A change
+becomes a **revision**, a folder in `revisions/` like an Alembic revision:
 
-Seeds only create missing rows (identified by slug, or parent + language) and
-never overwrite editor changes. They create EN/DE languages, three categories,
-three projects based on the [existing TunisAid homepage](https://tunisaid.org/)
-(paraphrased copy, a source link and a review notice), two clearly labelled
-**demo** campaigns with illustrative goals and dates, and four **illustrative**
-purposes: Koffa → Ramadan food boxes, wheelchair shares → wheelchairs for
-students, school bags → school supplies, and warmth as a general purpose. There
-are no invented donors, payments or fundraising progress. To add a collection's
-seed, create `seeds/<collection>.mjs` and register it in `seedSteps`.
+```text
+revisions/0002_goal_to_euros/
+  schema.json     generated: the Directus schema after this revision
+  changes.json    generated: `+ added`, `- removed` (loses data), `~ changed`
+  up.sql          optional, yours: data step; down.sql undoes it
+```
 
-Seed records are drafts by default. To see them on the local website, publish
-them with an explicit opt-in (never for production content):
+Workflow: edit `schemas/`, run `make revision m="goal to euros"` (it starts a
+throwaway stack, so your data is never touched, and prints the change list),
+add `up.sql` / `down.sql` if data has to move, run `make up`, and commit the
+whole folder with the YAML. `schema.json` and `changes.json` are generated, and
+a revision that has been applied anywhere is never edited.
+
+On start, pending revisions apply in three steps: add what is new, run
+`up.sql` (old and new fields both exist, so it can copy), then drop what was
+removed. `up.sql` / `down.sql` move data only: `ALTER`, `CREATE`, `DROP` and
+`directus_*` tables are refused. A rename is one revision: the generator shows
+`- old` and `+ new`, and `up.sql` copies the values. An interrupted start
+continues where it stopped (`make migrate-status` shows `partial`).
+
+To roll back, run `make migrate-down` (newest first) **before** deploying an older
+image; an image that lacks revisions the database has applied refuses to start.
+Collections that no revision ever contained are never touched. Removing a
+collection's YAML produces a `- name` line in the next revision. A YAML change
+without a revision logs a warning at startup, and `make check` and CI fail.
+
+**Access.** Policies, the Public read permissions and the donation-service
+permissions are declared in `access/`. The sync overwrites them, so changes made
+to these policies in the Directus UI do not survive a restart.
+
+**Seeds.** Seeds create only missing rows, identified by their stable primary
+key, and never overwrite editor changes. A seeded row that an editor deleted is
+created again on the next start. Reference data (EN/DE languages) is always
+seeded. Example data (three categories, three projects based on the
+[existing TunisAid homepage](https://tunisaid.org/), two clearly labelled
+**demo** campaigns and four **illustrative** purposes, with no invented donors or
+payments) is only seeded when `CMS_ENV=dev`. `CMS_ENV` defaults to `prod`, and
+the compose file sets it to `dev` for local use (`CMS_ENV=prod` in `directus/.env`
+turns it off). Example rows are drafts unless `SEED_PUBLISH_DEMO=true`, which
+publishes seed rows that are still drafts (never use it for production content).
+Seed files are applied in file-name order, so prefix them `01-`, `02-`, … to
+create referenced rows first.
+
+To change the model: edit or add a YAML file and run `make revision m="..."`
+(see above). To add content that must exist everywhere, add it under
+`seeds/reference/`. Seeds create rows only, so a revision's `up.sql` is what
+fixes existing rows.
+
+### Recreating a local database
+
+The app is not deployed anywhere, so a local database can always be recreated
+from `revisions/` and `seeds/`. A database created before revisions existed
+already matches `0001_initial`, so the first start with revisions changes
+nothing (`make migrate-stamp` is only needed for data steps that must not run
+again). To start over:
 
 ```bash
-SEED_PUBLISH_DEMO=true docker compose --env-file directus/.env run --rm setup
+cd directus && make reseed CONFIRM=yes
 ```
 
-With the flag, setup changes only seed-identified records that are still `draft`
-to `published`.
+`make reseed` erases this backend's local database and uploads.
 
-### Existing local databases
-
-The baseline replaces the earlier ten development migrations (001–010), which
-also created allocation, material-donation, project-update and project-partner
-collections. A database set up with those migrations fails with "Applied
-migration changed". Back up anything you want to keep, then recreate the local
-backend from scratch:
+## Tests and CI
 
 ```bash
-docker compose --env-file directus/.env down --volumes
-docker compose --env-file directus/.env up -d --wait database directus
-docker compose --env-file directus/.env run --rm setup
+cd directus && npm ci && npm test
 ```
 
-`--volumes` erases this backend's local database and uploads.
+The unit tests need no Docker. They load the real YAML (schemas, access, seeds),
+check that invalid definitions are rejected, and cover the snapshot builder
+(unmanaged collections preserved), the revision rules and state machine
+(including interrupted runs) and the seeder (idempotent, never overwrites).
+Applying revisions needs a live Directus, so it is covered by the stack checks
+below.
+
+[`scripts/smoke-test.sh`](scripts/smoke-test.sh) checks a running stack: health,
+admin login, readable and seeded collections, anonymous access limited to
+published content, and rejection of an invalid token. The workflow
+`.github/workflows/directus-smoke-test.yml` runs the unit tests, starts a
+disposable stack with random credentials, runs the smoke test, `make check`'s command and `tools/verify.mjs`,
+and removes only that stack (`down -v` on its unique project name) on pull
+requests that touch `directus/`.
 
 ## Validation
 
 ```bash
-node --test directus/scripts/schema.test.mjs
 docker compose --env-file directus/.env config --quiet
-docker compose --env-file directus/.env run --rm \
-  --entrypoint node setup /directus/project/scripts/verify.mjs
+set -a; . directus/.env; set +a
+DIRECTUS_URL=http://127.0.0.1:8056 CMS_ENV=dev SEED_PUBLISH_DEMO=true \
+  node directus/tools/verify.mjs
 ```
 
-If you seeded with `SEED_PUBLISH_DEMO=true`, pass the same flag to the
-verification (`run --rm -e SEED_PUBLISH_DEMO=true ...`) so it expects published
-seed records.
-
-Run the live check against a fresh local seed, not a production or edited
-catalog. It checks that removed collections are absent; that every relation has
-the expected target, delete rule and editor alias; that rich-text fields use the
-HTML editor; that anonymous users can only read published projects, campaigns,
-categories, purposes, their translations and campaign/project links (with the
-permitted fields) while every other collection denies anonymous reads/writes;
-exact seed prices, translations and links; amount/status validation; deletion
-protection and cascades; event uniqueness; and that a refund leaves the stored
-checkout status `paid`. When `DONATION_SERVICE_TOKEN` is set, it also checks that
-the service user cannot read donor emails, refund reasons or users, and cannot
-create refunds or paid checkouts. Synthetic fixtures are removed afterwards;
-Directus audit history remains.
+Run the live check against a fresh local database, not a production or edited
+catalog. It reads the same YAML as the image and checks that every collection,
+relation (target, delete rule, editor alias), field type/interface and rich-text
+field exists as defined; that anonymous users can only read published projects,
+campaigns, categories, purposes, their translations and campaign/project links
+(with the permitted fields) while every other collection denies anonymous reads
+and writes; that every seed row has its YAML values (examples only with
+`CMS_ENV=dev`; use the same `SEED_PUBLISH_DEMO` value as the container); amount
+and status validation; deletion protection and cascades; event uniqueness; and
+that a refund leaves the stored checkout status `paid`. With
+`DONATION_SERVICE_TOKEN` set it also checks that the service user cannot read
+donor emails, refund reasons or users, and cannot create empty refunds or paid
+checkouts. Synthetic fixtures are removed afterwards; Directus audit
+history remains.
 
 ## Persistence and shutdown
 
-Database and uploaded files use the explicit version-specific named volumes
-`tunisaid-backend-v11_database` and `tunisaid-backend-v11_uploads`. Containers can
-be recreated without losing content:
+Database and uploaded files live in the named volumes `tunisaid-backend-v11_database`
+and `tunisaid-backend-v11_uploads` (the Compose project name plus the volume).
+Containers can be recreated without losing content:
 
 ```bash
 docker compose --env-file directus/.env down
@@ -227,13 +323,13 @@ downgrade. Do not mount the version 12 database into version 11.
 
 ## Public access
 
-The baseline migration gives the Directus **Public** policy read-only access to
+`access/public.yaml` gives the Directus **Public** policy read-only access to
 `projects`, `campaigns`, `categories`, `donation_purposes`, their translations and
 `campaign_projects`, limited to `published` rows (a campaign/project link only
 when both sides are published) and to the fields the website requests. Purposes
-expose their category and project ids so the website can follow them. Seed
-records are drafts unless setup ran with `SEED_PUBLISH_DEMO=true`, so the website
-shows its empty states until an editor publishes content. Directus files (cover
+expose their category and project ids so the website can follow them. Example
+records are drafts unless the container started with `SEED_PUBLISH_DEMO=true`, so
+the website shows its empty states until an editor publishes content. Directus files (cover
 images) stay private.
 
 CORS allows `GET` requests from `CORS_ORIGIN` (default `http://localhost:3000`,
@@ -241,8 +337,8 @@ the website dev server). Set `CORS_ORIGIN` in `directus/.env` for other origins.
 
 ## Donation service
 
-The baseline migration creates the **Donation service** role and policy. Setup
-attaches it to a `donation-service` user whose static token is
+`access/donation-service.yaml` creates the **Donation service** role and policy.
+The sync attaches it to a `donation-service` user whose static token is
 `DONATION_SERVICE_TOKEN` (skipped when blank). The website server uses this token
 only from server functions; it is never sent to the browser. The policy can:
 
@@ -253,8 +349,8 @@ only from server functions; it is never sent to the browser. The policy can:
 - move open attempts and `pending` checkouts to a final status, and create and
   process payment events (unique per `provider:event` key).
 
-- create refunds (migration `002-stripe-refunds`) and move their `pending` status
-  to `succeeded` or `failed`, which the Stripe refund webhook uses.
+- create refunds and move their `pending` status to `succeeded` or `failed`,
+  which the Stripe refund webhook uses.
 
 It cannot read donor emails, other users or refund reasons, cannot change a
 donation after creation, and cannot create checkouts that are already paid.
@@ -271,14 +367,13 @@ share's paid amount, and the website clamps campaign totals at zero.
 ## Intentionally not enabled
 
 All other application collections remain **private**, with no public write
-policy. Checkout uses a **mock** payment provider for local testing only: there
-is no real payment provider, no webhook endpoint, no email receipts and no
+policy. The website supports Stripe (checkout and refund webhooks, handled by the
+website server) and a **mock** provider for local testing that is refused in
+production unless explicitly allowed. There are no email receipts and no
 background job that expires abandoned `pending` checkouts.
 
-Before production, add a hosted payment provider with verified idempotent
-webhooks (which should create refund records automatically), least-privilege
-editorial policies, rate limiting on the checkout server functions and donor
-consent/retention rules. Receipt issuance, email delivery, reconciliation and
-background jobs are deferred. Add TLS, external secrets, backups with restore
+Before production, add least-privilege editorial policies, rate limiting on the
+checkout server functions and donor consent/retention rules. Receipt issuance,
+email delivery, reconciliation and background jobs are deferred. Add TLS, external secrets, backups with restore
 tests, storage policy, monitoring, rate limiting and an upgrade process before
 exposing the service publicly.

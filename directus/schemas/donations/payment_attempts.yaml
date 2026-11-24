@@ -1,0 +1,124 @@
+collection: payment_attempts
+schema: {}
+meta:
+  icon: credit_card
+  accountability: all
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      is_nullable: false
+    meta:
+      interface: input
+      special:
+        - uuid
+      hidden: true
+  - field: checkout
+    type: uuid
+    schema:
+      is_nullable: false
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+  - field: provider
+    type: string
+    schema:
+      is_nullable: false
+    meta:
+      interface: input
+  - field: provider_payment_id
+    type: string
+    schema:
+      is_unique: true
+    meta:
+      interface: input
+  - field: idempotency_key
+    type: string
+    schema:
+      is_nullable: false
+      is_unique: true
+    meta:
+      interface: input
+  - field: status
+    type: string
+    schema:
+      is_nullable: false
+      default_value: created
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - text: created
+            value: created
+          - text: pending
+            value: pending
+          - text: succeeded
+            value: succeeded
+          - text: failed
+            value: failed
+          - text: cancelled
+            value: cancelled
+      validation:
+        status:
+          _in:
+            - created
+            - pending
+            - succeeded
+            - failed
+            - cancelled
+  - field: amount
+    type: decimal
+    schema:
+      is_nullable: false
+      default_value: 0
+      numeric_precision: 12
+      numeric_scale: 2
+    meta:
+      interface: input
+      note: Amount in euros (EUR) with two decimal places.
+      options:
+        min: 0
+        step: 0.01
+      validation:
+        amount:
+          _gte: 0
+  - field: currency
+    type: string
+    schema:
+      is_nullable: false
+      default_value: EUR
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - text: EUR
+            value: EUR
+      validation:
+        currency:
+          _in:
+            - EUR
+  - field: failure_code
+    type: string
+    schema: {}
+    meta:
+      interface: input
+  - field: created_at
+    type: timestamp
+    schema: {}
+    meta:
+      interface: datetime
+  - field: updated_at
+    type: timestamp
+    schema: {}
+    meta:
+      interface: datetime
+relations:
+  - field: checkout
+    related_collection: checkouts
+    schema:
+      on_delete: RESTRICT
+    meta:
+      one_field: payment_attempts
+      junction_field: null

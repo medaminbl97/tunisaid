@@ -29,7 +29,7 @@ export TF_VAR_dokploy_api_key=...
 make up
 ```
 
-`make up` is safe to repeat. It runs five steps, which you can also run alone:
+`make up` is safe to repeat. It runs four steps, which you can also run alone:
 
 | Step | Command           | What it does                                                                                         |
 | ---- | ----------------- | ---------------------------------------------------------------------------------------------------- |
@@ -37,7 +37,6 @@ make up
 | 2    | `make vault-init` | Initialises and unseals OpenBao, enables KV v2, writes a read-only policy, issues Dokploy's token.   |
 | 3    | `make secrets`    | Generates every missing secret with `openssl` and stores it in OpenBao. Existing values are kept.    |
 | 4    | `make deploy`     | Applies the rest. Services get `${{vault.openbao.<path>:<field>}}` references that Dokploy resolves. |
-| 5    | `make migrate`    | Runs `directus/scripts/setup.mjs` against the backend: migrations, seeds, donation-service user.     |
 
 Other targets: `make plan`, `make credentials` (prints all generated secrets),
 `make unseal`, `make help`.
@@ -46,7 +45,7 @@ Other targets: `make plan`, `make credentials` (prints all generated secrets),
 
 - **Find them with `make credentials`.** This includes the Directus
   administrator password (`directus_admin_password`, login: `directus_admin_email`)
-  and the `donation_service_token` for the Directus setup script.
+  and the `donation_service_token` that the backend and the website share.
 - They live in OpenBao at `secret/<project>/app`, on the server's data volume.
 - `.secrets/` (gitignored) holds the **unseal keys and root token**
   (`openbao-init.json`, `root-token`) and Dokploy's read-only token. **Copy
@@ -84,7 +83,7 @@ Set `payment_provider = "stripe"` in `terraform.tfvars`, then:
    Terraform state) and read by the website through vault references. You can also
    pass them as `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`.
 2. `make deploy` sets `PAYMENT_PROVIDER`, `SITE_URL` and the two vault references on
-   the website. `make migrate` applies Directus migration `002-stripe-refunds`.
+   the website. The backend already allows the donation service to write refunds.
 3. In the Stripe dashboard (Developers → Webhooks) add the endpoint from
    `terraform output stripe_webhook_url` with the events
    `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
@@ -95,14 +94,17 @@ Set `payment_provider = "stripe"` in `terraform.tfvars`, then:
 Use test-mode keys first. Going live means repeating the steps with live keys and a
 live-mode webhook endpoint.
 
-## Directus migrations
+## Directus image
 
-The Directus image only runs `bootstrap` and `start`. The project's migrations
-are API migrations in [`../directus/`](../directus/README.md), run by
-`make migrate` (step 5) with the generated admin password and
-`donation_service_token`. Applied migrations are skipped, so rerun it after
-adding a migration. Seeded content is created as **drafts**, so the website
-shows no projects or campaigns until you publish them in Directus.
+Dokploy builds [`../directus/Dockerfile`](../directus/Dockerfile) on the server
+(no registry). The image extends the pinned Directus image and contains the
+schemas, access policies, seeds and loader. On every start its entrypoint
+bootstraps Directus, applies those definitions on a private loopback server, and
+only then opens the public port, so a failed sync keeps the backend down. Change
+a schema or a seed, push, and redeploy the backend; there is no separate
+migration step. Production runs without `CMS_ENV=dev`, so only reference data
+(languages) is seeded and no demo content is created. Editors create the content
+in Directus.
 
 Terraform owns the application settings: changes made in the Dokploy UI are
 overwritten by the next apply.

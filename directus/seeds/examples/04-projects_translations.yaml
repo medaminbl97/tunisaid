@@ -1,0 +1,100 @@
+collection: projects_translations
+items:
+  - id: 5e4eda53-b8ce-5aff-86f5-590a4adfe5f8
+    parent: c9b7c88e-1f5f-5df8-918f-10f961691922
+    language: en
+    title: School supplies for children with disabilities
+    summary: Helping children with disabilities in Tunisia access the supplies they need for school.
+    body: >-
+      <h2>School supplies for children with disabilities</h2>
+
+      <p>Helping children with disabilities in Tunisia access the supplies they need for school.</p>
+
+      <p><em>Editorial draft based on the project overview at https://tunisaid.org/. Current project
+      status and availability must be confirmed before publication.</em></p>
+
+      <p><a href="https://tunisaid.org/">TunisAid.org</a></p>
+  - id: 40f5affc-24a2-5419-a3e6-8a5ca9321711
+    parent: c9b7c88e-1f5f-5df8-918f-10f961691922
+    language: de
+    title: Schulmaterial für Kinder mit Behinderungen
+    summary: >-
+      Unterstützung für Kinder mit Behinderungen in Tunesien beim Zugang zu benötigtem
+      Schulmaterial.
+    body: >-
+      <h2>Schulmaterial für Kinder mit Behinderungen</h2>
+
+      <p>Unterstützung für Kinder mit Behinderungen in Tunesien beim Zugang zu benötigtem
+      Schulmaterial.</p>
+
+      <p><em>Redaktioneller Entwurf auf Grundlage der Projektübersicht unter https://tunisaid.org/.
+      Aktueller Projektstatus und Verfügbarkeit müssen vor der Veröffentlichung bestätigt
+      werden.</em></p>
+
+      <p><a href="https://tunisaid.org/">TunisAid.org</a></p>
+  - id: 94713bbd-955c-50cc-bd7a-ad30403ff4ad
+    parent: 16c63c86-4666-5ef0-a275-29135ab18309
+    language: en
+    title: Ramadan food boxes for families
+    summary: Grocery support during Ramadan for families in Tunisia that include people with disabilities.
+    body: >-
+      <h2>Ramadan food boxes for families</h2>
+
+      <p>Grocery support during Ramadan for families in Tunisia that include people with
+      disabilities.</p>
+
+      <p><em>Editorial draft based on the project overview at https://tunisaid.org/. Current project
+      status and availability must be confirmed before publication.</em></p>
+
+      <p><a href="https://tunisaid.org/">TunisAid.org</a></p>
+  - id: ac43d9e1-f82e-5aa1-8e44-c30597cac18d
+    parent: 16c63c86-4666-5ef0-a275-29135ab18309
+    language: de
+    title: Lebensmittelpakete für Familien im Ramadan
+    summary: >-
+      Lebensmittelhilfe im Ramadan für Familien in Tunesien, in denen Menschen mit Behinderungen
+      leben.
+    body: >-
+      <h2>Lebensmittelpakete für Familien im Ramadan</h2>
+
+      <p>Lebensmittelhilfe im Ramadan für Familien in Tunesien, in denen Menschen mit Behinderungen
+      leben.</p>
+
+      <p><em>Redaktioneller Entwurf auf Grundlage der Projektübersicht unter https://tunisaid.org/.
+      Aktueller Projektstatus und Verfügbarkeit müssen vor der Veröffentlichung bestätigt
+      werden.</em></p>
+
+      <p><a href="https://tunisaid.org/">TunisAid.org</a></p>
+  - id: f9e151e0-ea66-5e8f-b627-7582815703d3
+    parent: 1e1dae91-d9cd-5a3a-a0b2-6e3c6c31d1be
+    language: en
+    title: Electric wheelchairs for students
+    summary: An initiative to help two students access electric wheelchairs for their journeys to school.
+    body: >-
+      <h2>Electric wheelchairs for students</h2>
+
+      <p>An initiative to help two students access electric wheelchairs for their journeys to
+      school.</p>
+
+      <p><em>Editorial draft based on the project overview at https://tunisaid.org/. Current project
+      status and availability must be confirmed before publication.</em></p>
+
+      <p><a href="https://tunisaid.org/">TunisAid.org</a></p>
+  - id: e0edafc0-2f4b-5e20-9f8d-7e52aed5ae73
+    parent: 1e1dae91-d9cd-5a3a-a0b2-6e3c6c31d1be
+    language: de
+    title: Elektrorollstühle für Schülerinnen
+    summary: >-
+      Eine Initiative, die zwei Schülerinnen beim Zugang zu Elektrorollstühlen für ihren Schulweg
+      unterstützt.
+    body: >-
+      <h2>Elektrorollstühle für Schülerinnen</h2>
+
+      <p>Eine Initiative, die zwei Schülerinnen beim Zugang zu Elektrorollstühlen für ihren Schulweg
+      unterstützt.</p>
+
+      <p><em>Redaktioneller Entwurf auf Grundlage der Projektübersicht unter https://tunisaid.org/.
+      Aktueller Projektstatus und Verfügbarkeit müssen vor der Veröffentlichung bestätigt
+      werden.</em></p>
+
+      <p><a href="https://tunisaid.org/">TunisAid.org</a></p>

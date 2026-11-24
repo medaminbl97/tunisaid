@@ -1,0 +1,6 @@
+collection: languages
+items:
+  - id: en
+    name: English
+  - id: de
+    name: Deutsch

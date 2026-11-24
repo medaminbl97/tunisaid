@@ -1,0 +1,26 @@
+collection: categories_translations
+items:
+  - id: 79770f1e-6834-5082-bfdb-8a34c169b9a7
+    parent: 03cee3d5-6d80-54ba-b9c0-e63ec4b94bec
+    language: en
+    title: Essentials
+  - id: 9086d4ab-fd6a-52e8-8a9c-7f079ad6c63c
+    parent: 03cee3d5-6d80-54ba-b9c0-e63ec4b94bec
+    language: de
+    title: Grundbedarf
+  - id: 7958fb4d-9356-5b7e-ba04-21b226fa7992
+    parent: 44b0d226-957f-5ece-a3ed-819d8a70b8c8
+    language: en
+    title: Mobility
+  - id: 80707e32-fee7-5880-a92d-6bd69c831b7c
+    parent: 44b0d226-957f-5ece-a3ed-819d8a70b8c8
+    language: de
+    title: Mobilität
+  - id: dd2cfaa4-cd94-5e80-97cf-5eaaaaa7b88b
+    parent: cd29b058-8566-5abc-9dc5-602469584a16
+    language: en
+    title: Education
+  - id: fae79201-d39b-5141-9ceb-2cb9916c78cc
+    parent: cd29b058-8566-5abc-9dc5-602469584a16
+    language: de
+    title: Bildung

@@ -1,0 +1,11 @@
+{
+  "name": "tunisaid-directus-loader",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "js-yaml": "4.3.2"
+  },
+  "scripts": {
+    "test": "node --test scripts/*.test.js"
+  }
+}

@@ -1,0 +1,118 @@
+collection: campaigns
+schema: {}
+meta:
+  icon: campaign
+  accountability: all
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      is_nullable: false
+    meta:
+      interface: input
+      special:
+        - uuid
+      hidden: true
+  - field: slug
+    type: string
+    schema:
+      is_nullable: false
+      is_unique: true
+    meta:
+      interface: input
+  - field: status
+    type: string
+    schema:
+      is_nullable: false
+      default_value: draft
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - text: draft
+            value: draft
+          - text: published
+            value: published
+          - text: archived
+            value: archived
+      validation:
+        status:
+          _in:
+            - draft
+            - published
+            - archived
+  - field: goal_amount
+    type: decimal
+    schema:
+      is_nullable: false
+      default_value: 0
+      numeric_precision: 12
+      numeric_scale: 2
+    meta:
+      interface: input
+      note: Amount in euros (EUR) with two decimal places.
+      options:
+        min: 0
+        step: 0.01
+      validation:
+        goal_amount:
+          _gte: 0
+  - field: currency
+    type: string
+    schema:
+      is_nullable: false
+      default_value: EUR
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - text: EUR
+            value: EUR
+      validation:
+        currency:
+          _in:
+            - EUR
+  - field: starts_at
+    type: timestamp
+    schema: {}
+    meta:
+      interface: datetime
+  - field: ends_at
+    type: timestamp
+    schema: {}
+    meta:
+      interface: datetime
+  - field: cover_image
+    type: uuid
+    schema:
+      is_nullable: true
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+  - field: translations
+    type: alias
+    schema: null
+    meta:
+      special:
+        - translations
+      interface: translations
+      options:
+        languageField: name
+        defaultLanguage: en
+  - field: projects
+    type: alias
+    schema: null
+    meta:
+      special:
+        - m2m
+      interface: list-m2m
+relations:
+  - field: cover_image
+    related_collection: directus_files
+    schema:
+      on_delete: RESTRICT
+    meta:
+      one_field: null
+      junction_field: null

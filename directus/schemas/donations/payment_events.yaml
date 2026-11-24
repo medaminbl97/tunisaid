@@ -1,0 +1,88 @@
+collection: payment_events
+schema: {}
+meta:
+  icon: receipt_long
+  accountability: all
+  note: Use provider:event-id as the unique key. Do not store raw card or unnecessary personal data.
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      is_nullable: false
+    meta:
+      interface: input
+      special:
+        - uuid
+      hidden: true
+  - field: provider
+    type: string
+    schema:
+      is_nullable: false
+    meta:
+      interface: input
+  - field: provider_event_key
+    type: string
+    schema:
+      is_nullable: false
+      is_unique: true
+    meta:
+      interface: input
+  - field: event_type
+    type: string
+    schema:
+      is_nullable: false
+    meta:
+      interface: input
+  - field: payment_attempt
+    type: uuid
+    schema:
+      is_nullable: true
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+  - field: status
+    type: string
+    schema:
+      is_nullable: false
+      default_value: received
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - text: received
+            value: received
+          - text: processed
+            value: processed
+          - text: failed
+            value: failed
+      validation:
+        status:
+          _in:
+            - received
+            - processed
+            - failed
+  - field: received_at
+    type: timestamp
+    schema: {}
+    meta:
+      interface: datetime
+  - field: processed_at
+    type: timestamp
+    schema: {}
+    meta:
+      interface: datetime
+  - field: error_code
+    type: string
+    schema: {}
+    meta:
+      interface: input
+relations:
+  - field: payment_attempt
+    related_collection: payment_attempts
+    schema:
+      on_delete: RESTRICT
+    meta:
+      one_field: null
+      junction_field: null

@@ -1,0 +1,12 @@
+.env
+.env.*
+**/.DS_Store
+node_modules
+README.md
+compose.yaml
+Dockerfile
+.dockerignore
+Makefile
+tools
+scripts/*.test.js
+scripts/smoke-test.sh

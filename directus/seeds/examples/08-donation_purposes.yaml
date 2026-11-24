@@ -1,0 +1,38 @@
+collection: donation_purposes
+items:
+  - id: 79ae4be1-65fc-5e8e-b718-324b16db675f
+    slug: koffa
+    category: 03cee3d5-6d80-54ba-b9c0-e63ec4b94bec
+    project: 16c63c86-4666-5ef0-a275-29135ab18309
+    unit_amount: 35.00
+    currency: EUR
+    sort: 1
+    status: draft
+    is_illustrative: true
+  - id: 1d5ad148-704a-51a7-810f-21a97a054f8c
+    slug: wheelchair
+    category: 44b0d226-957f-5ece-a3ed-819d8a70b8c8
+    project: 1e1dae91-d9cd-5a3a-a0b2-6e3c6c31d1be
+    unit_amount: 30.00
+    currency: EUR
+    sort: 2
+    status: draft
+    is_illustrative: true
+  - id: d79f5d64-641a-5d02-a8bc-5e5543759ecc
+    slug: school
+    category: cd29b058-8566-5abc-9dc5-602469584a16
+    project: c9b7c88e-1f5f-5df8-918f-10f961691922
+    unit_amount: 25.00
+    currency: EUR
+    sort: 3
+    status: draft
+    is_illustrative: true
+  - id: f2279b3b-4d09-50c5-974f-3acc813e21f5
+    slug: warmth
+    category: 03cee3d5-6d80-54ba-b9c0-e63ec4b94bec
+    project: null
+    unit_amount: 45.00
+    currency: EUR
+    sort: 4
+    status: draft
+    is_illustrative: true

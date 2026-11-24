@@ -1,0 +1,124 @@
+collection: checkouts
+schema: {}
+meta:
+  icon: shopping_cart
+  accountability: all
+  note: >-
+    One basket and its single payment. Payment state is changed only by the verified server
+    integration.
+fields:
+  - field: id
+    type: uuid
+    schema:
+      is_primary_key: true
+      is_nullable: false
+    meta:
+      interface: input
+      special:
+        - uuid
+      hidden: true
+  - field: reference
+    type: string
+    schema:
+      is_nullable: false
+      is_unique: true
+    meta:
+      interface: input
+  - field: donor
+    type: uuid
+    schema:
+      is_nullable: true
+    meta:
+      interface: select-dropdown-m2o
+      special:
+        - m2o
+  - field: status
+    type: string
+    schema:
+      is_nullable: false
+      default_value: pending
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - text: pending
+            value: pending
+          - text: paid
+            value: paid
+          - text: failed
+            value: failed
+          - text: cancelled
+            value: cancelled
+          - text: expired
+            value: expired
+      validation:
+        status:
+          _in:
+            - pending
+            - paid
+            - failed
+            - cancelled
+            - expired
+  - field: currency
+    type: string
+    schema:
+      is_nullable: false
+      default_value: EUR
+    meta:
+      interface: select-dropdown
+      options:
+        choices:
+          - text: EUR
+            value: EUR
+      validation:
+        currency:
+          _in:
+            - EUR
+  - field: total_amount
+    type: decimal
+    schema:
+      is_nullable: false
+      default_value: 0
+      numeric_precision: 12
+      numeric_scale: 2
+    meta:
+      interface: input
+      note: Amount in euros (EUR) with two decimal places.
+      options:
+        min: 0
+        step: 0.01
+      validation:
+        total_amount:
+          _gte: 0
+  - field: created_at
+    type: timestamp
+    schema: {}
+    meta:
+      interface: datetime
+  - field: paid_at
+    type: timestamp
+    schema: {}
+    meta:
+      interface: datetime
+  - field: donations
+    type: alias
+    schema: null
+    meta:
+      special:
+        - o2m
+      interface: list-o2m
+  - field: payment_attempts
+    type: alias
+    schema: null
+    meta:
+      special:
+        - o2m
+      interface: list-o2m
+relations:
+  - field: donor
+    related_collection: donors
+    schema:
+      on_delete: RESTRICT
+    meta:
+      one_field: null
+      junction_field: null

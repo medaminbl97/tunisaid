@@ -1,0 +1,19 @@
+collection: languages
+schema: {}
+meta:
+  icon: translate
+  accountability: all
+fields:
+  - field: id
+    type: string
+    schema:
+      is_primary_key: true
+      is_nullable: false
+    meta:
+      interface: input
+  - field: name
+    type: string
+    schema:
+      is_nullable: false
+    meta:
+      interface: input

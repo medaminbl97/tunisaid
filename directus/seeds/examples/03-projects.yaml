@@ -1,0 +1,11 @@
+collection: projects
+items:
+  - id: c9b7c88e-1f5f-5df8-918f-10f961691922
+    slug: school-supplies-support
+    status: draft
+  - id: 16c63c86-4666-5ef0-a275-29135ab18309
+    slug: ramadan-food-boxes
+    status: draft
+  - id: 1e1dae91-d9cd-5a3a-a0b2-6e3c6c31d1be
+    slug: wheelchairs-for-students
+    status: draft
