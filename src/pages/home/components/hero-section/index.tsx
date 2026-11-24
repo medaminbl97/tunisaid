@@ -70,12 +70,11 @@ export function HeroSection() {
           </p>
         </div>
         <ImagePanel
-          image={editorialImages.independence}
-          alt={imageText('independence')}
-          caption={imageText('caption')}
+          image={editorialImages.courtyard}
+          alt={imageText('courtyard')}
           priority
           sizes="(min-width: 1280px) 540px, (min-width: 1024px) 45vw, calc(100vw - 48px)"
-          imageClassName="aspect-[5/4] object-[70%_center] lg:aspect-[4/5]"
+          imageClassName="aspect-[5/4] object-[55%_center] lg:aspect-[4/5]"
         />
       </div>
     </section>

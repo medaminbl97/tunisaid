@@ -7,10 +7,8 @@ const meta = {
   component: ImagePanel,
   parameters: { layout: 'padded' },
   args: {
-    image: editorialImages.independence,
-    alt: 'An imagined courtyard conversation between a wheelchair user and a friend.',
-    caption:
-      'AI-generated illustration · Not a photograph of TunisAid projects or team members.',
+    image: editorialImages.courtyard,
+    alt: 'A woman in a white coat walks beside a boy on crutches, next to a person in a wheelchair, across a sunlit courtyard.',
     sizes: '(min-width: 800px) 800px, 100vw',
   },
 } satisfies Meta<typeof ImagePanel>
@@ -19,7 +17,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 export const Editorial: Story = {}
 export const PortraitCrop: Story = {
-  args: { imageClassName: 'aspect-[4/5] object-[70%_center]' },
+  args: { imageClassName: 'aspect-[4/5] object-[55%_center]' },
 }
 export const DonationIllustration: Story = {
   args: {

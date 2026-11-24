@@ -1,9 +1,15 @@
-import independence from '#/assets/images/optimized/everyday-independence.webp'
-import independenceSmall from '#/assets/images/optimized/everyday-independence-small.webp'
-import collaboration from '#/assets/images/optimized/shared-purpose.webp'
-import collaborationSmall from '#/assets/images/optimized/shared-purpose-small.webp'
-import learning from '#/assets/images/optimized/room-to-participate.webp'
-import learningSmall from '#/assets/images/optimized/room-to-participate-small.webp'
+import courtyard from '#/assets/images/optimized/courtyard-support.webp'
+import courtyardSmall from '#/assets/images/optimized/courtyard-support-small.webp'
+import craft from '#/assets/images/optimized/craft-workshop.webp'
+import craftSmall from '#/assets/images/optimized/craft-workshop-small.webp'
+import equipment from '#/assets/images/optimized/equipment-storage.webp'
+import equipmentSmall from '#/assets/images/optimized/equipment-storage-small.webp'
+import hearing from '#/assets/images/optimized/hearing-test.webp'
+import hearingSmall from '#/assets/images/optimized/hearing-test-small.webp'
+import sewing from '#/assets/images/optimized/sewing-training.webp'
+import sewingSmall from '#/assets/images/optimized/sewing-training-small.webp'
+import transport from '#/assets/images/optimized/accessible-transport.webp'
+import transportSmall from '#/assets/images/optimized/accessible-transport-small.webp'
 import koffa from '#/assets/images/optimized/donate-koffa.webp'
 import koffaSmall from '#/assets/images/optimized/donate-koffa-small.webp'
 import mobility from '#/assets/images/optimized/donate-mobility.webp'
@@ -20,24 +26,44 @@ export type SiteImage = {
   height: number
 }
 
+// Photographs of the work (not generated images), exported at their real
+// dimensions and never upscaled.
 export const editorialImages = {
-  independence: {
-    src: independence,
-    srcSet: `${independenceSmall} 800w, ${independence} 1600w`,
-    width: 1600,
-    height: 894,
+  courtyard: {
+    src: courtyard,
+    srcSet: `${courtyardSmall} 720w, ${courtyard} 1271w`,
+    width: 1271,
+    height: 1237,
   },
-  collaboration: {
-    src: collaboration,
-    srcSet: `${collaborationSmall} 800w, ${collaboration} 1600w`,
-    width: 1600,
-    height: 894,
+  sewing: {
+    src: sewing,
+    srcSet: `${sewingSmall} 720w, ${sewing} 1280w`,
+    width: 1280,
+    height: 853,
   },
-  learning: {
-    src: learning,
-    srcSet: `${learningSmall} 800w, ${learning} 1600w`,
-    width: 1600,
-    height: 894,
+  craft: {
+    src: craft,
+    srcSet: `${craftSmall} 720w, ${craft} 1269w`,
+    width: 1269,
+    height: 1239,
+  },
+  equipment: {
+    src: equipment,
+    srcSet: `${equipmentSmall} 720w, ${equipment} 1271w`,
+    width: 1271,
+    height: 1237,
+  },
+  hearing: {
+    src: hearing,
+    srcSet: `${hearingSmall} 720w, ${hearing} 1280w`,
+    width: 1280,
+    height: 960,
+  },
+  transport: {
+    src: transport,
+    srcSet: `${transportSmall} 720w, ${transport} 1270w`,
+    width: 1270,
+    height: 1239,
   },
 } satisfies Record<string, SiteImage>
 

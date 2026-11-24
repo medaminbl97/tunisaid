@@ -32,12 +32,11 @@ export function ContactHero() {
           </div>
         </div>
         <ImagePanel
-          image={editorialImages.collaboration}
-          alt={t('imagery.collaboration')}
-          caption={t('imagery.caption')}
+          image={editorialImages.transport}
+          alt={t('imagery.transport')}
           priority
           sizes="(min-width: 1280px) 516px, (min-width: 1024px) 42vw, calc(100vw - 48px)"
-          imageClassName="aspect-[5/4] object-[70%_center]"
+          imageClassName="aspect-[5/4] object-[center_35%]"
         />
       </div>
     </section>
