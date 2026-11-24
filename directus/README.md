@@ -31,11 +31,34 @@ settings (see the root `.env.example`). Edit it locally to choose a real adminis
 `DIRECTUS_PORT` if needed. Do not commit or share it. The blank example documents
 the required variables; do not use blank/example credentials in a deployment.
 
+The [`Makefile`](Makefile) wraps these commands. Run it from `directus/`:
+
+| Target                    | What it does                                                          |
+| ------------------------- | --------------------------------------------------------------------- |
+| `make up`                 | Creates `.env` if missing, rebuilds the image and waits until healthy |
+| `make revision m="..."`   | Writes the next revision for a change of `schemas/` (see Revisions)   |
+| `make migrate-status`     | Lists revisions as applied, pending or partial                        |
+| `make migrate-down`       | Undoes the newest applied revision (run before deploying an older one) |
+| `make migrate-stamp`      | Records revisions as applied without running them (adoption only)     |
+| `make check`              | Fails if `schemas/` has changes that no revision contains             |
+| `make down`               | Stops the stack and keeps its data                                    |
+| `make restart`            | Restarts Directus (reruns startup, applying pending revisions)        |
+| `make logs`               | Follows the Directus logs                                             |
+| `make test`               | Runs the unit tests (no Docker)                                       |
+| `make reseed CONFIRM=yes` | **Deletes the database and uploads**, then starts from scratch        |
+
+The project name defaults to `tunisaid-backend-v11` and names the containers and
+the volumes (`tunisaid-backend-v11_database`, `tunisaid-backend-v11_uploads`); the
+`v11` keeps them apart from the old Directus 12 volumes. `compose.yaml` pins no
+names, so a disposable stack (`make up PROJECT=scratch`) gets its own volumes, and
+`make revision` can run its throwaway `tunisaid-backend-v11-gen` project without
+touching yours. Keep the project name stable: it owns your data.
+
 Open **http://localhost:8056** and sign in with `ADMIN_EMAIL` / `ADMIN_PASSWORD`
 from that local file. PostgreSQL has no published host port, and Directus binds
 only to loopback. Another stack using port 8055 is unaffected.
 
-Rebuild after changing anything in `schemas/`, `access/`, `seeds/` or `scripts/`:
+Rebuild after changing anything in `schemas/`, `revisions/`, `access/`, `seeds/` or `scripts/`:
 `docker compose --env-file directus/.env up -d --build directus`.
 
 ### What the container does on start
@@ -45,13 +68,14 @@ Rebuild after changing anything in `schemas/`, `access/`, `seeds/` or `scripts/`
 1. `directus bootstrap` installs or upgrades Directus's own system tables and
    creates the first administrator.
 2. A temporary Directus server starts on loopback only (`SYNC_PORT`, default 8057).
-3. [`scripts/apply-schemas.js`](scripts/apply-schemas.js) logs in with `ADMIN_EMAIL` /
-   `ADMIN_PASSWORD`, applies the schemas and access policies, and seeds missing rows.
+3. [`scripts/sync.js`](scripts/sync.js) validates the YAML and the revisions, logs in with
+   `ADMIN_EMAIL` / `ADMIN_PASSWORD`, applies pending revisions (schema, then data),
+   then the access policies, and seeds missing rows.
 4. The temporary server stops and the public server starts through pm2.
 
-The public port stays closed until the sync has succeeded, so a failed sync
+The public port stays closed until startup has succeeded, so a failed revision
 leaves the container exiting with an error instead of serving a half-configured
-backend. The healthcheck (and `up --wait`) therefore passes only after the sync.
+backend. The healthcheck (and `up --wait`) therefore passes only after startup.
 Check the result with:
 
 ```bash
@@ -107,8 +131,13 @@ purpose of a project in the Winter campaign and a €10 flexible amount is one
 (Winter) and €10 (no campaign). Each campaign's raised total sums its paid
 donations minus their succeeded refunds.
 
-Amounts are **integer EUR cents**, not floating-point euros (PostgreSQL signed
-32-bit range, maximum 2,147,483,647 cents). Provider events use a unique
+Amounts are **EUR with two decimal places**, stored as PostgreSQL
+`decimal(12,2)` (`unit_amount`, `goal_amount`, `total_amount`, `amount`), never
+as floating-point numbers, so sums and refund splits stay exact. The maximum is
+9,999,999,999.99. Directus returns a decimal as a string such as `"35.00"`, so
+clients must parse it. The website converts to integer cents when it reads these
+fields and back when it writes them, and uses cents only for its own arithmetic
+and for Stripe. Provider events use a unique
 `provider:event-id` key; checkout and refund operations have unique idempotency
 keys.
 
@@ -136,37 +165,62 @@ meaningful alt text. No administrator credentials should be embedded in image UR
 directus/
 ├── Dockerfile                   image: pinned Directus + the folders below
 ├── entrypoint.sh                bootstrap → sync on loopback → start
-├── schemas/
-│   ├── content/                 one YAML file per collection
+├── schemas/                     the model: one YAML file per collection
+│   ├── content/
 │   └── donations/
+├── revisions/                   one folder per schema change (generated + up/down.sql)
 ├── access/                      public policy and the donation-service role/user
 ├── seeds/
 │   ├── reference/               always loaded (languages)
 │   └── examples/                demo content, only when CMS_ENV=dev
 ├── scripts/                     baked into the image, except the tests and smoke test
-│   ├── apply-schemas.js         the sync run by the entrypoint: loads the YAML,
-│   │                            builds and applies the schema diff, then seeds and policies
+│   ├── sync.js                  run by the entrypoint: revisions, then policies, then seeds
+│   ├── schema-model.js          loads and validates the YAML, builds the desired snapshot
+│   ├── revisions.js             generate / upgrade / down / status / stamp / check
 │   ├── seed-data.js             creates missing seed rows
 │   ├── apply-policies.js        policies, roles, permissions, service user
-│   ├── apply-schemas.test.js    unit tests (not in the image)
-│   ├── seed-data.test.js
-│   ├── apply-policies.test.js
+│   ├── *.test.js                unit tests (not in the image)
 │   └── smoke-test.sh            quick stack check used by CI (not in the image)
 └── tools/                       local helpers, not in the image
     ├── init-env.mjs             local .env generator
-    └── verify.mjs               live check of a running stack
+    ├── verify.mjs               live check of a running stack
+    ├── revision.sh              behind `make revision`
+    └── revisions-cli.sh         behind `make migrate-*` and `make check`
 ```
 
 Folders under `schemas/` and `seeds/` only organize files; collection names are
 global. Each schema file has the collection, its fields and its `relations`
 (foreign keys with delete rules and the editor aliases on the other side).
 
-**Schemas.** The sync reads the instance snapshot, replaces only the managed
-collections, and applies the resulting Directus schema diff. It is
-non-destructive: if the diff would delete a collection, field or relation (for
-example after removing a YAML file), the sync stops with an error. Remove such
-things manually and deliberately. Collections that are not in `schemas/` are left
-untouched.
+**Schemas and revisions.** `schemas/` is the model and the only place you edit
+it. The YAML is the complete definition of every collection it declares. A change
+becomes a **revision**, a folder in `revisions/` like an Alembic revision:
+
+```text
+revisions/0002_goal_to_euros/
+  schema.json     generated: the Directus schema after this revision
+  changes.json    generated: `+ added`, `- removed` (loses data), `~ changed`
+  up.sql          optional, yours: data step; down.sql undoes it
+```
+
+Workflow: edit `schemas/`, run `make revision m="goal to euros"` (it starts a
+throwaway stack, so your data is never touched, and prints the change list),
+add `up.sql` / `down.sql` if data has to move, run `make up`, and commit the
+whole folder with the YAML. `schema.json` and `changes.json` are generated, and
+a revision that has been applied anywhere is never edited.
+
+On start, pending revisions apply in three steps: add what is new, run
+`up.sql` (old and new fields both exist, so it can copy), then drop what was
+removed. `up.sql` / `down.sql` move data only: `ALTER`, `CREATE`, `DROP` and
+`directus_*` tables are refused. A rename is one revision: the generator shows
+`- old` and `+ new`, and `up.sql` copies the values. An interrupted start
+continues where it stopped (`make migrate-status` shows `partial`).
+
+To roll back, run `make migrate-down` (newest first) **before** deploying an older
+image; an image that lacks revisions the database has applied refuses to start.
+Collections that no revision ever contained are never touched. Removing a
+collection's YAML produces a `- name` line in the next revision. A YAML change
+without a revision logs a warning at startup, and `make check` and CI fail.
 
 **Access.** Policies, the Public read permissions and the donation-service
 permissions are declared in `access/`. The sync overwrites them, so changes made
@@ -185,21 +239,24 @@ publishes seed rows that are still drafts (never use it for production content).
 Seed files are applied in file-name order, so prefix them `01-`, `02-`, … to
 create referenced rows first.
 
-To change the model: edit or add a YAML file, rebuild, restart. To add content
-that must exist everywhere, add it under `seeds/reference/`.
+To change the model: edit or add a YAML file and run `make revision m="..."`
+(see above). To add content that must exist everywhere, add it under
+`seeds/reference/`. Seeds create rows only, so a revision's `up.sql` is what
+fixes existing rows.
 
 ### Recreating a local database
 
-An older local database was created by the removed API migrations and has a
-`backend_migrations` collection. The new sync would not remove it. Back up
-anything you want to keep, then recreate the local backend:
+The app is not deployed anywhere, so a local database can always be recreated
+from `revisions/` and `seeds/`. A database created before revisions existed
+already matches `0001_initial`, so the first start with revisions changes
+nothing (`make migrate-stamp` is only needed for data steps that must not run
+again). To start over:
 
 ```bash
-docker compose --env-file directus/.env down --volumes
-docker compose --env-file directus/.env up -d --build --wait database directus
+cd directus && make reseed CONFIRM=yes
 ```
 
-`--volumes` erases this backend's local database and uploads.
+`make reseed` erases this backend's local database and uploads.
 
 ## Tests and CI
 
@@ -209,15 +266,16 @@ cd directus && npm ci && npm test
 
 The unit tests need no Docker. They load the real YAML (schemas, access, seeds),
 check that invalid definitions are rejected, and cover the snapshot builder
-(unmanaged collections preserved, deletions detected) and the seeder
-(idempotent, never overwrites). The sync itself needs a live Directus, so it is
-covered by the stack checks below.
+(unmanaged collections preserved), the revision rules and state machine
+(including interrupted runs) and the seeder (idempotent, never overwrites).
+Applying revisions needs a live Directus, so it is covered by the stack checks
+below.
 
 [`scripts/smoke-test.sh`](scripts/smoke-test.sh) checks a running stack: health,
 admin login, readable and seeded collections, anonymous access limited to
 published content, and rejection of an invalid token. The workflow
 `.github/workflows/directus-smoke-test.yml` runs the unit tests, starts a
-disposable stack with random credentials, runs the smoke test and `tools/verify.mjs`,
+disposable stack with random credentials, runs the smoke test, `make check`'s command and `tools/verify.mjs`,
 and removes only that stack (`down -v` on its unique project name) on pull
 requests that touch `directus/`.
 
@@ -247,9 +305,9 @@ history remains.
 
 ## Persistence and shutdown
 
-Database and uploaded files use the explicit version-specific named volumes
-`tunisaid-backend-v11_database` and `tunisaid-backend-v11_uploads`. Containers can
-be recreated without losing content:
+Database and uploaded files live in the named volumes `tunisaid-backend-v11_database`
+and `tunisaid-backend-v11_uploads` (the Compose project name plus the volume).
+Containers can be recreated without losing content:
 
 ```bash
 docker compose --env-file directus/.env down
