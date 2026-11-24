@@ -4,11 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
-import {
-  desiredSnapshot,
-  findDeletions,
-  loadDefinitions,
-} from './apply-schemas.js'
+import { desiredSnapshot, loadDefinitions } from './schema-model.js'
 
 const dir = (name) => fileURLToPath(new URL(`../${name}/`, import.meta.url))
 
@@ -157,25 +153,83 @@ test('defaults a relation to the target primary key', () => {
   assert.equal(relation.schema.on_delete, 'CASCADE')
 })
 
-test('reports whole-object deletions only', () => {
-  const diff = {
-    diff: {
-      collections: [{ collection: 'gone', diff: [{ kind: 'D' }] }],
-      fields: [
-        {
-          collection: 'a',
-          field: 'edited',
-          diff: [{ kind: 'E', path: ['x'] }],
-        },
-        { collection: 'a', field: 'removed', diff: [{ kind: 'D' }] },
-      ],
-      relations: [{ collection: 'a', field: 'r', diff: [{ kind: 'D' }] }],
+test('drops undeclared fields and relations of managed collections only', () => {
+  const instance = snapshot()
+  instance.collections.push({
+    collection: 'articles',
+    meta: {},
+    schema: { name: 'articles' },
+  })
+  instance.fields.push(
+    { collection: 'articles', field: 'id', type: 'uuid', schema: {}, meta: {} },
+    {
+      collection: 'articles',
+      field: 'old_title',
+      type: 'string',
+      schema: {},
+      meta: {},
     },
-  }
-  assert.deepEqual(findDeletions(diff), [
-    'collection gone',
-    'field a removed',
-    'relation a r',
-  ])
-  assert.deepEqual(findDeletions({ diff: null }), [])
+    {
+      collection: 'other',
+      field: 'legacy',
+      type: 'string',
+      schema: {},
+      meta: {},
+    },
+  )
+  instance.relations.push({
+    collection: 'articles',
+    field: 'old_title',
+    related_collection: 'other',
+    schema: {},
+    meta: {},
+  })
+  const desired = desiredSnapshot(instance, [definition])
+  const has = (collection, field) =>
+    desired.fields.some(
+      (item) => item.collection === collection && item.field === field,
+    )
+  assert.equal(has('articles', 'old_title'), false)
+  assert.equal(desired.relations.length, 0)
+  assert.equal(has('articles', 'title'), true)
+  // Not declared in the YAML, so not managed: untouched.
+  assert.equal(has('other', 'legacy'), true)
+})
+
+test('drops collections that were ours but are no longer declared', () => {
+  const instance = snapshot()
+  instance.collections.push(
+    { collection: 'legacy', meta: {}, schema: { name: 'legacy' } },
+    { collection: 'unmanaged', meta: {}, schema: { name: 'unmanaged' } },
+  )
+  instance.fields.push(
+    { collection: 'legacy', field: 'id', type: 'uuid', schema: {}, meta: {} },
+    {
+      collection: 'unmanaged',
+      field: 'id',
+      type: 'uuid',
+      schema: {},
+      meta: {},
+    },
+  )
+  instance.relations.push({
+    collection: 'legacy',
+    field: 'id',
+    related_collection: 'unmanaged',
+    schema: {},
+    meta: {},
+  })
+  const desired = desiredSnapshot(instance, [definition], {
+    dropCollections: ['legacy', definition.collection],
+  })
+  const names = desired.collections.map((item) => item.collection)
+  assert.equal(names.includes('legacy'), false)
+  assert.equal(names.includes('unmanaged'), true)
+  assert.equal(
+    desired.fields.some((item) => item.collection === 'legacy'),
+    false,
+  )
+  assert.equal(desired.relations.length, 0)
+  // A collection that is still declared is never dropped.
+  assert.equal(names.includes(definition.collection), true)
 })

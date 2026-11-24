@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
-import { loadDefinitions } from './apply-schemas.js'
+import { loadDefinitions } from './schema-model.js'
 import { loadSeeds, seedData, seedEnvironment, seedItems } from './seed-data.js'
 
 const schemasDir = fileURLToPath(new URL('../schemas/', import.meta.url))

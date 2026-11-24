@@ -6,6 +6,7 @@ README.md
 compose.yaml
 Dockerfile
 .dockerignore
+Makefile
 tools
 scripts/*.test.js
 scripts/smoke-test.sh

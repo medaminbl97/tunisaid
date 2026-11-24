@@ -5,7 +5,7 @@ import path from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { applyPolicies, loadAccess } from './apply-policies.js'
-import { loadDefinitions } from './apply-schemas.js'
+import { loadDefinitions } from './schema-model.js'
 
 const schemasDir = fileURLToPath(new URL('../schemas/', import.meta.url))
 const accessDir = fileURLToPath(new URL('../access/', import.meta.url))
