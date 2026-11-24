@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { ShoppingBasket } from 'lucide-react'
+import { Gift } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -135,11 +135,11 @@ export function DonationBasketButton(props: DonationBasketButtonProps) {
               : t('openEmpty')
           }
           className={cn(
-            'relative size-11 cursor-pointer border-[1.5px] border-brand-header-chip-border bg-brand-header-chip text-brand-header-foreground hover:bg-brand-header-active',
+            'relative size-11 cursor-pointer border-[1.5px] border-brand-lagoon-blue/25 bg-brand-lagoon-tint text-brand-lagoon-deep hover:bg-brand-lagoon-blue/20',
             props.className,
           )}
         >
-          <ShoppingBasket className="size-5" aria-hidden="true" />
+          <Gift className="size-5" aria-hidden="true" />
           <AnimatePresence>
             {count > 0 && (
               <motion.span
